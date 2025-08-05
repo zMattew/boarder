@@ -1,0 +1,161 @@
+datasource db {
+    url      = env("DB_URL")
+    provider = "postgresql"
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model Source {
+    id            String      @id @default(cuid())
+    name          String      @unique()
+    connectionUrl String      @unique()
+    components    Component[]
+    projectId     String
+    project       Project     @relation(fields: [projectId], references: [id])
+}
+
+model Component {
+    id          String   @id @default(cuid())
+    sourceName  String
+    source      Source   @relation(fields: [sourceName], references: [name], onDelete: Cascade)
+    name        String
+    description String?
+    query       String
+    keys        String[] @default([])
+    meta        Json?
+    viewId      String?
+    view        View?    @relation(fields: [viewId], references: [id], onDelete: Cascade)
+    prompt      String[]
+}
+
+model View {
+    id         String      @id @default(cuid())
+    name       String      @unique()
+    components Component[]
+    meta       Json?
+    projectId  String
+    project    Project     @relation(fields: [projectId], references: [id])
+}
+
+model Llm {
+    id        String    @id @default(cuid())
+    label     String?
+    provider  Providers
+    url       String?
+    apiKey    String?
+    projectId String
+    project   Project   @relation(fields: [projectId], references: [id])
+}
+
+enum Providers {
+    openai
+    anthropic
+    google
+    gcp
+    aws
+    groq
+    ollama
+    mistral
+}
+
+model Account {
+    id                String  @id @default(cuid())
+    userId            String  @map("user_id")
+    type              String
+    provider          String
+    providerAccountId String  @map("provider_account_id")
+    refresh_token     String? @db.Text
+    access_token      String? @db.Text
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    id_token          String? @db.Text
+    session_state     String?
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([provider, providerAccountId])
+    @@map("accounts")
+}
+
+model Session {
+    id           String   @id @default(cuid())
+    sessionToken String   @unique @map("session_token")
+    userId       String   @map("user_id")
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("sessions")
+}
+
+model Project {
+    id      String       @id @default(cuid())
+    name    String
+    ownerId String
+    owner   User         @relation(fields: [ownerId], references: [id])
+    team    TeamMember[]
+    llms    Llm[]
+    sources Source[]
+    view    View[]
+}
+
+model TeamMember {
+    id        String   @id @default(cuid())
+    projectId String
+    project   Project  @relation(fields: [projectId], references: [id])
+    role      TeamRole
+    userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum TeamRole {
+    admin
+    editor
+    viewer
+}
+
+model User {
+    id            String          @id @default(cuid())
+    name          String?
+    email         String?         @unique
+    emailVerified DateTime?       @map("email_verified")
+    image         String?
+    accounts      Account[]
+    sessions      Session[]
+    team          TeamMember[]
+    project       Project[]
+    // Optional for WebAuthn support
+    Authenticator Authenticator[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("users")
+}
+
+model VerificationToken {
+    identifier String
+    token      String
+    expires    DateTime
+
+    @@unique([identifier, token])
+    @@map("verification_tokens")
+}
+
+// Optional for WebAuthn support
+model Authenticator {
+    credentialID         String  @unique
+    userId               String
+    providerAccountId    String
+    credentialPublicKey  String
+    counter              Int
+    credentialDeviceType String
+    credentialBackedUp   Boolean
+    transports           String?
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@id([userId, credentialID])
+}

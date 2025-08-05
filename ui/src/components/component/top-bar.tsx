@@ -1,0 +1,214 @@
+"use client";
+import { useDraggable } from "@dnd-kit/core";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuPortal,
+    DropdownMenuSeparator,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
+    DropdownMenuTrigger,
+} from "@/components/shadcn/dropdown-menu";
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from "@/components/shadcn/hover-card";
+import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
+import {
+    Database,
+    EllipsisVertical,
+    InfoIcon,
+    LockKeyhole,
+    LockKeyholeOpen,
+    Minimize,
+    Minus,
+    Pencil,
+    Play,
+    RefreshCcw,
+    Trash,
+} from "lucide-react";
+import { revalidateData } from "../utils/fetch";
+
+import { useComponent } from "./context";
+import { useProject } from "@/hooks/project-context";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../shadcn/dialog";
+
+import { Button } from "../shadcn/button";
+import { removeComponent } from "@/lib/component";
+import { toast } from "sonner";
+
+export function ComponentTopBar(
+    { refreshData, refreshing }: {
+        refreshData: (
+            options?: RefetchOptions | undefined,
+        ) => Promise<QueryObserverResult<unknown, Error>>;
+        refreshing: boolean;
+    },
+) {
+    const { setStyle, component, locked, setLocked, restore } = useComponent();
+    const { listeners } = useDraggable({
+        id: component.id,
+    });
+    const { currentProject,refreshProjects } = useProject();
+    const options = component.name == "chart"
+        ? [
+            { label: "Area chart", value: "area" },
+            { label: "Bar chart", value: "bar" },
+            { label: "Line chart", value: "line" },
+            { label: "Scatter chart", value: "scatter" },
+        ]
+        : undefined;
+    return (
+        <div className="absolute w-full top-[-16] flex flex-row">
+            <HoverCard>
+                <HoverCardTrigger>
+                    <InfoIcon className="h-3" />
+                </HoverCardTrigger>
+                <HoverCardContent className="text-xs flex flex-col">
+                    <div>
+                        <Database className="inline h-2" />Source:
+                        {component.sourceName}
+                    </div>
+                    <div>
+                        <Pencil className="inline h-2" /> Description:
+                        {component.description}
+                    </div>
+                    <div>
+                        <Play className="inline h-2" /> Query:
+                        {component.query}
+                    </div>
+                </HoverCardContent>
+            </HoverCard>
+            <div className="w-full">
+                <Minus
+                    className={`${
+                        locked ? "hidden" : ""
+                    } h-3 z-[1] my-0.5 place-self-center hover:bg-secondary rounded-md cursor-grab active:cursor-grabbing touch-none   `}
+                    {...listeners}
+                />
+            </div>
+            <div className="flex flex-row gap-0.5">
+                <RefreshCcw
+                    className={`h-3 hover:cursor-pointer ${
+                        refreshing ? "animate-spin" : ""
+                    }`}
+                    onClick={async () => {
+                        await revalidateData(component.id);
+                        refreshData({ cancelRefetch: false });
+                    }}
+                />
+                <DropdownMenu>
+                    <DropdownMenuTrigger>
+                        <EllipsisVertical className="h-3" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        {options
+                            ? (
+                                <>
+                                    <DropdownMenuSub>
+                                        <DropdownMenuSubTrigger>
+                                            Style
+                                        </DropdownMenuSubTrigger>
+                                        <DropdownMenuPortal>
+                                            <DropdownMenuSubContent>
+                                                {options.map((option) => (
+                                                    <DropdownMenuItem
+                                                        key={option.value}
+                                                        onClick={() =>
+                                                            setStyle(
+                                                                option.value,
+                                                            )}
+                                                    >
+                                                        {option.label}
+                                                    </DropdownMenuItem>
+                                                ))}
+                                            </DropdownMenuSubContent>
+                                        </DropdownMenuPortal>
+                                    </DropdownMenuSub>
+                                    <DropdownMenuSeparator />
+                                </>
+                            )
+                            : <></>}
+                        {currentProject && currentProject?.role != "viewer"
+                            ? (
+                                <>
+                                    <DropdownMenuItem>
+                                        <Pencil />Edit
+                                    </DropdownMenuItem>
+                                    <Dialog>
+                                        <DialogTrigger
+                                            asChild
+                                        >
+                                            <DropdownMenuItem
+                                                onSelect={(e) => e.preventDefault()}
+                                            >
+                                                <Trash /> Delete
+                                            </DropdownMenuItem>
+                                        </DialogTrigger>
+                                        <DialogContent>
+                                            <DialogHeader>
+                                                <DialogTitle>
+                                                    Are you absolutely sure?
+                                                </DialogTitle>
+                                                <DialogDescription>
+                                                    This action cannot be
+                                                    undone.
+                                                </DialogDescription>
+                                            </DialogHeader>
+                                            <DialogFooter>
+                                                <DialogClose asChild>
+                                                    <Button
+                                                        type="button"
+                                                        variant="secondary"
+                                                    >
+                                                        Close
+                                                    </Button>
+                                                </DialogClose>
+                                                <Button
+                                                    onClick={async () => {
+                                                        try {
+                                                            await removeComponent(currentProject.id,component.id)
+                                                            refreshProjects()
+                                                            toast.success("Component removed")
+                                                        } catch (error) {
+                                                            toast.error(`${error}`)
+                                                        }
+                                                    }}
+                                                >
+                                                    Confirm
+                                                </Button>
+                                            </DialogFooter>
+                                        </DialogContent>
+                                    </Dialog>
+                                </>
+                            )
+                            : <></>}
+                        <DropdownMenuItem onClick={() => setLocked(!locked)}>
+                            {locked
+                                ? (
+                                    <>
+                                        <LockKeyholeOpen />Unlock
+                                    </>
+                                )
+                                : (
+                                    <>
+                                        <LockKeyhole />Lock
+                                    </>
+                                )}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onClick={() => {
+                                restore();
+                            }}
+                        >
+                            <Minimize />Restore
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
+        </div>
+    );
+}

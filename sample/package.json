@@ -1,0 +1,19 @@
+{
+  "name": "sample",
+  "version": "1.0.0",
+  "main": "fake.js",
+  "type": "module",
+  "prisma": {
+    "schema": "schema.prisma"
+  },
+  "scripts": {
+    "fake": "node ./fake.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@faker-js/faker": "^9.9.0",
+    "@prisma/client": "^6.12.0"
+  }
+}

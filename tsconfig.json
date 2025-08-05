@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+      "target": "ESNext",
+      "module": "esnext",
+      "moduleResolution": "bundler",
+      "outDir": "./build",
+      "rootDir": "./",
+      "strict": true,
+      "esModuleInterop": true,
+      "isolatedModules": true,
+      "allowImportingTsExtensions": true,
+      "rewriteRelativeImportExtensions": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "sourceMap": true
+    },
+
+    "include": ["db/**/*", "core/src/**/*","utils/**/*","sample/**/*"],
+    "exclude": ["node_modules"]
+  }
