@@ -44,12 +44,7 @@ export default function Chart<TData>({
     const {style} = useComponent()
     const ChartType = ChartStyle[
         style as "area" | "bar" | "line" | "scatter"
-    ] as React.ComponentType<
-        | typeof Area.defaultProps
-        | typeof Bar.defaultProps
-        | typeof Line.defaultProps
-        | typeof Scatter.defaultProps
-    >;
+    ] 
     
     return (
         <>
