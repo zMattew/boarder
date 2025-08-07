@@ -1,9 +1,9 @@
 {
     "extends": "../tsconfig.json",
     "compilerOptions": {
-        "module": "esnext",
-        "moduleResolution": "bundler",
         "outDir": "../build",
-        "skipLibCheck": true
-    }
+        "declarationMap": true,
+        "declaration": true
+    },
+    "include": ["src"]
 }
