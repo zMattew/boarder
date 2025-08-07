@@ -1,7 +1,7 @@
 "use client";
 
 import type { Providers } from "@prisma/client";
-import { availableLLMs } from "../utils/llms";
+import { availableLLMs } from "../../../../core/src/llms";
 import { useState } from "react";
 import { Combobox } from "../combobox";
 import { Input } from "../shadcn/input";

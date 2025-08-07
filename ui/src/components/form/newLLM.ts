@@ -1,10 +1,10 @@
 "use server"
 import { addLLM } from "@/lib/llm"
-import { getProjectMemberRole } from "@/lib/role"
+import { getMemberRole } from "@/lib/role"
 import { Providers } from "@prisma/client"
 
 export async function createLLM(formData: FormData) {
-    const userRole = await getProjectMemberRole()
+    const userRole = await getMemberRole()
     if (userRole == "viewer") throw "You can't do this action"
     const projectId =formData.get("projectId") as string
     const label =formData.get("label") as string

@@ -2,10 +2,10 @@
 
 import { promptComponent } from "#/core/src/agent"
 import client from "#/db/client"
-import { getProjectMemberRole } from "./role"
+import { getMemberRole } from "./role"
 
 export async function addComponent(name: string, sourceId: string, query: string, prompt: string[], viewId: string, requiredKeys: string[] = [], description?: string) {
-    const userRole = await getProjectMemberRole()
+    const userRole = await getMemberRole()
     if (userRole == "viewer") throw "You can't do this action"
     return await client.component.create({
         data: {
@@ -25,7 +25,7 @@ export async function addComponent(name: string, sourceId: string, query: string
 }
 
 export async function removeComponent(projectId: string, componentId: string) {
-    const userRole = await getProjectMemberRole()
+    const userRole = await getMemberRole()
     if (userRole == "viewer") throw "You can't do this action"
     return await client.component.delete({
         where: {
@@ -35,7 +35,7 @@ export async function removeComponent(projectId: string, componentId: string) {
     })
 }
 export async function prompt(formData: FormData) {
-    const userRole = await getProjectMemberRole();
+    const userRole = await getMemberRole();
     if (userRole == "viewer") throw "You can't do this action";
     const source = formData.get("source") as string;
     const view = formData.get("view") as string;

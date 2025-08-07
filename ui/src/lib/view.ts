@@ -1,6 +1,6 @@
 "use server"
 import { InputJsonObject } from "@prisma/client/runtime/library";
-import { getProjectMemberRole } from "./role";
+import { getMemberRole } from "./role";
 import client from "#/db/client";
 
 export async function addView(name: string, projectId: string) {
@@ -13,12 +13,12 @@ export async function addView(name: string, projectId: string) {
 }
 
 export async function deleteView(projectId: string, viewId: string) {
-    const userRole = await getProjectMemberRole()
+    const userRole = await getMemberRole()
     if (userRole != "admin") throw "You can't do this action"
     return await client.view.delete({ where: { id: viewId, projectId } })
 }
 export async function saveViewState(viewId: string, viewMeta: Record<string, unknown>, components: { id: string; meta: Record<string, unknown>} []) {
-    const userRole = await getProjectMemberRole()
+    const userRole = await getMemberRole()
     if (userRole == "viewer") throw "You can't do this action"
     await client.view.update({
         where: { id: viewId },

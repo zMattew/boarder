@@ -2,10 +2,10 @@
 
 import { encrypt } from "#/core/src/crypto"
 import client from "#/db/client"
-import { getProjectMemberRole } from "./role"
+import { getMemberRole } from "./role"
 
 export async function addSource(name: string, connectionUrl: string,projectId:string) {
-    const role = await getProjectMemberRole()
+    const role = await getMemberRole()
     if(role != "admin") throw "You can't do this action"
     connectionUrl = await encrypt(connectionUrl)
     return await client.source.create({
@@ -18,13 +18,13 @@ export async function addSource(name: string, connectionUrl: string,projectId:st
 }
 
 export async function removeSource(projectId: string, sourceId: string) {
-    const role = await getProjectMemberRole()
+    const role = await getMemberRole()
     if(role != "admin") throw "You can't do this action"
     return await client.source.delete({ where: { projectId, id: sourceId } })
 }
 
 export async function editSource(projectId: string, sourceId: string, name?: string, connectionUrl?: string) {
-    const role = await getProjectMemberRole()
+    const role = await getMemberRole()
     if(role != "admin") throw "You can't do this action"
     const data: {name?:string,connectionUrl?:string} = {}
     if(name)

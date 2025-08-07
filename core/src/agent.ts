@@ -11,7 +11,7 @@ import { RunnableConfig } from "@langchain/core/runnables"
 import { SystemMessage } from "@langchain/core/messages"
 import { getLLM } from "../../db/handler"
 import { decrypt } from "./crypto"
-import { availableLLMs } from '../../ui/src/components/utils/llms';
+import { availableLLMs } from './llms';
 import { Providers } from "@prisma/client"
 
 const getSchema = tool(async (input: Record<string, any>, config: RunnableConfig) => {
