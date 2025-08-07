@@ -6,7 +6,7 @@ import { Textarea } from "../shadcn/textarea";
 import { Button } from "../shadcn/button";
 import { prompt } from '@/lib/component';
 import { toast } from "sonner";
-import { availableLLMs } from "../utils/llms";
+import { availableLLMs } from "../../../../core/src/llms";
 import { useProject } from "../../hooks/project-context";
 import {
     Card,
