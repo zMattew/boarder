@@ -5,12 +5,12 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "tsc && node ../build/core/src/index.js",
+    "start": "tsc && node --experimental-loader=extensionless ../build/core/src/index.js",
     "crypto": "tsc && node ../build/core/src/crypto.js",
     "agent": "tsc && node ../build/core/src/agent.js",
     "check-types": "tsc --noEmit"
   },
-  "private":true,
+  "private": true,
   "author": "",
   "license": "ISC",
   "description": "",
@@ -28,6 +28,7 @@
     "dotenv": "^17.2.0",
     "execa": "^9.6.0",
     "express": "^5.1.0",
+    "extensionless": "^1.9.9",
     "langchain": "^0.3.30",
     "mysql2": "^3.14.3",
     "ollama": "^0.5.16",
