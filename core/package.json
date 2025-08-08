@@ -3,9 +3,14 @@
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
+  "extensionless": {
+    "lookFor": [
+      "js"
+    ]
+  },
   "scripts": {
     "build": "tsc",
-    "start": "tsc && node --experimental-loader=extensionless ../build/core/src/index.js",
+    "start": "tsc && node --import=extensionless/register ../build/core/src/index.js",
     "crypto": "tsc && node ../build/core/src/crypto.js",
     "agent": "tsc && node ../build/core/src/agent.js",
     "check-types": "tsc --noEmit"
