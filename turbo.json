@@ -4,12 +4,12 @@
   "tasks": {
     "ui#build": {
       "dependsOn": ["^build"],
-      "outputs": ["/ui/.next/**", "/ui/.next/cache/**"],
+      "outputs": ["./.next/**", "./.next/cache/**"],
       "outputLogs": "full"
     },
     "core#build": {
       "dependsOn": ["^build"],
-      "outputs": ["/build/**"],
+      "outputs": ["../build/**"],
       "outputLogs": "full"
     },
     "check-types": {
@@ -17,7 +17,7 @@
     },
     "dev": {
       "persistent": true,
-      "cache": false
+      "cache": true
     }
   }
 }
