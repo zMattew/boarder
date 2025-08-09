@@ -9,7 +9,7 @@
   "packageManager": "npm@11.5.2",
   "private": true,
   "scripts": {
-    "vercel-build": "npx prisma migrate deploy && npx prisma generate && npm run build -w ui",
+    "vercel-build": "npm run build -w ui",
     "start": "tsc && node ./build/core/src/index.js",
     "fake": "tsc && node ../build/sample/fake.js"
   },
