@@ -1,6 +1,6 @@
 "use server"
 import client from "@repo/db/client";
-import { TeamRole } from "@prisma/client";
+import { TeamRole } from "@repo/db/client";
 import { getMemberRole } from "./role";
 
 export async function changeMemberRole(projectId: string, memberId: string, role: TeamRole) {

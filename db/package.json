@@ -5,18 +5,22 @@
   "license": "ISC",
   "author": "",
   "type": "module",
-  "main": "client.js",
   "scripts": {
-    "build": "npx prisma generate"
+    "build": "npx prisma generate && tsc"
   },
   "exports": {
-    ".": "./handler.ts",
-    "./client": "./client.ts"
+    ".": "./src/handler.ts",
+    "./client": "./src/client.ts",
+    "./esm": "./src/esm.ts",
+    "./esm.handler": "./src/esm.handler.ts"
   },
   "devDependencies": {
-    "prisma": "^6.13.0"
+    "prisma": "^6.13.0",
+    "typescript": "^5.9.2"
   },
   "dependencies": {
-    "@prisma/client": "^6.13.0"
+    "@prisma/client": "^6.13.0",
+    "@repo/tsconfig": "^0.0.0",
+    "dotenv": "^17.2.1"
   }
 }

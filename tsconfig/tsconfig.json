@@ -5,16 +5,20 @@
     "moduleResolution": "bundler",
     "moduleDetection": "auto",
     "outDir": "./build",
-    "rootDir": "./",
     "strict": true,
     "esModuleInterop": true,
     "isolatedModules": true,
+    "allowImportingTsExtensions": true,
     "rewriteRelativeImportExtensions": true,
     "incremental": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true
   },
+  "include": [
+    "db/**/*",
+    "core/src/**/*",
+    "api/**/*" ],
   "exclude": [
     "node_modules"
   ]

@@ -1,7 +1,9 @@
 {
-    "extends": "../tsconfig.json",
+    "extends": "@repo/tsconfig",
     "compilerOptions": {
         "outDir": "./build",
     },
-    "include": ["src"]
+    "include": [
+        "src"
+    ]
 }

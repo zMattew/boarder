@@ -1,4 +1,4 @@
-import { client } from "./client";
+import client from "./client.ts";
 
 export async function getSource(id: string) {
     return await client.source.findUnique({

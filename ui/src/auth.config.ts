@@ -1,8 +1,12 @@
+import { PrismaAdapter } from "@auth/prisma-adapter"
+import client from "@repo/db/client"
 import type { NextAuthConfig } from "next-auth"
 
 
 export default {
-    providers:[],
+    providers: [],
+    adapter: PrismaAdapter(client),
+    session: { strategy: "jwt" },
     pages: {
         signIn: "/login",
     },

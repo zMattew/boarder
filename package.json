@@ -17,6 +17,7 @@
     "core",
     "ui",
     "api",
+    "tsconfig",
     "db"
   ],
   "author": "",
@@ -24,5 +25,8 @@
   "description": "",
   "devDependencies": {
     "turbo": "^2.5.5"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.14.0-dev.29"
   }
 }

@@ -1,5 +1,5 @@
 "use server"
-import { InputJsonObject } from "@prisma/client/runtime/library";
+import { Prisma } from "@repo/db/client";
 import { getMemberRole } from "./role";
 import client from "@repo/db/client";
 
@@ -23,10 +23,10 @@ export async function saveViewState(viewId: string, viewMeta: Record<string, unk
     await client.view.update({
         where: { id: viewId },
         data: {
-            meta: viewMeta as InputJsonObject,
+            meta: viewMeta as Prisma.InputJsonObject,
             components: {
                 updateMany: components.map((c) => (
-                    { where: { id: c.id, viewId: viewId }, data: { meta: c.meta as InputJsonObject } }
+                    { where: { id: c.id, viewId: viewId }, data: { meta: c.meta as Prisma.InputJsonObject } }
                 ))
             }
         }

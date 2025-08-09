@@ -1,7 +1,7 @@
 "use server"
 import { encrypt } from "@repo/core/crypto";
 import client from "@repo/db/client";
-import { Providers } from "@prisma/client";
+import type { Providers } from "@repo/db/client";
 import { getMemberRole } from "./role";
 
 export async function addLLM(label:string,provider:Providers,projectId:string,url?:string,api?:string){

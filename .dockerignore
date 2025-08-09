@@ -1,12 +1,13 @@
-Dockerfile.*
+Dockerfile
 docker-compose.yaml
 .dockerignore
+.gitignore
+.turbo
 node_modules
-*/node_modules
+build
 npm-debug.log
 README.md
 .next
 .git
 .vscode
 sample
-agent

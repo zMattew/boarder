@@ -10,7 +10,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "tsc && node --import=extensionless/register ./build/src/index.js",
+    "start": "tsc && node  ./build/index.js",
     "check-types": "tsc --noEmit"
   },
   "private": true,
@@ -18,11 +18,15 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@repo/tsconfig": "*",
     "@types/express": "^5.0.3",
-    "@types/node": "^24.2.0"
+    "@types/node": "^24.2.0",
+    "tsc-esm-fix": "^3.1.2",
+    "typescript": "^5.9.2"
   },
   "dependencies": {
     "@repo/core": "^1.0.0",
+    "@repo/db": "^1.0.0",
     "express": "^5.1.0",
     "extensionless": "^1.9.9"
   }

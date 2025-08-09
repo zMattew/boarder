@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "tsc && node --import=extensionless/register ../build/core/src/index.js",
+    "start": "tsc && node ../build/core/src/index.js",
     "crypto": "tsc && node ../build/core/src/crypto.js",
     "agent": "tsc && node ../build/core/src/agent.js",
     "check-types": "tsc --noEmit"
@@ -21,6 +21,7 @@
     "./crypto": "./src/crypto.ts"
   },
   "devDependencies": {
+    "@repo/tsconfig": "*",
     "@types/express": "^5.0.3",
     "@types/node": "^24.2.0",
     "@types/pg": "^8.15.4"

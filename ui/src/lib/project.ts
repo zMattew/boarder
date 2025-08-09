@@ -1,7 +1,7 @@
 "use server"
 import client from "@repo/db/client";
 import { auth } from "@/lib/auth";
-import { TeamRole } from "@prisma/client";
+import { TeamRole } from "@repo/db/client";
 import { cookies } from "next/headers";
 
 
