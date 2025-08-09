@@ -1,4 +1,4 @@
-import client from "#/db/client";
+import client from "@repo/db/client";
 import { ComponentView } from "@/components/component/view";
 import { auth } from "@/lib/auth.middleware";
 import { redirect } from "next/navigation";

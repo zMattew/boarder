@@ -1,5 +1,5 @@
 "use client";
-import { AvailableComponents } from "#/core/src/components";
+import { AvailableComponents } from "@repo/core/components";
 import type { FieldDef } from "pg";
 import Chart from "../chart";
 import { DataTable } from "../data-table";

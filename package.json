@@ -16,15 +16,12 @@
   "workspaces": [
     "core",
     "ui",
-    "utils"
+    "api",
+    "db"
   ],
   "author": "",
   "license": "ISC",
   "description": "",
-  "dependencies": {
-    "@prisma/client": "^6.11.1",
-    "langchain": "^0.3.30"
-  },
   "devDependencies": {
     "turbo": "^2.5.5"
   }

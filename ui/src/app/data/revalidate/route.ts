@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { NextRequest } from "next/server";
-import client from "#/db/client";
+import client from "@repo/db/client";
 import { revalidateTag } from "next/cache";
 
 export async function POST(req: NextRequest) {

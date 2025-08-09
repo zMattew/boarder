@@ -1,4 +1,4 @@
-import { getSource } from '../../db/handler'
+import { getSource } from '@repo/db'
 import { decrypt } from './crypto';
 
 async function postgresDBConnection(url: string) {

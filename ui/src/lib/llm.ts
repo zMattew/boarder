@@ -1,6 +1,6 @@
 "use server"
-import { encrypt } from "#/core/src/crypto";
-import client from "#/db/client";
+import { encrypt } from "@repo/core/crypto";
+import client from "@repo/db/client";
 import { Providers } from "@prisma/client";
 import { getMemberRole } from "./role";
 

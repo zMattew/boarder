@@ -1,7 +1,7 @@
 import NextAuth from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import authConfig from "@/auth.config"
-import client from "#/db/client"
+import client from "@repo/db/client"
 import type { Provider } from "next-auth/providers"
 import GitHub from "next-auth/providers/github"
 import Nodemailer from "next-auth/providers/nodemailer"

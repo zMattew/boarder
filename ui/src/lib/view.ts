@@ -1,7 +1,7 @@
 "use server"
 import { InputJsonObject } from "@prisma/client/runtime/library";
 import { getMemberRole } from "./role";
-import client from "#/db/client";
+import client from "@repo/db/client";
 
 export async function addView(name: string, projectId: string) {
     return await client.view.create({
