@@ -27,6 +27,9 @@
       "outputs": ["./build/**"],
       "outputLogs": "full"
     },
+    "build": {
+      "dependsOn": ["^build"]
+    },
     "check-types": {
       "dependsOn": ["^check-types"]
     },
