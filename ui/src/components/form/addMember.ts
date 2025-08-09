@@ -1,6 +1,6 @@
 "use server"
 
-import client from "#/db/client";
+import client from "@repo/db/client";
 import { TeamRole } from "@prisma/client";
 
 export async function addMember(formData: FormData) {

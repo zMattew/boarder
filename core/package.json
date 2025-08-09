@@ -1,13 +1,7 @@
 {
-  "name": "core",
+  "name": "@repo/core",
   "version": "1.0.0",
-  "main": "index.js",
   "type": "module",
-  "extensionless": {
-    "lookFor": [
-      "js"
-    ]
-  },
   "scripts": {
     "build": "tsc",
     "start": "tsc && node --import=extensionless/register ../build/core/src/index.js",
@@ -19,6 +13,13 @@
   "author": "",
   "license": "ISC",
   "description": "",
+  "exports": {
+    "./agent": "./src/agent.ts",
+    "./components": "./src/components.ts",
+    "./db": "./src/db.ts",
+    "./llms": "./src/llms.ts",
+    "./crypto": "./src/crypto.ts"
+  },
   "devDependencies": {
     "@types/express": "^5.0.3",
     "@types/node": "^24.2.0",
@@ -29,11 +30,8 @@
     "@langchain/google-genai": "^0.2.16",
     "@langchain/langgraph": "^0.2.74",
     "@langchain/ollama": "^0.2.3",
-    "cheerio": "^1.1.0",
+    "@repo/db": "^1.0.0",
     "dotenv": "^17.2.0",
-    "execa": "^9.6.0",
-    "express": "^5.1.0",
-    "extensionless": "^1.9.9",
     "langchain": "^0.3.30",
     "mysql2": "^3.14.3",
     "ollama": "^0.5.16",

@@ -3,13 +3,28 @@
   "ui": "tui",
   "tasks": {
     "ui#build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "@repo/db#build"  ],
       "outputs": ["./.next/**", "./.next/cache/**"],
       "outputLogs": "full"
     },
+    "api#build": {
+      "dependsOn": ["^build","@repo/core#build"],
+      "outputs": ["./build/**"],
+      "outputLogs": "full"
+    },
     "core#build": {
+      "dependsOn": ["^build","@repo/db#build"],
+      "outputs": ["./build/**"],
+      "outputLogs": "full"
+    },
+    "@repo/db#build": {
       "dependsOn": ["^build"],
-      "outputs": ["../build/**"],
+      "outputs": ["./build/**"],
+      "outputLogs": "full"
+    },
+    "@repo/core#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["./build/**"],
       "outputLogs": "full"
     },
     "check-types": {

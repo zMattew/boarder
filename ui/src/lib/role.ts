@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { auth } from "./auth";
-import { getMemberRoleFromCookie } from "#/db/handler";
+import { getMemberRoleFromCookie } from "@repo/db";
 
 export async function getMemberRole() {
     const session = await auth();

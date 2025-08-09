@@ -1,7 +1,7 @@
 "use server"
 
-import { promptComponent } from "#/core/src/agent"
-import client from "#/db/client"
+import { promptComponent } from "@repo/core/agent"
+import client from "@repo/db/client"
 import { getMemberRole } from "./role"
 
 export async function addComponent(name: string, sourceId: string, query: string, prompt: string[], viewId: string, requiredKeys: string[] = [], description?: string) {

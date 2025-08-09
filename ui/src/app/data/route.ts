@@ -1,7 +1,7 @@
-import { dbEncryptedPool } from "#/core/src/db";
+import { dbEncryptedPool } from "@repo/core/db";
 import { auth } from "@/lib/auth";
 import { NextRequest } from "next/server";
-import client from "#/db/client";
+import client from "@repo/db/client";
 
 export async function POST(req: NextRequest) {
     try {

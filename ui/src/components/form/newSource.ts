@@ -1,6 +1,6 @@
 "use server"
-import { validateUrl } from '#/utils/url';
 import { addSource } from '@/lib/source';
+import { validateUrl } from '../utils/url';
 
 export async function createSource(formData: FormData) {
     const name = formData.get("name") as string;
