@@ -41,7 +41,7 @@ RUN adduser --system --uid 1001 nextjs
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/ui/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/ui/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/ui/.next/static ./static
+COPY --from=builder --chown=nextjs:nodejs /app/ui/.next/static ./ui/.next/static
 
 USER nextjs
 
