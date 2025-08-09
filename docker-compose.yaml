@@ -14,12 +14,17 @@ services:
     build:
       context: ./
       dockerfile: ./ui/Dockerfile
+    ports: 
+      - 3000:3000
     depends_on:
       - db
-  agent:
+    
+  api:
     build:
       context: ./
-      dockerfile: ./core/Dockerfile
+      dockerfile: ./api/Dockerfile
+    ports: 
+      - 3001:3001
     depends_on:
       - db
 volumes:

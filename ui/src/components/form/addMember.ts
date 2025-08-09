@@ -1,7 +1,7 @@
 "use server"
 
 import client from "@repo/db/client";
-import { TeamRole } from "@prisma/client";
+import { TeamRole } from "@repo/db/client";
 
 export async function addMember(formData: FormData) {
     const projectId = formData.get("projectId") as string

@@ -1,19 +1,18 @@
 
 import { tool } from "@langchain/core/tools"
-import { dbIntrospection, testSQLQuery } from "./db"
+import { dbIntrospection, testSQLQuery } from "./db.ts"
 import { z } from "zod"
-import Components from "./components"
+import Components from "./components.ts"
 /* import readline from "readline/promises" */
 import { initChatModel } from "langchain/chat_models/universal";
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { MemorySaver } from "@langchain/langgraph-checkpoint"
-import { RunnableConfig } from "@langchain/core/runnables"
+import type { RunnableConfig } from "@langchain/core/runnables"
 import { SystemMessage } from "@langchain/core/messages"
-import { getLLM } from "../../db/handler"
-import { decrypt } from "./crypto"
-import { availableLLMs } from './llms';
-import { Providers } from "@prisma/client"
-
+import { getLLM } from "@repo/db/esm.handler"
+import { decrypt } from "./crypto.ts"
+import { availableLLMs } from './llms.ts';
+import type {Providers}  from "@repo/db/esm"
 const getSchema = tool(async (input: Record<string, any>, config: RunnableConfig) => {
     const sourceId = config.configurable?.sourceId
     return await dbIntrospection(sourceId)

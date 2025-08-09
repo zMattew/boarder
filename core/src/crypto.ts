@@ -1,6 +1,6 @@
 import fs from "fs/promises"
-import dotenv from "dotenv"
-dotenv.config({ path: "../.env", debug: true })
+import {config} from "dotenv"
+config({ path: "../.env", debug: true })
 export async function encrypt(value: string) {
     const key = Buffer.from(process.env.PV_KEY as string, "hex");
 

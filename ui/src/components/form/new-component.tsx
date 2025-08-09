@@ -1,6 +1,6 @@
 "use client";
 import { Combobox } from "../combobox";
-import { Providers } from "@prisma/client";
+import type { Providers } from "@repo/db/client";
 import { useState } from "react";
 import { Textarea } from "../shadcn/textarea";
 import { Button } from "../shadcn/button";

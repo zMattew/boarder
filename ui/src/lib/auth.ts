@@ -1,7 +1,5 @@
 import NextAuth from "next-auth"
-import { PrismaAdapter } from "@auth/prisma-adapter"
 import authConfig from "@/auth.config"
-import client from "@repo/db/client"
 import type { Provider } from "next-auth/providers"
 import GitHub from "next-auth/providers/github"
 import Nodemailer from "next-auth/providers/nodemailer"
@@ -11,7 +9,6 @@ import LoginEmail from "@/components/emails/login"
 
 export const providers: Provider[] = [
     GitHub,
-
     Nodemailer({
         server: {
             host: process.env.SMTP_HOST,
@@ -61,8 +58,6 @@ export const providerMap = providers
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
     ...authConfig,
-    adapter: PrismaAdapter(client),
-    session: { strategy: "jwt" },
     providers: providers,
 })
 
