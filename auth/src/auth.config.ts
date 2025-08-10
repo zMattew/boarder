@@ -1,11 +1,8 @@
-import { PrismaAdapter } from "@auth/prisma-adapter"
-import client from "@repo/db/client"
 import type { NextAuthConfig } from "next-auth"
-
+import type { ExpressAuthConfig } from "@auth/express"
 
 export default {
     providers: [],
-    adapter: PrismaAdapter(client),
     session: { strategy: "jwt" },
     pages: {
         signIn: "/login",
@@ -25,5 +22,5 @@ export default {
             return baseUrl + "/home"
         }
     }
-} satisfies NextAuthConfig
+} satisfies NextAuthConfig | ExpressAuthConfig
 

@@ -1,0 +1,12 @@
+{
+    "extends": "@repo/tsconfig",
+    "compilerOptions": {
+        "outDir": "./build/src",
+        "jsx": "react-jsx",
+        "allowArbitraryExtensions": true,
+        "resolvePackageJsonExports": true
+    },
+    "include": [
+        "src"
+    ]
+}
