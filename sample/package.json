@@ -2,7 +2,6 @@
   "name": "sample",
   "version": "1.0.0",
   "main": "fake.js",
-  "type": "module",
   "prisma": {
     "schema": "schema.prisma"
   },

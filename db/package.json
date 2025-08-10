@@ -9,10 +9,26 @@
     "build": "npx prisma generate && tsc"
   },
   "exports": {
-    ".": "./src/handler.ts",
-    "./client": "./src/client.ts",
-    "./esm": "./src/esm.ts",
-    "./esm.handler": "./src/esm.handler.ts"
+    ".": {
+      "default": "./src/handler.ts",
+      "node" : "./build/src/handler.js",
+      "types": "./build/src/handler.d.ts"
+    },
+    "./client": {
+      "default": "./src/client.ts",
+      "node" : "./build/src/client.js",
+      "types": "./build/src/client.d.ts"
+    },
+    "./esm.handler": {
+      "default": "./src/esm.handler.ts",
+      "node" : "./build/src/esm.handler.js",
+      "types": "./build/src/esm.handler.d.ts"
+    },
+    "./esm": {
+      "default": "./src/esm.ts",
+      "node" : "./build/src/esm.js",
+      "types": "./build/src/esm.d.ts"
+    }
   },
   "devDependencies": {
     "prisma": "^6.13.0",
