@@ -14,11 +14,36 @@
   "license": "ISC",
   "description": "",
   "exports": {
-    "./agent": "./src/agent.ts",
-    "./components": "./src/components.ts",
-    "./db": "./src/db.ts",
-    "./llms": "./src/llms.ts",
-    "./crypto": "./src/crypto.ts"
+    "./agent": {
+      "default": "./src/agent.ts",
+      "types": "./src/build/agent.d.ts",
+      "require":"./src/build/agent.js",
+      "node": "./src/build/agent.js"
+    },
+    "./components": {
+      "default": "./src/components.ts",
+      "types": "./src/build/components.d.ts",
+      "require":"./src/build/components.js",
+      "node": "./src/build/components.js"
+    },
+    "./db": {
+      "default": "./src/db.ts",
+      "types": "./src/build/db.d.ts",
+      "require":"./src/build/db.js",
+      "node": "./src/build/db.js"
+    },
+    "./llms": {
+      "default": "./src/llms.ts",
+      "types": "./src/build/llms.d.ts",
+      "require":"./src/build/llms.js",
+      "node": "./src/build/llms.js"
+    },
+    "./crypto": {
+      "default": "./src/crypto.ts",
+      "types": "./src/build/crypto.d.ts",
+      "require":"./src/build/crypto.js",
+      "node": "./src/build/crypto.js"
+    }
   },
   "devDependencies": {
     "@repo/tsconfig": "*",
