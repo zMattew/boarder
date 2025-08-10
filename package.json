@@ -16,7 +16,8 @@
     "ui",
     "api",
     "tsconfig",
-    "db"
+    "db",
+    "auth"
   ],
   "author": "",
   "license": "ISC",

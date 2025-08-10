@@ -1,7 +1,3 @@
-import NextAuth from "next-auth"
-import authConfig from "@/auth.config"
-
-export const { auth, handlers, signIn, signOut } = NextAuth({
-    ...authConfig
-})
-
+import {nextAuth} from "@repo/auth/middleware"
+export * from "@repo/auth/middleware"
+export const {auth,handlers,signIn,signOut} = {...nextAuth}

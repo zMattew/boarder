@@ -3,12 +3,13 @@
   "ui": "tui",
   "tasks": {
     "ui#build": {
-      "dependsOn": ["^build", "@repo/db#build","@repo/core#build"],
+      "dependsOn": ["^build", "@repo/db#build","@repo/auth#build","@repo/core#build"],
       "outputs": ["./.next/**", "./.next/cache/**"],
-      "outputLogs": "full"
+      "outputLogs": "full",
+      "env": ["DATABASE_URL"]
     },
     "api#build": {
-      "dependsOn": ["^build","@repo/db#build","@repo/core#build","@repo/tsconfig#build"],
+      "dependsOn": ["^build","@repo/db#build","@repo/auth#build","@repo/core#build","@repo/tsconfig#build"],
       "outputs": ["./build/**"],
       "outputLogs": "full"
     },
@@ -17,10 +18,14 @@
       "outputs": ["./build/**"],
       "outputLogs": "full"
     },
+    "auth#build":{
+      "dependsOn": ["^build","@repo/db#build"]
+    },
     "@repo/db#build": {
       "dependsOn": ["^build"],
       "outputs": ["./build/**"],
-      "outputLogs": "full"
+      "outputLogs": "full",
+      "env": ["DATABASE_URL"]
     },
     "@repo/core#build": {
       "dependsOn": ["^build"],
