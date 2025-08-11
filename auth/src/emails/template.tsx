@@ -1,8 +1,9 @@
 import { Html } from "@react-email/html"
 import { Tailwind } from "@react-email/tailwind"
 import { Container } from "@react-email/container"
+import type React from "react";
 
-export default function EmailTemplate({ children}:{children:any}) {
+export default function EmailTemplate({ children}:{children:React.ReactNode}) {
     return (
         <Html>
             <Tailwind>
