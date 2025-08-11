@@ -3,5 +3,6 @@
     "compilerOptions": {
         "outDir": "./build/src",
     },
-    "include": ["src"]
+    "include": ["src"],
+    "exclude": ["schema.prisma"]
 }
