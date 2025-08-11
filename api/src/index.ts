@@ -5,6 +5,7 @@ import { getSession } from "@repo/auth/express"
 import authConfig from "@repo/auth/config"
 import { getMemberRoleFromCookie } from "@repo/db/esm.handler"
 import cookieParser from "cookie-parser"
+import "dotenv/config"
 const app = express();
 app.use(cookieParser())
 export async function authSession(req: Request, res: Response, next: NextFunction) {

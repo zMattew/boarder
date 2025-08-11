@@ -8,7 +8,6 @@ import { render } from '@react-email/components'
 import LoginEmail from "./emails/login.tsx"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import client from "@repo/db/client"
-import "dotenv/config"
 
 export const providers: Provider[] = [
     GitHub,
@@ -61,7 +60,6 @@ export const providerMap = providers
 
 export const nextAuth = NextAuth({
     ...authConfig,
-    secret:process.env.AUTH_SECRET,
     adapter: PrismaAdapter(client),
     providers: providers,
 })
