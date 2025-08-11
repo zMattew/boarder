@@ -41,6 +41,7 @@ services:
     depends_on:
       - db
     environment:
+        NEXT_PUBLIC_URL: "127.0.0.1"
         DATABASE_URL: ""
         PV_KEY: ""
         AUTH_SECRET: ""
