@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsc --watch",
     "build": "tsc"
   },
   "keywords": [],
@@ -14,7 +15,6 @@
     "@auth/express": "^0.11.0",
     "@auth/prisma-adapter": "^2.10.0",
     "@react-email/components": "^0.4.0",
-    "dotenv": "^17.2.1",
     "next-auth": "^5.0.0-beta.29"
   },
   "exports": {
@@ -25,7 +25,7 @@
     },
     "./config": {
       "node": "./build/src/auth.config.js",
-      "import":"./src/auth.config.ts",
+      "import": "./src/auth.config.ts",
       "types": "./build/src/auth.config.d.ts"
     },
     "./middleware": {
@@ -40,6 +40,8 @@
     }
   },
   "devDependencies": {
-    "@repo/tsconfig": "^0.0.0"
+    "@repo/tsconfig": "^0.0.0",
+    "@types/nodemailer": "^6.4.17",
+    "@types/react": "^19.1.9"
   }
 }

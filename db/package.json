@@ -6,7 +6,8 @@
   "author": "",
   "type": "module",
   "scripts": {
-    "build": "npx prisma generate && tsc"
+    "build": "npx prisma generate && tsc",
+    "dev": "tsc --watch"
   },
   "exports": {
     ".": {
