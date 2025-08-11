@@ -60,7 +60,6 @@ export const providerMap = providers
 
 export const auth = ExpressAuth({
     ...authConfig,
-    secret:process.env.AUTH_SECRET,
     adapter: PrismaAdapter(client),
     providers: providers,
 })
