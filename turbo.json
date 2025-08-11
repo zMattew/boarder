@@ -1,7 +1,6 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "ui": "tui",
-  "globalEnv": ["DATABASE_URL","AUTH_SECRET"],
   "tasks": {
     "ui#build": {
       "dependsOn": ["^build", "@repo/db#build","@repo/auth#build","@repo/core#build"],
@@ -28,7 +27,6 @@
       "dependsOn": ["^build"],
       "outputs": ["./build/**"],
       "outputLogs": "full",
-      "inputs": ["$TURBO_DEFAULT$","./.env"],
       "env": ["DATABASE_URL"]
     },
     "@repo/core#build": {
@@ -45,11 +43,9 @@
     "@repo/tsconfig#build":{ },
     "@repo/db#dev":{
       "outputs": ["./build/**"],
-      "inputs": ["$TURBO_DEFAULT$","./.env"],
       "env": ["DATABASE_URL"]
     },
     "@repo/auth#dev":{
-      "inputs": ["$TURBO_DEFAULT$","./.env"],
       "env": ["AUTH_SECRET"],
       "outputs": ["./build/**"]
     },
