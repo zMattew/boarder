@@ -1,7 +1,5 @@
 import path from "node:path";
 import type { PrismaConfig } from "prisma";
-
-// import your .env file
 import "dotenv/config";
 
 export default {
