@@ -3,4 +3,4 @@
 build
 agent
 .turbo
-docker-compose.yaml
+docker-compose.local.yaml
