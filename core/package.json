@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
+    "dev": "tsc --watch",
     "start": "tsc && node ../build/core/src/index.js",
     "crypto": "tsc && node ../build/core/src/crypto.js",
     "agent": "tsc && node ../build/core/src/agent.js",
@@ -17,31 +18,31 @@
     "./agent": {
       "default": "./src/agent.ts",
       "types": "./src/build/agent.d.ts",
-      "require":"./src/build/agent.js",
+      "require": "./src/build/agent.js",
       "node": "./src/build/agent.js"
     },
     "./components": {
       "default": "./src/components.ts",
       "types": "./src/build/components.d.ts",
-      "require":"./src/build/components.js",
+      "require": "./src/build/components.js",
       "node": "./src/build/components.js"
     },
     "./db": {
       "default": "./src/db.ts",
       "types": "./src/build/db.d.ts",
-      "require":"./src/build/db.js",
+      "require": "./src/build/db.js",
       "node": "./src/build/db.js"
     },
     "./llms": {
       "default": "./src/llms.ts",
       "types": "./src/build/llms.d.ts",
-      "require":"./src/build/llms.js",
+      "require": "./src/build/llms.js",
       "node": "./src/build/llms.js"
     },
     "./crypto": {
       "default": "./src/crypto.ts",
       "types": "./src/build/crypto.d.ts",
-      "require":"./src/build/crypto.js",
+      "require": "./src/build/crypto.js",
       "node": "./src/build/crypto.js"
     }
   },
@@ -57,7 +58,6 @@
     "@langchain/langgraph": "^0.2.74",
     "@langchain/ollama": "^0.2.3",
     "@repo/db": "^1.0.0",
-    "dotenv": "^17.2.0",
     "langchain": "^0.3.30",
     "mysql2": "^3.14.3",
     "ollama": "^0.5.16",
