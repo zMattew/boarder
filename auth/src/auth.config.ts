@@ -1,8 +1,10 @@
 import type { NextAuthConfig } from "next-auth"
 import type { ExpressAuthConfig } from "@auth/express"
+import { getProvidersFromEnv } from "./providers.ts"
 
+const availableEnvProviders = getProvidersFromEnv()
 export default {
-    providers: [],
+    providers: availableEnvProviders,
     session: { strategy: "jwt" },
     pages: {
         signIn: "/login",

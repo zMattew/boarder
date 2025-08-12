@@ -1,7 +1,6 @@
-import {ExpressAuth} from "@auth/express"
+import { ExpressAuth } from "@auth/express"
 import authConfig from "./auth.config.ts"
 import type { Provider } from "@auth/express/providers"
-import GitHub from "@auth/express/providers/github"
 import Nodemailer from "@auth/express/providers/nodemailer"
 import { createTransport } from "nodemailer"
 import { render } from '@react-email/components'
@@ -10,7 +9,6 @@ import { PrismaAdapter } from "@auth/prisma-adapter"
 import client from "@repo/db/esm"
 
 export const providers: Provider[] = [
-    GitHub,
     Nodemailer({
         server: {
             host: process.env.SMTP_HOST,
@@ -61,7 +59,7 @@ export const providerMap = providers
 export const auth = ExpressAuth({
     ...authConfig,
     adapter: PrismaAdapter(client),
-    providers: providers,
+    providers: [...authConfig.providers, ...providers],
 })
 export * from "@auth/express"
 

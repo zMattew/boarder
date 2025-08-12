@@ -18,20 +18,20 @@
     "next-auth": "^5.0.0-beta.29"
   },
   "exports": {
-    ".": {
-      "node": "./build/src/index.js",
-      "import": "./src/index.ts",
-      "types": "./build/src/index.d.ts"
+    "./next": {
+      "node": "./build/src/next.js",
+      "import": "./src/next.ts",
+      "types": "./build/src/next.d.ts"
     },
     "./config": {
       "node": "./build/src/auth.config.js",
       "import": "./src/auth.config.ts",
       "types": "./build/src/auth.config.d.ts"
     },
-    "./middleware": {
-      "node": "./build/src/index.middleware.js",
-      "import": "./src/index.middleware.ts",
-      "types": "./build/src/index.middleware.d.ts"
+    "./edge": {
+      "node": "./build/src/edge.js",
+      "import": "./src/edge.ts",
+      "types": "./build/src/edge.d.ts"
     },
     "./express": {
       "node": "./build/src/express.js",
