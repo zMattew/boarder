@@ -1,5 +1,15 @@
 name: ai-board
 services:
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: ./Dockerfile 
+    depends_on:
+      - ui
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always
   db:
     image: postgres:latest
     environment:
