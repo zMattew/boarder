@@ -24,3 +24,13 @@ export function getProvidersFromEnv() {
         .map((v) => availableProviders[v as keyof BuiltInProviders]!);
     return availableEnvProviders;
 }
+export const providerMap = getProvidersFromEnv()
+    .map((provider) => {
+        if (typeof provider === "function") {
+            const providerData = provider()
+            return { id: providerData.id, name: providerData.name }
+        } else {
+            return { id: provider.id, name: provider.name }
+        }
+    })
+    .filter((provider) => provider.id !== "nodemailer")
