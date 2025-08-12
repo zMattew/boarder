@@ -7,6 +7,7 @@
   "type": "module",
   "scripts": {
     "build": "npx prisma generate && tsc",
+    "deploy": "npx prisma migrate deploy",
     "dev": "tsc --watch"
   },
   "exports": {
