@@ -23,6 +23,11 @@
       "import": "./src/next.ts",
       "types": "./build/src/next.d.ts"
     },
+    "./providers": {
+      "node": "./build/src/providers.js",
+      "import": "./src/providers.ts",
+      "types": "./build/src/providers.d.ts"
+    },
     "./config": {
       "node": "./build/src/auth.config.js",
       "import": "./src/auth.config.ts",
