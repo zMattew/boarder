@@ -3,9 +3,9 @@ services:
   db:
     image: postgres:latest
     environment:
-      POSTGRES_USER: ""
-      POSTGRES_PASSWORD: ""
-      POSTGRES_DB: ""
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "postgres"
     ports:
       - "5433:5432"
     volumes:
@@ -19,7 +19,10 @@ services:
     depends_on:
       - db
     environment:
-        DATABASE_URL: ""
+        AUTH_TRUST_HOST: true
+        AUTH_URL: "https://localhost/api/auth"
+        NEXT_PUBLIC_URL: "https://localhost"
+        DATABASE_URL: "postgresql://postgres:password@db:5432/postgres"
         PV_KEY: ""
         AUTH_SECRET: ""
         AUTH_GITHUB_ID: ""
@@ -41,8 +44,8 @@ services:
     depends_on:
       - db
     environment:
-        NEXT_PUBLIC_URL: "127.0.0.1"
-        DATABASE_URL: ""
+        AUTH_TRUST_HOST: true
+        DATABASE_URL: "postgresql://postgres:password@db:5432/postgres"
         PV_KEY: ""
         AUTH_SECRET: ""
         AUTH_GITHUB_ID: ""
