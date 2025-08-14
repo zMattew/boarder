@@ -10,16 +10,20 @@ services:
       - "80:80"
       - "443:443"
     restart: always
+    networks:
+      - ui
   db:
     image: postgres:latest
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "password"
       POSTGRES_DB: "postgres"
-    ports:
-      - "5433:5432"
+    expose:
+      - 5432
     volumes:
       - data:/var/lib/postgresql/data
+    networks:
+      - db
   ui:
     build:
       context: ./
@@ -27,6 +31,7 @@ services:
     ports: 
       - 3000:3000
     depends_on:
+      - api
       - db
     environment:
         AUTH_TRUST_HOST: true
@@ -45,6 +50,10 @@ services:
         SMTP_SECRET: ""
         SMTP_REFRESH: ""
         SMTP_ACCESS: ""
+    networks:
+      - ui
+      - db
+      - ollama # if you plan to use a docker deployed ollama ensure to connect to the same network
   api:
     build:
       context: ./
@@ -68,7 +77,16 @@ services:
         SMTP_SECRET: ""
         SMTP_REFRESH: ""
         SMTP_ACCESS: ""
-
+    networks:
+      - db
+      - ollama
 volumes:
   data:
     name: data
+networks:
+  ui: 
+    name: ui
+  db:
+    name: db
+  ollama:
+    external: true # connect the external ollama network 
