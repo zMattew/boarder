@@ -48,7 +48,7 @@ function EditSourceForm(
                 try {
                     const sourceName = formData.get("name") as string;
                     const url = formData.get("connection") as string;
-                    if (!sourceName && url) throw "Nothing changed";
+                    if (!sourceName && !url) throw "Nothing changed";
                     if (!currentProject?.id) throw "Select a project";
                     await editSource(
                         currentProject.id,
