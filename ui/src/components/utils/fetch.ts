@@ -3,7 +3,7 @@ export async function fetchData(componentId: string) {
     body.set("componentId", componentId)
     try {
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/data`, {
+        const response = await fetch(`/data`, {
             method: "POST",
             body: body,
             next: {
@@ -24,7 +24,7 @@ export async function fetchData(componentId: string) {
 export async function revalidateData(componentId: string) {
     const body = new FormData()
     body.set("componentId", componentId)
-    const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/data/revalidate`, {
+    const response = await fetch(`/data/revalidate`, {
         method: "POST",
         body: body,
         next: {
