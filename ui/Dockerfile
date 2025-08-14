@@ -1,4 +1,4 @@
-# syntax=docker.io/docker/dockerfile:1
+# syntax=docker.io/docker/dockerfile:1.7-labs
 
 FROM node:24-alpine AS base
 
@@ -49,4 +49,4 @@ USER nextjs
 # https://nextjs.org/docs/pages/api-reference/config/next-config-js/output
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
-CMD ["node", "./ui/server.js"]
+CMD ["npm", "run", "standalone:start", "-w" , "ui"]
