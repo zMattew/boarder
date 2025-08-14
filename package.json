@@ -8,6 +8,9 @@
   "packageManager": "npm@11.5.2",
   "private": true,
   "scripts": {
+    "ui:start": "npm run standalone:start -w ui",
+    "api:start": "npm run docker:start -w api",
+    "preapi:start": "npm run deploy -w db",
     "start": "tsc && node ./build/core/src/index.js",
     "fake": "tsc && node ../build/sample/fake.js"
   },

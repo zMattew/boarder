@@ -5,6 +5,7 @@
   "scripts": {
     "build": "tsc",
     "start": "tsc && node  ./build/index.js",
+    "docker:start": "node ./build/index.js",
     "check-types": "tsc --noEmit"
   },
   "private": true,
