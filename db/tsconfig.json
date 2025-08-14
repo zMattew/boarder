@@ -4,5 +4,4 @@
         "outDir": "./build/src",
     },
     "include": ["src"],
-    "exclude": ["schema.prisma"]
 }
