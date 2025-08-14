@@ -6,7 +6,7 @@
   "author": "",
   "type": "module",
   "scripts": {
-    "build": "npx prisma generate && tsc",
+    "build": "npx prisma generate && tsc && cp -r ./src/migrations ./build/migrations ",
     "deploy": "npx prisma migrate deploy",
     "dev": "tsc --watch"
   },
