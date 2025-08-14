@@ -30,7 +30,7 @@ async function initAgent(providerId: string, model: string) {
     if (!provider) throw new Error("No llm provider found")
     const apiKey = provider.apiKey ? await decrypt(provider.apiKey) : undefined
     const providerName = availableLLMs[provider.provider as Providers].effectiveName ? availableLLMs[provider.provider as Providers].effectiveName : provider.provider
-    const llm = await initChatModel(model, { modelProvider: providerName, base_url: provider?.url ? provider.url : undefined, apiKey: apiKey ? apiKey : undefined })
+    const llm = await initChatModel(model, { modelProvider: providerName, baseUrl: provider?.url ? provider.url : undefined, apiKey: apiKey ? apiKey : undefined })
     const checkpointer = new MemorySaver();
     return createReactAgent({
         llm,
