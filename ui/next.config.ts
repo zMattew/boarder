@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   output: "standalone",
   experimental: {
     reactCompiler: true,
+    nodeMiddleware: true
   },
   logging: {
     fetches: {
