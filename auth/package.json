@@ -15,6 +15,7 @@
     "@auth/express": "^0.11.0",
     "@auth/prisma-adapter": "^2.10.0",
     "@react-email/components": "^0.4.0",
+    "core-js": "^3.45.0",
     "next-auth": "^5.0.0-beta.29"
   },
   "exports": {
