@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { signIn, auth } from "@/lib/auth";
-import { providerMap } from "@repo/auth/providers";
+import {  oAuthProviderMap } from "@repo/auth/providers";
 import { AuthError } from "next-auth";
 import { Button } from "@/components/shadcn/button";
 import { GalleryVerticalEnd } from "lucide-react";
@@ -39,7 +39,7 @@ export default async function SignInPage({ params }: {
                                 Or
                             </span>
                         </div>
-                        {Object.values(providerMap).map((provider) => (
+                        {Object.values(oAuthProviderMap).map((provider) => (
                             <form
                                 key={provider.id}
                                 action={async () => {
