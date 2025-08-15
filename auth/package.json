@@ -24,9 +24,9 @@
       "types": "./build/src/next.d.ts"
     },
     "./providers": {
-      "node": "./build/src/providers.js",
-      "import": "./src/providers.ts",
-      "types": "./build/src/providers.d.ts"
+      "node": "./build/src/oauth.providers.js",
+      "import": "./src/oauth.providers.ts",
+      "types": "./build/src/oauth.providers.d.ts"
     },
     "./config": {
       "node": "./build/src/auth.config.js",
