@@ -1,8 +1,7 @@
 import type { BuiltInProviders, Provider } from "next-auth/providers";
 import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
-
-export function getProvidersFromEnv() {
+export function getOAuthProvidersFromEnv() {
     const availableProviders: {
         [key in keyof BuiltInProviders]?: Provider;
     } = { "google": Google, "github": GitHub };
@@ -24,7 +23,9 @@ export function getProvidersFromEnv() {
         .map((v) => availableProviders[v as keyof BuiltInProviders]!);
     return availableEnvProviders;
 }
-export const providerMap = getProvidersFromEnv()
+
+
+export const oAuthProviderMap = getOAuthProvidersFromEnv()
     .map((provider) => {
         if (typeof provider === "function") {
             const providerData = provider()
@@ -33,4 +34,3 @@ export const providerMap = getProvidersFromEnv()
             return { id: provider.id, name: provider.name }
         }
     })
-    .filter((provider) => provider.id !== "nodemailer")

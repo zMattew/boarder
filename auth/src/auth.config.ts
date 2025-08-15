@@ -1,10 +1,10 @@
 import type { NextAuthConfig } from "next-auth"
 import type { ExpressAuthConfig } from "@auth/express"
-import { getProvidersFromEnv } from "./providers.ts"
+import { getOAuthProvidersFromEnv } from "./oauth.providers.ts"
 
-const availableEnvProviders = getProvidersFromEnv()
+const availableEnvProviders = getOAuthProvidersFromEnv()
 export default {
-    providers: availableEnvProviders,
+    providers: [ ...availableEnvProviders],
     session: { strategy: "jwt" },
     pages: {
         signIn: "/login",
@@ -22,7 +22,7 @@ export default {
         },
         async redirect({ baseUrl }) {
             return baseUrl + "/home"
-        }
+        },
     }
 } satisfies NextAuthConfig | ExpressAuthConfig
 
