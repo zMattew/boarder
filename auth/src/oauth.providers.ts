@@ -1,6 +1,7 @@
 import type { BuiltInProviders, Provider } from "next-auth/providers";
 import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
+import "core-js/proposals/array-grouping-v2"
 export function getOAuthProvidersFromEnv() {
     const availableProviders: {
         [key in keyof BuiltInProviders]?: Provider;
