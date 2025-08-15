@@ -1,50 +1,44 @@
 import { ExpressAuth } from "@auth/express"
 import authConfig from "./auth.config.ts"
 import type { Provider } from "@auth/express/providers"
-import Nodemailer from "@auth/express/providers/nodemailer"
-import { createTransport } from "nodemailer"
-import { render } from '@react-email/components'
-import LoginEmail from "./emails/login.tsx"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import client from "@repo/db/esm"
+import Credentials from "@auth/core/providers/credentials"
+import { decrypt, encrypt } from "@repo/core/crypto"
 
-export const providers: Provider[] = [
-    Nodemailer({
-        server: {
-            host: process.env.SMTP_HOST,
-            port: parseInt(process.env.SMTP_PORT ?? "0"),
-            secure: true,
-            auth: {
-                type: "OAuth2",
-                clientId: process.env.SMTP_CLIENT_ID,
-                clientSecret: process.env.SMTP_SECRET,
-                accessToken: process.env.SMTP_ACCESS,
-                refreshToken: process.env.SMTP_REFRESH,
-                user: process.env.SMTP_EMAIL,
+const providers: Provider[] = []
+providers.push(
+    Credentials({
+        type: "credentials",
+        credentials: {
+            email: {
+                type: "email"
+            },
+            password: {
+                type: "password"
             }
         },
-        from: process.env.SMTP_EMAIL,
-        async sendVerificationRequest({
-            identifier: email,
-            url,
-            provider: { server, from },
-        }) {
-            const { host } = new URL(url)
-            const transport = createTransport(server)
-            const result = await transport.sendMail({
-                to: email,
-                from: from,
-                subject: `Sign in to ${host}`,
-                html: await render(LoginEmail({ url })),
-            })
-            const failed = result.rejected.concat(result.pending).filter(Boolean)
-            if (failed.length) {
-                throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`)
-            }
-        },
-    })
-]
+        async authorize({ email, password }) {
+            let user = null
 
+            const pwHash = await encrypt(password as string)
+
+            user = await client.user.findUnique({ where: { email: email as string } })
+            if (!user) {
+                return user = await client.user.create({ data: { email: email as string, password: pwHash } })
+            }
+            const savedPass = user.password ? await decrypt(user.password) : ""
+            if (savedPass == password) {
+               delete (user as Omit<typeof user, "password"> & { password?: string | null })?.password
+                return user as Omit<typeof user, "password">
+            } else user = undefined
+            if (!user) {
+                throw new Error("Invalid credentials.")
+            }
+
+            return user
+        }
+    }))
 export const auth = ExpressAuth({
     ...authConfig,
     adapter: PrismaAdapter(client),
