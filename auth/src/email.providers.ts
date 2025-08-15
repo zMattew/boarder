@@ -1,7 +1,7 @@
 import { NodemailerConfig } from "@auth/core/providers/nodemailer"
 import { Theme } from "@auth/core/types"
 import { createTransport } from "nodemailer"
-import LoginEmail from "./emails/login"
+import LoginEmail from "./emails/login.tsx"
 import { render } from "@react-email/components"
 
 export async function getEmailProviderFromEnv() {
