@@ -40,7 +40,7 @@ async function initAgent(providerId: string, model: string) {
         responseFormat: z.object({
             name: z.enum(["chart","table"]).describe("Name of the component from the given components list"),
             description: z.string().describe("Brief description of the serve to the user"),
-            query: z.string().describe("Query to retrive the data from the database."),
+            query: z.string().describe("Query to retrive the data from the database. Without the ending closure ';'"),
             keys: z.array(z.string().describe("Required key requested by choosen component.It must be a key found inside the query output fields.").describe("Required keys requested by choosen component having the same length. They must be keys found inside the query output fields.")).default([]).optional()
         }),
         prompt: new SystemMessage(`You are an assistant that generate the component metadata based on user input.
