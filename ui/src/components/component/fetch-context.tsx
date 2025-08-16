@@ -16,7 +16,7 @@ const fetchContext = createContext({
 export function FetcherProvider({ id, children }: { id: string, children: ReactNode }) {
     const [pagination, setPagination] = useState({
         skip: 0,
-        limit: 25
+        limit: 50
     })
     const { data, refetch, isFetching } = useSuspenseQuery({
         queryKey: [id, pagination.skip, pagination.limit],
