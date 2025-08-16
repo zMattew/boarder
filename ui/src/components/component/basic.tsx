@@ -3,10 +3,8 @@ import { AvailableComponents } from "@repo/core/components";
 import Chart from "../chart";
 import { DataTable } from "../data-table";
 import { useComponent } from "./context";
-import { useFetcher } from "./fetch-context";
 
 export function BasicComponent() {
-    const { data } = useFetcher()
     const { component } = useComponent()
     let choosenComponent;
     switch (component.name as AvailableComponents) {
@@ -16,7 +14,7 @@ export function BasicComponent() {
             );
             break;
         case "chart":
-            choosenComponent = <Chart type={data.type} data={data.rows} keys={component.keys} />
+            choosenComponent = <Chart />
             break;
     }
     return choosenComponent
