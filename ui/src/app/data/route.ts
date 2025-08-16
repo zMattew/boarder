@@ -14,15 +14,17 @@ export async function POST(req: NextRequest) {
         try {
             const { client: db, protocol } = await dbEncryptedPool(component.source.connectionUrl)
             let response = {}
+            const skip = parseInt(reqData.get("skip")?.toString() ?? "0")
+            const limit = parseInt(reqData.get("limit")?.toString() ?? "25")
             switch (protocol) {
                 case "postgres":
                 case 'postgresql':
-                    const { rows, fields } = await db.query(component.query)
+                    const { rows, fields } = await db.query(`${component.query} LIMIT $1 OFFSET $2`, [limit, skip])
                     response = { rows: rows, type: fields }
                     db.release()
                     break
                 case 'mysql':
-                    const [res, typ] = await db.query(component.query)
+                    const [res, typ] = await db.query(`${component.query} LIMIT $1 OFFSET $2`, [limit, skip]) // to test
                     response = { rows: res, type: typ }
                     db.end()
                     break

@@ -1,6 +1,8 @@
-export async function fetchData(componentId: string) {
+export async function fetchData(componentId: string,skip:number,limit:number) {
     const body = new FormData()
     body.set("componentId", componentId)
+    body.set("skip",skip.toString())
+    body.set("limit",limit.toString())
     try {
 
         const response = await fetch(`/data`, {
@@ -13,7 +15,7 @@ export async function fetchData(componentId: string) {
         })
         if (!response.ok) throw "Error fetching data"
         const data = await response.json()
-        return data
+        return data as {rows:Record<string,unknown>[],type:{name:string}[]}
     }
     catch (error) {
         console.log(error)

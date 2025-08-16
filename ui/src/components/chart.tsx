@@ -14,11 +14,11 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "./shadcn/chart";
-import type { FieldDef } from "pg";
 import { useComponent } from "./component/context";
+import type { ColumnDef } from "@tanstack/react-table";
 
 type DataChartProps<TData> = {
-    type: FieldDef[];
+    type:  ColumnDef<TData>[];
     data: TData[];
     keys: string[];
 };
@@ -28,13 +28,13 @@ export default function Chart<TData>({
     type,
     keys,
 }: DataChartProps<TData>) {
-    const config = type.filter((t) => keys.find((key) => key == t.name)).reduce(
+    const config = type.filter((t) => keys.find((key) => key == t.header)).reduce(
         (prev, curr) => {
             let val = {};
-            if (keys.find((key) => key == curr.name)) {
+            if (keys.find((key) => key == curr.header)) {
                 val = {
                     ...prev,
-                    [curr.name]: { label: curr.name, color: "#bc34b3" },
+                    [curr.header as string]: { label: curr.header, color: "#bc34b3" },
                 };
             }
             return val;

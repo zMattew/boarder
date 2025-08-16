@@ -7,6 +7,7 @@ import { Loader } from "lucide-react";
 import { Component } from "./component";
 import { useComponent } from "./context";
 import { ErrorBoundary } from "react-error-boundary";
+import { FetcherProvider } from "./fetch-context";
 export function ResizableComponent({ setResizing }: {
     setResizing: (value: boolean) => void;
 }) {
@@ -86,7 +87,9 @@ export function ResizableComponent({ setResizing }: {
                             <Loader className="animate-spin m-auto h-full" />
                         }
                     >
-                        <Component />
+                        <FetcherProvider id={component.id} >
+                            <Component />
+                        </FetcherProvider>
                     </Suspense>
                 </ErrorBoundary>
             </Resizable>
