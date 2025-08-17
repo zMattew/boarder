@@ -3,7 +3,6 @@ import { tool } from "@langchain/core/tools"
 import { dbIntrospection, testSQLQuery } from "./db.ts"
 import { z } from "zod"
 import Components from "./components.ts"
-/* import readline from "readline/promises" */
 import { initChatModel } from "langchain/chat_models/universal";
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { MemorySaver } from "@langchain/langgraph-checkpoint"
@@ -13,6 +12,7 @@ import { getLLM } from "@repo/db/esm.handler"
 import { decrypt } from "./crypto.ts"
 import { availableLLMs } from './llms.ts';
 import type {Providers}  from "@repo/db/esm"
+
 const getSchema = tool(async (input: Record<string, any>, config: RunnableConfig) => {
     const sourceId = config.configurable?.sourceId
     return await dbIntrospection(sourceId)
@@ -36,6 +36,7 @@ async function initAgent(providerId: string, model: string) {
         llm,
         tools: [getSchema, testDbQuery, getComponents],
         checkpointer,
+
         checkpointSaver: checkpointer,
         responseFormat: z.object({
             name: z.enum(["chart","table"]).describe("Name of the component from the given components list"),
@@ -77,29 +78,3 @@ export async function promptComponent(llmId: string, model: string, prompt: stri
     console.log(response.messages)
     return response.structuredResponse as { name: string, description: string, query: string, keys?: string[] }
 }
-
-
-/* async function main() {
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-    });
-    const session = Buffer.from(crypto.getRandomValues(new Uint8Array(16))).toString("hex")
-    const sourceId = "cmcyw42ry0000uvjsfl4ujkm1"
-    try {
-        while (true) {
-            const message = await rl.question("\nQuery: ");
-            if (message.toLowerCase() === "quit") {
-                break;
-            }
-            if (message.toLowerCase() === "clear") {
-                console.log("Hystory cleaned")
-            } else await promptComponent("cmdizdeuo0001uvzs4fdem8yk", message, sourceId, session);
-        }
-    } finally {
-        rl.close();
-    }
-}
-await main()
- */
-
