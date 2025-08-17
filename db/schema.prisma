@@ -28,7 +28,7 @@ model Component {
     meta        Json?
     viewId      String?
     view        View?    @relation(fields: [viewId], references: [id], onDelete: Cascade)
-    prompt      String[]
+    threadId    String?
 }
 
 model View {

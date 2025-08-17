@@ -4,7 +4,7 @@ import { promptComponent } from "@repo/core/agent"
 import client from "@repo/db/client"
 import { getMemberRole } from "./role"
 
-export async function addComponent(name: string, sourceId: string, query: string, prompt: string[], viewId: string, requiredKeys: string[] = [], description?: string) {
+export async function addComponent(name: string, sourceId: string, query: string, threadId: string, viewId: string, requiredKeys: string[] = [], description?: string) {
     const userRole = await getMemberRole()
     if (userRole == "viewer") throw "You can't do this action"
     return await client.component.create({
@@ -12,7 +12,7 @@ export async function addComponent(name: string, sourceId: string, query: string
             name,
             query,
             description,
-            prompt: { set: prompt },
+            threadId,
             view: {
                 connect: {
                     id: viewId
@@ -44,15 +44,15 @@ export async function prompt(formData: FormData) {
     const prompt = formData.get("prompt") as string;
     const session = Buffer.from(crypto.getRandomValues(new Uint8Array(16))).toString("hex");
 
-    const response = await promptComponent(provider, model, prompt, source, session);
+    const {component,threadId} = await promptComponent(provider, model, prompt, source, session);
 
     return await addComponent(
-        response.name,
+        component.name,
         source,
-        response.query,
-        [prompt],
+        component.query,
+        threadId,
         view,
-        response.keys,
-        response.description
+        component.keys,
+        component.description
     );
 }

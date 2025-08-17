@@ -7,11 +7,15 @@ import { initChatModel } from "langchain/chat_models/universal";
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { MemorySaver } from "@langchain/langgraph-checkpoint"
 import type { RunnableConfig } from "@langchain/core/runnables"
+import { RedisChatMessageHistory } from "@langchain/redis"
+import { Redis } from "ioredis"
 import { SystemMessage } from "@langchain/core/messages"
 import { getLLM } from "@repo/db/esm.handler"
 import { decrypt } from "./crypto.ts"
 import { availableLLMs } from './llms.ts';
-import type {Providers}  from "@repo/db/esm"
+import type { Providers } from "@repo/db/esm"
+import { BufferMemory } from "langchain/memory";
+import { BaseStore } from "@langchain/core/stores";
 
 const getSchema = tool(async (input: Record<string, any>, config: RunnableConfig) => {
     const sourceId = config.configurable?.sourceId
@@ -24,27 +28,9 @@ const testDbQuery = tool(async ({ query }, config: RunnableConfig) => {
 }, { name: "test_query", description: "Try to execute the query to catch any error", schema: z.object({ query: z.string().describe("safe SQL query") }) })
 const getComponents = tool(async () => JSON.stringify(Components), { name: "get_components_list", description: "Retrive the available components", schema: z.object({}) })
 
+const client = new Redis(process.env.REDIS_URL as string);
 
-async function initAgent(providerId: string, model: string) {
-    const provider = await getLLM(providerId)
-    if (!provider) throw new Error("No llm provider found")
-    const apiKey = provider.apiKey ? await decrypt(provider.apiKey) : undefined
-    const providerName = availableLLMs[provider.provider as Providers].effectiveName ? availableLLMs[provider.provider as Providers].effectiveName : provider.provider
-    const llm = await initChatModel(model, { modelProvider: providerName, baseUrl: provider?.url ? provider.url : undefined, apiKey: apiKey ? apiKey : undefined })
-    const checkpointer = new MemorySaver();
-    return createReactAgent({
-        llm,
-        tools: [getSchema, testDbQuery, getComponents],
-        checkpointer,
-
-        checkpointSaver: checkpointer,
-        responseFormat: z.object({
-            name: z.enum(["chart","table"]).describe("Name of the component from the given components list"),
-            description: z.string().describe("Brief description of the serve to the user"),
-            query: z.string().describe("Query to retrive the data from the database. Without the ending closure ';'"),
-            keys: z.array(z.string().describe("Required key requested by choosen component.It must be a key found inside the query output fields.").describe("Required keys requested by choosen component having the same length. They must be keys found inside the query output fields.")).default([]).optional()
-        }),
-        prompt: new SystemMessage(`You are an assistant that generate the component metadata based on user input.
+const COMPONENT_SYSTEM_PROMT = `You are an assistant that generate the component metadata based on user input.
     The user will ask to create a type of component with the data that can be found in the database. 
     Your role is to fullfil every needed aspect from the component choose to the query to execute to retrive data:
         - Before generating the query you must be aware of the current database schema.
@@ -60,21 +46,47 @@ async function initAgent(providerId: string, model: string) {
         1) get_components_list: to retrive components list to choose from
         2) get_database_schema: to retrive the current database schema as pg_dump for generate a query based on user prompt
         3) test_query: use the generated query to test it, if is not successful you must reiterate this tool to adjust the query based on passed error
-    Once you arrived to the end of this cycle you can output the generated query, the choosen component name and a description of it with (if needed) keys choosen from the query output type.
+    Once you arrived to the end of this cycle you can output the generated query, the choosen component name and a description of it with (if needed) keys choosen from the query output type. `
 
-        `)
+async function initAgent(providerId: string, model: string) {
+    const provider = await getLLM(providerId)
+    if (!provider) throw new Error("No llm provider found")
+    const memory = new BufferMemory({
+        chatHistory: new RedisChatMessageHistory({
+            sessionId: new Date().toISOString(),
+            sessionTTL: 300,
+            client,
+        }),
+    })
+    const apiKey = provider.apiKey ? await decrypt(provider.apiKey) : undefined
+    const providerName = availableLLMs[provider.provider as Providers].effectiveName ? availableLLMs[provider.provider as Providers].effectiveName : provider.provider
+    const llm = await initChatModel(model, { modelProvider: providerName, baseUrl: provider?.url ? provider.url : undefined, apiKey: apiKey ? apiKey : undefined, memory })
+    const checkpointer = new MemorySaver();
+    return createReactAgent({
+        llm,
+        tools: [getSchema, testDbQuery, getComponents],
+        checkpointer,
+        checkpointSaver: checkpointer,
+        responseFormat: z.object({
+            name: z.enum(["chart", "table"]).describe("Name of the component from the given components list"),
+            description: z.string().describe("Brief description of the serve to the user"),
+            query: z.string().describe("Query to retrive the data from the database. Without the ending closure ';'"),
+            keys: z.array(z.string().describe("Required key requested by choosen component.It must be a key found inside the query output fields.").describe("Required keys requested by choosen component having the same length. They must be keys found inside the query output fields.")).default([]).optional()
+        }),
+        prompt: new SystemMessage(COMPONENT_SYSTEM_PROMT)
     })
 }
 
 
 export async function promptComponent(llmId: string, model: string, prompt: string, sourceId: string, session: string) {
     const agent = await initAgent(llmId, model)
-    const response = await agent.invoke({ messages: [{ role: "user", content: prompt }] }, { configurable: { sourceId, thread_id: session } })
+
+    const response = await agent.invoke({ messages:{ role: "user", content: prompt } }, { configurable: { sourceId, thread_id: session } })
     /* const output = ""
     for await (const [token, meta] of response) {
         output.concat(output, token.content)
         process.stdout.write(token.content)
     } */
     console.log(response.messages)
-    return response.structuredResponse as { name: string, description: string, query: string, keys?: string[] }
+    return {component:response.structuredResponse,threadId:session} 
 }
