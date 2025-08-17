@@ -2,12 +2,12 @@
 Boarder is an user-friendly web interface for visualize your data in various format. You can connect to your sources and generate a dynamic ui using the power of your own local LLM or usign API.
 
 ## Key features
-- 📚Component builder: connect to your sources and use to define what data to get and in what format in a single prompt.
-- 📱Dynamic UI: zoom, pand your views and drag,drop and resize your components.
+- 📚Component builder: connect to your sources and use Ai to define what data to get and in what format in a single prompt.
+- 📱Dynamic UI: zoom, pan your views and drag,drop and resize your components as you want.
 - 🧩Bring your own LLM: self host or use api to connect to your favourite LLM to start generating your view.
 - 💿Indipendent data: connect your database hosted everywhere and retrieve your own data. 
 - 🤝Team based: create your team and collaborate with your mates.
-- ⚙️Customizable: completly open source clone and modify as you want.
+- ⚙️Customizable: open source, clone and modify as you want.
 
 ## Setup
 Before proceed you need to install [Docker](https://www.docker.com/), [git](https://git-scm.com/downloads) and [OpenSSL](https://openssl-library.org/source/):
@@ -61,9 +61,10 @@ Current version is in beta and need some work to extends features, improve perfo
 - Infinite scroll query
 - Exposed api
 - View embeeding
+- Exposed api
 - Component review
 
 ## Known issue
-- The ui doesn't depends on the api workspace but its planned to be to expose better the core functionality.
-- There isn't a cache layer 
+- The api workspace deploy the database schema and has not any other function implemented.
+- There isn't a persisten cache layer 
 - The component prompt is saved but agent messages aren't. 
