@@ -14,50 +14,45 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "./shadcn/chart";
-import type { FieldDef } from "pg";
 import { useComponent } from "./component/context";
+import { useFetcher } from "./component/fetch-context";
+import { Button } from "./shadcn/button";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
-type DataChartProps<TData> = {
-    type: FieldDef[];
-    data: TData[];
-    keys: string[];
-};
+export default function Chart() {
+    const { component } = useComponent()
+    const { data, pagination, setPagination } = useFetcher()
 
-export default function Chart<TData>({
-    data,
-    type,
-    keys,
-}: DataChartProps<TData>) {
-    const config = type.filter((t) => keys.find((key) => key == t.name)).reduce(
+    const config = data.type.filter((t) => component.keys.find((key) => key == t.header)).reduce(
         (prev, curr) => {
             let val = {};
-            if (keys.find((key) => key == curr.name)) {
+            if (component.keys.find((key) => key == curr.header)) {
                 val = {
                     ...prev,
-                    [curr.name]: { label: curr.name, color: "#bc34b3" },
+                    [curr.header as string]: { label: curr.header, color: "#bc34b3" },
                 };
             }
             return val;
         },
         {} as ChartConfig,
     );
-    const {style} = useComponent()
+    const { style } = useComponent()
     const ChartType = ChartStyle[
         style as "area" | "bar" | "line" | "scatter"
-    ] 
-    
+    ]
+
     return (
         <>
             <ChartContainer
                 config={config}
-                className="w-full h-full ml-[-20] mt-2 "
+                className="w-full h-full  pr-12 pl-1  mt-2 "
             >
                 <ComposedChart
-                    data={data}
+                    data={data.rows}
                 >
                     <XAxis
-                        key={keys[0]}
-                        dataKey={keys[0]}
+                        key={component.keys[0]}
+                        dataKey={component.keys[0]}
                         tickFormatter={(v) => {
                             const date = new Date(v as string);
                             if (
@@ -72,13 +67,32 @@ export default function Chart<TData>({
                         }}
                     />
                     <YAxis
-                        key={keys[1]}
-                        dataKey={keys[1]}
+                        key={component.keys[1]}
+                        dataKey={component.keys[1]}
                     />
                     <ChartTooltip content={<ChartTooltipContent />} />
-                    <ChartType dataKey={keys[1]} fill={"red"} radius={4} />
+                    <ChartType dataKey={component.keys[1]} fill={"red"} radius={4} />
                 </ComposedChart>
             </ChartContainer>
+            <div className="absolute bottom-0 w-full flex items-center justify-between gap-2 px-1  ">
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setPagination({ skip: pagination.skip + pagination.limit, limit: pagination.limit })}
+                    disabled={data.rows.length == 0}
+                    
+                >
+                    <ArrowLeft size={8}  />
+                </Button>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setPagination({ skip: pagination.skip - pagination.limit, limit: pagination.limit })}
+                    disabled={pagination.skip == 0}
+                >
+                    <ArrowRight />
+                </Button>
+            </div>
         </>
     );
 }

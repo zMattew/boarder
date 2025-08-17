@@ -40,7 +40,7 @@ async function initAgent(providerId: string, model: string) {
         responseFormat: z.object({
             name: z.enum(["chart","table"]).describe("Name of the component from the given components list"),
             description: z.string().describe("Brief description of the serve to the user"),
-            query: z.string().describe("Query to retrive the data from the database."),
+            query: z.string().describe("Query to retrive the data from the database. Without the ending closure ';'"),
             keys: z.array(z.string().describe("Required key requested by choosen component.It must be a key found inside the query output fields.").describe("Required keys requested by choosen component having the same length. They must be keys found inside the query output fields.")).default([]).optional()
         }),
         prompt: new SystemMessage(`You are an assistant that generate the component metadata based on user input.
@@ -52,15 +52,15 @@ async function initAgent(providerId: string, model: string) {
         - The generated query must be tested to proceed with the final output.
         - The component will be choosen once the test_quert tools is executed with success.
         - The component name must be choose from the component list. It must be or "chart" or "table" . 
-        - if user ask 'create a table' should be interpeted as he wants to use a table component. 
+        - If user ask 'create a table' should be interpeted as he wants to use a table component. 
         - If the choosen component has field 'requiredKeysDescription' you must add to the final output a field 'keys' where for each 'requiredKeysDescription' entry you must use a column name inside the query output type based on the 'requiredKeysDescription' string that describe what column should be used. If 'requiredKeysDescription' you can omit the keys field in the final output.
+        - If the chosen component is a chart, the query should be ordered by the x axis in Descent mode if the chosen key for the x field is a Date type. Don't follow this instruction if the user explictly ask for another order.
     To create a component you must use this tool step by step:
         1) get_components_list: to retrive components list to choose from
         2) get_database_schema: to retrive the current database schema as pg_dump for generate a query based on user prompt
         3) test_query: use the generated query to test it, if is not successful you must reiterate this tool to adjust the query based on passed error
     Once you arrived to the end of this cycle you can output the generated query, the choosen component name and a description of it with (if needed) keys choosen from the query output type.
 
-    Note:
         `)
     })
 }

@@ -1,10 +1,10 @@
 "use client";
 
 import {
-  ColumnDef,
   flexRender,
   getCoreRowModel,
-  useReactTable,
+  PaginationState,
+  useReactTable
 } from "@tanstack/react-table";
 
 import {
@@ -13,25 +13,35 @@ import {
   TableCell,
   TableHead,
   TableHeader,
+  TableFooter,
   TableRow,
 } from "@/components/shadcn/table";
+import { useFetcher } from "./component/fetch-context";
+import { Button } from "./shadcn/button";
 
 
-type DataTableProps<TData, TValue> = {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-};
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) {
+
+export function DataTable() {
+  const { data: d, pagination, setPagination } = useFetcher()
   const table = useReactTable({
-    data,
-    columns,
+    data: d.rows,
+    columns: d.type,
+    manualPagination: true,
     getCoreRowModel: getCoreRowModel(),
+    state: {
+      pagination: {
+        pageIndex: (pagination.skip / pagination.limit),
+        pageSize: pagination.limit
+      },
+    },
+    pageCount: -1
   });
-  const { rows } = table.getRowModel();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const rows = (state: PaginationState) => {
+   //trying skipping memo from compiler
+    return table.getCoreRowModel().rows
+  }
   return (
     <div className="relative w-full h-full overflow-auto touch-none">
       <Table>
@@ -53,7 +63,10 @@ export function DataTable<TData, TValue>({
         </TableHeader>
 
         <TableBody className="relative">
-          {rows.map((row) => (
+          {rows({
+            pageIndex: (pagination.skip / pagination.limit),
+            pageSize: pagination.limit
+          }).map((row) => (
             <TableRow
               key={row.id}
               data-state={row.getIsSelected() && "selected"}
@@ -69,7 +82,31 @@ export function DataTable<TData, TValue>({
             </TableRow>
           ))}
         </TableBody>
+        <TableFooter className="sticky bottom-0 z-[1] bg-background">
+          <TableRow  >
+            <TableCell colSpan={d.type.length} className="p-0.5">
+              <div className="flex items-center justify-end gap-2 px-1  ">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPagination({ skip: pagination.skip - pagination.limit, limit: pagination.limit })}
+                  disabled={pagination.skip == 0}
+                >
+                  Previous
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPagination({ skip: pagination.skip + pagination.limit, limit: pagination.limit })}
+                  disabled={d.rows.length == 0}
+                >
+                  Next
+                </Button>
+              </div>
+            </TableCell>
+          </TableRow>
+        </TableFooter>
       </Table>
-    </div>
+    </div >
   );
 }

@@ -58,12 +58,12 @@ Current version is in beta and need some work to extends features, improve perfo
 - More databases support (current postgres, mysql)
 - Option to https sources
 - Review component from previous prompt
+- Infinite scroll query
 - Exposed api
 - View embeeding
 - Component review
 
 ## Known issue
-- The generate query will retrieve all the data they can, it's not efficent for large dataset. It's programmed to paginate data inserting forcefully the paging data in the query and implement a scrollable infinite query.
 - The ui doesn't depends on the api workspace but its planned to be to expose better the core functionality.
 - There isn't a cache layer 
 - The component prompt is saved but agent messages aren't. 

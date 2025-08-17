@@ -43,7 +43,7 @@ import { toast } from "sonner";
 export function ComponentTopBar(
     { refreshData, refreshing }: {
         refreshData: (
-            options?: RefetchOptions | undefined,
+            options?: RefetchOptions,
         ) => Promise<QueryObserverResult<unknown, Error>>;
         refreshing: boolean;
     },

@@ -1,11 +1,13 @@
 import { auth as middleware } from "./lib/auth.middleware"
 
-export default middleware((req)=> {
+export default middleware((req) => {
   if (req.nextUrl.pathname.startsWith("/home") && !req.auth) {
-    return Response.redirect(req.nextUrl.origin+"/login")
+    return Response.redirect(req.nextUrl.origin + "/login")
   }
-}) 
+  if (req.nextUrl.pathname.startsWith("/login") && req.auth)
+    return Response.redirect(req.nextUrl.origin + "/home")
+})
 
 export const config = {
-  matcher: ["/((?!api|data|_next/static|_next/image|favicon.ico).*)","/home"],
+  matcher: ["/((?!api|data|_next/static|_next/image|favicon.ico).*)", "/home/:path", "/login"],
 }
