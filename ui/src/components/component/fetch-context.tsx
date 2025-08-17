@@ -8,7 +8,9 @@ const fetchContext = createContext({
     id: "",
     data: { rows: [{}], type: [{ header: "",accessorKey:"" }] },
     pagination: { skip: 0, limit: 25 },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     setPagination: ({ skip, limit }: { skip: number; limit: number; }) => { },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     refetch: async (options?: RefetchOptions) => ({} as Promise<QueryObserverResult<unknown, Error>>),
     isFetching: false
 })

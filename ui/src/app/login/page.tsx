@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { signIn, auth } from "@/lib/auth";
+import { signIn } from "@/lib/auth";
 import {  oAuthProviderMap } from "@repo/auth/providers";
 import { AuthError } from "next-auth";
 import { Button } from "@/components/shadcn/button";

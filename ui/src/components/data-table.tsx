@@ -37,6 +37,7 @@ export function DataTable() {
     },
     pageCount: -1
   });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const rows = (state: PaginationState) => {
    //trying skipping memo from compiler
     return table.getCoreRowModel().rows
