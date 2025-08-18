@@ -39,12 +39,12 @@ export function DataTable() {
     pageCount: -1
   });
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const rows = (state: PaginationState,columns: ColumnDef<{},any>[]) => {
+  const rows = (state: PaginationState,columns: ColumnDef<Record<string,unknown>,unknown>[]) => {
    //trying skipping memo from compiler
     return table.getCoreRowModel().rows
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const headers = (columns: ColumnDef<{},any>[]) => {
+  const headers = (columns: ColumnDef<Record<string,unknown>,unknown>[]) => {
    //trying skipping memo from compiler
     return table.getHeaderGroups()
   }
