@@ -39,6 +39,8 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Button } from "../shadcn/button";
 import { removeComponent } from "@/lib/component";
 import { toast } from "sonner";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "../shadcn/sheet";
+import { ReviewComponentForm } from "../form/review-component";
 
 export function ComponentTopBar(
     { refreshData, refreshing }: {
@@ -52,7 +54,7 @@ export function ComponentTopBar(
     const { listeners } = useDraggable({
         id: component.id,
     });
-    const { currentProject,refreshProjects } = useProject();
+    const { currentProject, refreshProjects } = useProject();
     const options = component.name == "chart"
         ? [
             { label: "Area chart", value: "area" },
@@ -84,17 +86,15 @@ export function ComponentTopBar(
             </HoverCard>
             <div className="w-full">
                 <Minus
-                    className={`${
-                        locked ? "hidden" : ""
-                    } h-3 z-[1] my-0.5 place-self-center hover:bg-secondary rounded-md cursor-grab active:cursor-grabbing touch-none   `}
+                    className={`${locked ? "hidden" : ""
+                        } h-3 z-[1] my-0.5 place-self-center hover:bg-secondary rounded-md cursor-grab active:cursor-grabbing touch-none   `}
                     {...listeners}
                 />
             </div>
             <div className="flex flex-row gap-0.5">
                 <RefreshCcw
-                    className={`h-3 hover:cursor-pointer ${
-                        refreshing ? "animate-spin" : ""
-                    }`}
+                    className={`h-3 hover:cursor-pointer ${refreshing ? "animate-spin" : ""
+                        }`}
                     onClick={async () => {
                         await revalidateData(component.id);
                         refreshData({ cancelRefetch: false });
@@ -135,9 +135,34 @@ export function ComponentTopBar(
                         {currentProject && currentProject?.role != "viewer"
                             ? (
                                 <>
-                                    <DropdownMenuItem>
-                                        <Pencil />Edit
-                                    </DropdownMenuItem>
+                                    <Sheet>
+                                        <SheetTrigger asChild>
+                                            <DropdownMenuItem
+                                                onSelect={(e) => e.preventDefault()}
+                                            >
+                                                <Pencil />Edit
+                                            </DropdownMenuItem>
+                                        </SheetTrigger>
+                                        <SheetContent>
+                                            <SheetHeader>
+                                                <SheetTitle>
+                                                    Edit component
+                                                </SheetTitle>
+                                                <SheetDescription>
+                                                    Change component type of generate a new query
+                                                </SheetDescription>
+                                                <SheetTitle>
+                                                    Current component
+                                                </SheetTitle>
+                                                <SheetDescription>
+                                                    Type: {component.name}<br/>
+                                                    Description: {component.description}<br/>
+                                                    Source: {component.sourceName}
+                                                </SheetDescription>
+                                                <ReviewComponentForm />
+                                            </SheetHeader>
+                                        </SheetContent>
+                                    </Sheet>
                                     <Dialog>
                                         <DialogTrigger
                                             asChild
@@ -170,7 +195,7 @@ export function ComponentTopBar(
                                                 <Button
                                                     onClick={async () => {
                                                         try {
-                                                            await removeComponent(currentProject.id,component.id)
+                                                            await removeComponent(currentProject.id, component.id)
                                                             refreshProjects()
                                                             toast.success("Component removed")
                                                         } catch (error) {
@@ -212,3 +237,4 @@ export function ComponentTopBar(
         </div>
     );
 }
+
