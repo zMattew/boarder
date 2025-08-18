@@ -66,5 +66,5 @@ Current version is in beta and need some work to extends features, improve perfo
 
 ## Known issue
 - The api workspace deploy the database schema and has not any other function implemented.
-- There isn't a persisten cache layer 
-- The component prompt is saved but agent messages aren't. 
+- The cache layer it's used only from core/agent package to chat history. Not used by UI.
+- Need to setup instant disk write and a TTL in memory for component history
