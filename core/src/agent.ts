@@ -8,14 +8,12 @@ import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { MemorySaver } from "@langchain/langgraph-checkpoint"
 import type { RunnableConfig } from "@langchain/core/runnables"
 import { RedisChatMessageHistory } from "@langchain/redis"
-import { Redis } from "ioredis"
 import { SystemMessage } from "@langchain/core/messages"
-import { getLLM } from "@repo/db/esm.handler"
+import { getLLM, getComponent } from "@repo/db/esm.handler"
 import { decrypt } from "./crypto.ts"
 import { availableLLMs } from './llms.ts';
 import type { Providers } from "@repo/db/esm"
 import { BufferMemory } from "langchain/memory";
-import { BaseStore } from "@langchain/core/stores";
 
 const getSchema = tool(async (input: Record<string, any>, config: RunnableConfig) => {
     const sourceId = config.configurable?.sourceId
@@ -28,7 +26,6 @@ const testDbQuery = tool(async ({ query }, config: RunnableConfig) => {
 }, { name: "test_query", description: "Try to execute the query to catch any error", schema: z.object({ query: z.string().describe("safe SQL query") }) })
 const getComponents = tool(async () => JSON.stringify(Components), { name: "get_components_list", description: "Retrive the available components", schema: z.object({}) })
 
-const client = new Redis(process.env.REDIS_URL as string);
 
 const COMPONENT_SYSTEM_PROMT = `You are an assistant that generate the component metadata based on user input.
     The user will ask to create a type of component with the data that can be found in the database. 
@@ -47,20 +44,14 @@ const COMPONENT_SYSTEM_PROMT = `You are an assistant that generate the component
         2) get_database_schema: to retrive the current database schema as pg_dump for generate a query based on user prompt
         3) test_query: use the generated query to test it, if is not successful you must reiterate this tool to adjust the query based on passed error
     Once you arrived to the end of this cycle you can output the generated query, the choosen component name and a description of it with (if needed) keys choosen from the query output type. `
-
-async function initAgent(providerId: string, model: string) {
+const COMPONENT_REVIEW_PROMT = `The user request require a review of the output. Choose what to chage based on user prompt and current component.`
+async function initAgent(providerId: string, model: string, thread_id: string) {
     const provider = await getLLM(providerId)
     if (!provider) throw new Error("No llm provider found")
-    const memory = new BufferMemory({
-        chatHistory: new RedisChatMessageHistory({
-            sessionId: new Date().toISOString(),
-            sessionTTL: 300,
-            client,
-        }),
-    })
+
     const apiKey = provider.apiKey ? await decrypt(provider.apiKey) : undefined
     const providerName = availableLLMs[provider.provider as Providers].effectiveName ? availableLLMs[provider.provider as Providers].effectiveName : provider.provider
-    const llm = await initChatModel(model, { modelProvider: providerName, baseUrl: provider?.url ? provider.url : undefined, apiKey: apiKey ? apiKey : undefined, memory })
+    const llm = await initChatModel(model, { modelProvider: providerName, baseUrl: provider?.url ? provider.url : undefined, apiKey: apiKey ? apiKey : undefined })
     const checkpointer = new MemorySaver();
     return createReactAgent({
         llm,
@@ -73,20 +64,54 @@ async function initAgent(providerId: string, model: string) {
             query: z.string().describe("Query to retrive the data from the database. Without the ending closure ';'"),
             keys: z.array(z.string().describe("Required key requested by choosen component.It must be a key found inside the query output fields.").describe("Required keys requested by choosen component having the same length. They must be keys found inside the query output fields.")).default([]).optional()
         }),
-        prompt: new SystemMessage(COMPONENT_SYSTEM_PROMT)
     })
 }
 
 
-export async function promptComponent(llmId: string, model: string, prompt: string, sourceId: string, session: string) {
-    const agent = await initAgent(llmId, model)
+export async function promptComponent(llmId: string, model: string, prompt: string, sourceId: string) {
+    const threadId = Buffer.from(crypto.getRandomValues(new Uint8Array(16))).toString("hex");
 
-    const response = await agent.invoke({ messages:{ role: "user", content: prompt } }, { configurable: { sourceId, thread_id: session } })
+    const agent = await initAgent(llmId, model, threadId)
+    const memory = new BufferMemory({
+        chatHistory: new RedisChatMessageHistory({
+            sessionId: threadId,
+            config: { url: process.env.REDIS_URL }
+        }),
+        memoryKey: threadId
+    })
+    const messages = [new SystemMessage(COMPONENT_SYSTEM_PROMT), { role: "user", content: prompt }]
+    const response = await agent.invoke({ messages }, { configurable: { sourceId, thread_id: threadId } })
     /* const output = ""
     for await (const [token, meta] of response) {
         output.concat(output, token.content)
         process.stdout.write(token.content)
     } */
+    await memory.chatHistory.addMessages(response.messages)
     console.log(response.messages)
-    return {component:response.structuredResponse,threadId:session} 
+    return { component: response.structuredResponse, threadId }
+}
+
+
+export async function reviewComponent(llmId: string, model: string, prompt: string, componentId: string) {
+    const component = await getComponent(componentId)
+    if (!component) throw "Component not Found"
+    const agent = await initAgent(llmId, model, component?.threadId ?? "")
+    const currentComponent = {
+        name: component.name,
+        description: component.description,
+        query: component.query,
+        keys: component.keys
+    }
+    const memory = new BufferMemory({
+        chatHistory: new RedisChatMessageHistory({
+            sessionId: component?.threadId ?? "",
+            config: { url: process.env.REDIS_URL }
+        }),
+        memoryKey: component?.threadId ?? "",
+    })
+    const history = (await memory.chatHistory.getMessages())
+    const response = await agent.invoke({ messages: [...history, { role: "ai", content: `${COMPONENT_REVIEW_PROMT}\nCurrent component:${JSON.stringify(currentComponent)}` }, { role: "user", content: prompt }] }, { configurable: { sourceId: component.source.id, thread_id: component.threadId } })
+    await memory.chatHistory.addMessages(response.messages.slice(history.length))
+    console.log(response.messages)
+    return response.structuredResponse
 }
