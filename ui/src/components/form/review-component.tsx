@@ -9,10 +9,12 @@ import { Textarea } from "../shadcn/textarea";
 import { toast } from "sonner";
 import { review } from "@/lib/component";
 import { Button } from "../shadcn/button";
+import { useFetcher } from "../component/fetch-context";
 
 export function ReviewComponentForm() {
-    const { currentProject, refreshProjects } = useProject()
+    const { currentProject } = useProject()
     const { component } = useComponent();
+    const {refetch} = useFetcher()
     const [provider, setProvider] = useState<{ name: Providers; id: string; }>();
     const [model, setModel] = useState<string>();
     const [userPrompt, setPrompt] = useState<string>();
@@ -38,10 +40,10 @@ export function ReviewComponentForm() {
             formData.append("prompt", userPrompt as string);
 
             const reviewedComponent = await review(formData);
+            if(reviewedComponent) refetch()
             toast.success(
                 `Component updated`,
             );
-            refreshProjects()
         } catch (error) {
             toast.error(
                 `Failed to create component: ${error}`,
