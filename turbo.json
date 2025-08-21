@@ -20,7 +20,7 @@
       "outputLogs": "full"
     },
     "@repo/auth#build":{
-      "dependsOn": ["^build","@repo/db#build"],
+      "dependsOn": ["@repo/db#build"],
       "outputs": ["./build/**"],
       "env" :["AUTH_SECRET"]
     },
@@ -31,12 +31,12 @@
       "env": ["DATABASE_URL"]
     },
     "@repo/db#deploy": {
-      "dependsOn": ["^@repo/db#build"],
+      "dependsOn": ["^@repo/db#build","@repo/auth#build"],
       "outputLogs": "full",
       "env": ["DATABASE_URL"]
     },
     "@repo/core#build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["@repo/db#build"],
       "outputs": ["./build/**"],
       "outputLogs": "full"
     },
