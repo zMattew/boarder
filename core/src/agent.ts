@@ -32,6 +32,7 @@ const COMPONENT_SYSTEM_PROMT = `You are an assistant that generate the component
     Your role is to fullfil every needed aspect from the component choose to the query to execute to retrive data:
         - Before generating the query you must be aware of the current database schema.
         - The sql query must only retrive data from the current database.
+        - The sql query must not use ; at the end.
         - You can't generate a query to modifiy the database schema.
         - The generated query must be tested to proceed with the final output.
         - The component will be choosen once the test_quert tools is executed with success.
@@ -45,7 +46,7 @@ const COMPONENT_SYSTEM_PROMT = `You are an assistant that generate the component
         3) test_query: use the generated query to test it, if is not successful you must reiterate this tool to adjust the query based on passed error
     Once you arrived to the end of this cycle you can output the generated query, the choosen component name and a description of it with (if needed) keys choosen from the query output type. `
 const COMPONENT_REVIEW_PROMT = `The user request require a review of the output. Choose what to chage based on user prompt and current component.`
-async function initAgent(providerId: string, model: string, thread_id: string) {
+async function initAgent(providerId: string, model: string) {
     const provider = await getLLM(providerId)
     if (!provider) throw new Error("No llm provider found")
 
@@ -71,14 +72,13 @@ async function initAgent(providerId: string, model: string, thread_id: string) {
 export async function promptComponent(llmId: string, model: string, prompt: string, sourceId: string) {
     const threadId = Buffer.from(crypto.getRandomValues(new Uint8Array(16))).toString("hex");
 
-    const agent = await initAgent(llmId, model, threadId)
-    const memory = new BufferMemory({
-        chatHistory: new RedisChatMessageHistory({
-            sessionId: threadId,
-            config: { url: process.env.REDIS_URL }
-        }),
-        memoryKey: threadId
+    const agent = await initAgent(llmId, model)
+    const memory = new RedisChatMessageHistory({
+        sessionId: threadId,
+        sessionTTL: 500,
+        config: { url: process.env.REDIS_URL }
     })
+
     const messages = [new SystemMessage(COMPONENT_SYSTEM_PROMT), { role: "user", content: prompt }]
     const response = await agent.invoke({ messages }, { configurable: { sourceId, thread_id: threadId } })
     /* const output = ""
@@ -86,7 +86,7 @@ export async function promptComponent(llmId: string, model: string, prompt: stri
         output.concat(output, token.content)
         process.stdout.write(token.content)
     } */
-    await memory.chatHistory.addMessages(response.messages)
+    await memory.addMessages(response.messages)
     console.log(response.messages)
     return { component: response.structuredResponse, threadId }
 }
@@ -95,23 +95,20 @@ export async function promptComponent(llmId: string, model: string, prompt: stri
 export async function reviewComponent(llmId: string, model: string, prompt: string, componentId: string) {
     const component = await getComponent(componentId)
     if (!component) throw "Component not Found"
-    const agent = await initAgent(llmId, model, component?.threadId ?? "")
+    const agent = await initAgent(llmId, model)
     const currentComponent = {
         name: component.name,
         description: component.description,
         query: component.query,
         keys: component.keys
     }
-    const memory = new BufferMemory({
-        chatHistory: new RedisChatMessageHistory({
-            sessionId: component?.threadId ?? "",
-            config: { url: process.env.REDIS_URL }
-        }),
-        memoryKey: component?.threadId ?? "",
+    const memory = new RedisChatMessageHistory({
+        sessionId: component?.threadId ?? "",
+        config: { url: process.env.REDIS_URL }
     })
-    const history = (await memory.chatHistory.getMessages())
+    const history = await memory.getMessages()
     const response = await agent.invoke({ messages: [...history, { role: "ai", content: `${COMPONENT_REVIEW_PROMT}\nCurrent component:${JSON.stringify(currentComponent)}` }, { role: "user", content: prompt }] }, { configurable: { sourceId: component.source.id, thread_id: component.threadId } })
-    await memory.chatHistory.addMessages(response.messages.slice(history.length))
+    await memory.addMessages(response.messages.slice(history.length))
     console.log(response.messages)
     return response.structuredResponse
 }
