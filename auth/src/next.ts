@@ -2,6 +2,7 @@ import NextAuth from "next-auth"
 import authConfig from "./auth.config.ts"
 import type { Provider } from "next-auth/providers"
 import { PrismaAdapter } from "@repo/db/adapter"
+import type {PrismaClient } from "@prisma/client"
 import client from "@repo/db/client"
 import { getEmailProviderFromEnv } from "./email.providers.ts"
 import Credentials from "next-auth/providers/credentials"
@@ -44,7 +45,7 @@ providers.push(
     }))
 export const nextAuth = NextAuth({
     ...authConfig,
-    adapter: PrismaAdapter(client),
+    adapter: PrismaAdapter(client as PrismaClient),
     providers: [...authConfig.providers, ...providers],
 })
 

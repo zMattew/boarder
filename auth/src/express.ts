@@ -3,6 +3,7 @@ import authConfig from "./auth.config.ts"
 import type { Provider } from "@auth/express/providers"
 import { PrismaAdapter } from "@repo/db/adapter"
 import client from "@repo/db/esm"
+import type {PrismaClient } from "@prisma/client"
 import Credentials from "@auth/core/providers/credentials"
 import { decrypt, encrypt } from "@repo/core/crypto"
 
@@ -41,7 +42,7 @@ providers.push(
     }))
 export const auth = ExpressAuth({
     ...authConfig,
-    adapter: PrismaAdapter(client),
+    adapter: PrismaAdapter(client as PrismaClient),
     providers: [...authConfig.providers, ...providers],
 })
 export * from "@auth/express"
