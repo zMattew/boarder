@@ -10,5 +10,4 @@ export default middleware((req) => {
 
 export const config = {
   matcher: ["/((?!api|data|_next/static|_next/image|favicon.ico).*)", "/home/:path", "/login"],
-  runtime: 'nodejs',
 }
