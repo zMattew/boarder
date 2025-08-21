@@ -24,6 +24,14 @@ services:
       - data:/var/lib/postgresql/data
     networks:
       - db
+  redis:
+    build:
+      context: ./redis
+      dockerfile: ./Dockerfile
+    ports:
+      - "6379:6379"
+    networks:
+      - redis
   ui:
     build:
       context: ./
@@ -32,12 +40,14 @@ services:
       - 3000:3000
     depends_on:
       - api
+      - redis
       - db
     environment:
         AUTH_TRUST_HOST: true
         AUTH_URL: "https://localhost/api/auth"
         NEXT_PUBLIC_URL: "https://localhost"
         DATABASE_URL: "postgresql://postgres:password@db:5432/postgres"
+        REDIS_URL: "redis://default:password@redis:6379"
         PV_KEY: ""
         AUTH_SECRET: ""
        # AUTH_[provider]_ID: "" optional for 0auth login
@@ -53,6 +63,7 @@ services:
     networks:
       - ui
       - db
+      - redis
       - ollama # if you plan to use a docker deployed ollama ensure to connect to the same network
   api:
     build:
@@ -62,13 +73,16 @@ services:
       - 3001:3001
     depends_on:
       - db
+      - redis
     environment:
         AUTH_TRUST_HOST: true
         DATABASE_URL: "postgresql://postgres:password@db:5432/postgres"
+        REDIS_URL: "redis://default:password@redis:6379"
         PV_KEY: ""
         AUTH_SECRET: ""
     networks:
       - db
+      - redis
       - ollama
 volumes:
   data:
@@ -76,6 +90,8 @@ volumes:
 networks:
   ui: 
     name: ui
+  redis:
+    name: redis
   db:
     name: db
   ollama:

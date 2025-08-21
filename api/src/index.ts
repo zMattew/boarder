@@ -20,7 +20,7 @@ app.post("/prompt", authenticatedUser, async (req, res) => {
     const model = body.get("model") as string;
     const prompt = body.get("prompt") as string;
     const session = Buffer.from(crypto.getRandomValues(new Uint8Array(16))).toString("hex");
-    const response = await promptComponent(provider, model, prompt, source, session);
+    const response = await promptComponent(provider, model, prompt, source);
     return res.json(response)
 });
 

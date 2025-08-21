@@ -1,10 +1,10 @@
 "use server"
 
-import { promptComponent } from "@repo/core/agent"
+import { promptComponent, reviewComponent } from "@repo/core/agent"
 import client from "@repo/db/client"
 import { getMemberRole } from "./role"
 
-export async function addComponent(name: string, sourceId: string, query: string, prompt: string[], viewId: string, requiredKeys: string[] = [], description?: string) {
+export async function addComponent(name: string, sourceId: string, query: string, threadId: string, viewId: string, requiredKeys: string[] = [], description?: string) {
     const userRole = await getMemberRole()
     if (userRole == "viewer") throw "You can't do this action"
     return await client.component.create({
@@ -12,7 +12,7 @@ export async function addComponent(name: string, sourceId: string, query: string
             name,
             query,
             description,
-            prompt: { set: prompt },
+            threadId,
             view: {
                 connect: {
                     id: viewId
@@ -34,6 +34,19 @@ export async function removeComponent(projectId: string, componentId: string) {
         }
     })
 }
+
+
+export async function updateComponent(id: string, name: string,description:string,query:string,keys:string[] = []) {
+    return await client.component.update({
+        where: { id },
+        data: {
+            name,
+            description,
+            query,
+            keys
+        }
+    })
+}
 export async function prompt(formData: FormData) {
     const userRole = await getMemberRole();
     if (userRole == "viewer") throw "You can't do this action";
@@ -42,17 +55,35 @@ export async function prompt(formData: FormData) {
     const provider = formData.get("provider") as string;
     const model = formData.get("model") as string;
     const prompt = formData.get("prompt") as string;
-    const session = Buffer.from(crypto.getRandomValues(new Uint8Array(16))).toString("hex");
 
-    const response = await promptComponent(provider, model, prompt, source, session);
+    const { component, threadId } = await promptComponent(provider, model, prompt, source);
 
     return await addComponent(
-        response.name,
+        component.name,
         source,
-        response.query,
-        [prompt],
+        component.query,
+        threadId,
         view,
-        response.keys,
-        response.description
+        component.keys,
+        component.description
+    );
+}
+
+export async function review(formData: FormData) {
+    const userRole = await getMemberRole();
+    if (userRole == "viewer") throw "You can't do this action";
+    const componentId = formData.get("component") as string;
+    const provider = formData.get("provider") as string;
+    const model = formData.get("model") as string;
+    const prompt = formData.get("prompt") as string;
+
+    const component = await reviewComponent(provider, model, prompt, componentId);
+
+    return await updateComponent(
+        componentId,
+        component.name,
+        component.description,
+        component.query,
+        component.keys
     );
 }

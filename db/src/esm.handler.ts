@@ -11,6 +11,17 @@ export async function getLLM(id: string) {
         where: { id },
     })
 }
+export async function getComponent(id: string) {
+    return await client.component.findUnique({
+        where: { id },
+        include:{
+            source:{
+                select:{id:true}
+            }
+        }
+    })
+}
+
 export async function getMemberRoleFromCookie(projectId: string, userId: string) {
     const project = await client.project.findFirst({
         where: {

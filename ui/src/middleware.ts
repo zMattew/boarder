@@ -1,4 +1,4 @@
-import { auth as middleware } from "./lib/auth.middleware"
+import { auth as middleware } from "./lib/auth"
 
 export default middleware((req) => {
   if (req.nextUrl.pathname.startsWith("/home") && !req.auth) {
@@ -10,4 +10,5 @@ export default middleware((req) => {
 
 export const config = {
   matcher: ["/((?!api|data|_next/static|_next/image|favicon.ico).*)", "/home/:path", "/login"],
+  runtime: 'nodejs',
 }
