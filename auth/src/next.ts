@@ -45,7 +45,7 @@ providers.push(
     }))
 export const nextAuth = NextAuth({
     ...authConfig,
-    adapter: PrismaAdapter(client as PrismaClient),
+    adapter: PrismaAdapter(client as unknown as PrismaClient),
     providers: [...authConfig.providers, ...providers],
 })
 

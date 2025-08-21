@@ -42,7 +42,7 @@ providers.push(
     }))
 export const auth = ExpressAuth({
     ...authConfig,
-    adapter: PrismaAdapter(client as PrismaClient),
+    adapter: PrismaAdapter(client as unknown as PrismaClient),
     providers: [...authConfig.providers, ...providers],
 })
 export * from "@auth/express"
