@@ -33,11 +33,6 @@
       "import": "./src/auth.config.ts",
       "types": "./build/src/auth.config.d.ts"
     },
-    "./edge": {
-      "node": "./build/src/edge.js",
-      "import": "./src/edge.ts",
-      "types": "./build/src/edge.d.ts"
-    },
     "./express": {
       "node": "./build/src/express.js",
       "import": "./src/express.ts",

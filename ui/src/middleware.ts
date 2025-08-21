@@ -1,4 +1,4 @@
-import { auth as middleware } from "./lib/auth.middleware"
+import { auth as middleware } from "./lib/auth"
 
 export default middleware((req) => {
   if (req.nextUrl.pathname.startsWith("/home") && !req.auth) {
