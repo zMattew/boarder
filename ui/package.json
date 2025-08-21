@@ -6,7 +6,7 @@
     "build": "next build",
     "start": "next start",
     "standalone:start": "node ./server.js",
-    "lint": "next lint",
+    "lint": "eslint .",
     "check-types": "tsc --noEmit"
   },
   "private": true,
