@@ -1,7 +1,7 @@
 import { ExpressAuth } from "@auth/express"
 import authConfig from "./auth.config.ts"
 import type { Provider } from "@auth/express/providers"
-import { PrismaAdapter } from "@auth/prisma-adapter"
+import { PrismaAdapter } from "@repo/db/adapter"
 import client from "@repo/db/esm"
 import Credentials from "@auth/core/providers/credentials"
 import { decrypt, encrypt } from "@repo/core/crypto"

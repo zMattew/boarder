@@ -21,6 +21,11 @@
       "node": "./build/src/client.js",
       "types": "./build/src/client.d.ts"
     },
+    "./adapter": {
+      "default": "./src/adapter.ts",
+      "node": "./build/src/adapter.js",
+      "types": "./build/src/adapter.d.ts"
+    },
     "./esm.handler": {
       "default": "./src/esm.handler.ts",
       "node": "./build/src/esm.handler.js",
