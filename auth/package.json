@@ -22,6 +22,11 @@
       "import": "./src/next.ts",
       "types": "./build/src/next.d.ts"
     },
+    "./edge": {
+      "node": "./build/src/edge.js",
+      "import": "./src/edge.ts",
+      "types": "./build/src/edge.d.ts"
+    },
     "./providers": {
       "node": "./build/src/oauth.providers.js",
       "import": "./src/oauth.providers.ts",
