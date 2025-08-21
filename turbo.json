@@ -25,7 +25,6 @@
       "env" :["AUTH_SECRET"]
     },
     "@repo/db#build": {
-      "dependsOn": ["^build"],
       "outputs": ["./build/**"],
       "outputLogs": "full",
       "env": ["DATABASE_URL"]
