@@ -104,6 +104,7 @@ export async function reviewComponent(llmId: string, model: string, prompt: stri
     }
     const memory = new RedisChatMessageHistory({
         sessionId: component?.threadId ?? "",
+        sessionTTL: 500,
         config: { url: process.env.REDIS_URL }
     })
     const history = await memory.getMessages()
