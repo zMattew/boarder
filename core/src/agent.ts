@@ -9,11 +9,10 @@ import { MemorySaver } from "@langchain/langgraph-checkpoint"
 import type { RunnableConfig } from "@langchain/core/runnables"
 import { RedisChatMessageHistory } from "@langchain/redis"
 import { SystemMessage } from "@langchain/core/messages"
-import { getLLM, getComponent } from "@repo/db/esm.handler"
+import { getLLM, getComponent } from "@repo/db"
 import { decrypt } from "./crypto.ts"
 import { availableLLMs } from './llms.ts';
-import type { Providers } from "@repo/db/esm"
-import { BufferMemory } from "langchain/memory";
+import type { Providers } from "@repo/db/client"
 
 const getSchema = tool(async (input: Record<string, any>, config: RunnableConfig) => {
     const sourceId = config.configurable?.sourceId

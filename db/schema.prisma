@@ -4,8 +4,8 @@ datasource db {
 }
 
 generator client {
-    provider = "prisma-client-js"
-    output = "./build"
+    provider = "prisma-client"
+    output = "./generated"
 }
 
 model Source {

@@ -1,4 +1,4 @@
-import type { Providers } from "@repo/db/esm";
+import type { Providers } from "@repo/db/client";
 
 export const availableLLMs: Record<Providers, { effectiveName?: string, model: string[], require?: ("url" | "api")[] }> = {
     google: { effectiveName: "google-genai", model: ["gemini-2.5-pro", "gemini-2.5-flash", "gemini-2.5-flash-lite"], require: ["api"] },

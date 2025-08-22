@@ -1,7 +1,8 @@
 {
     "extends": "@repo/tsconfig",
     "compilerOptions": {
-        "outDir": "./build/src",
+        "outDir": "./build",
     },
-    "include": ["src"],
+    "include": ["src","generated"],
+    "exclude": ["build","node_modules"]
 }

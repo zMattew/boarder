@@ -3,7 +3,7 @@ import express, { type NextFunction, type Request, type Response } from 'express
 import { promptComponent } from '@repo/core/agent';
 import { getSession } from "@repo/auth/express"
 import authConfig from "@repo/auth/config"
-import { getMemberRoleFromCookie } from "@repo/db/esm.handler"
+import { getMemberRoleFromCookie } from "@repo/db"
 import cookieParser from "cookie-parser"
 import "dotenv/config"
 const app = express();
