@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
   experimental: {
     reactCompiler: true,
   },
+  cacheHandler: process.env.VERCEL ? undefined : require.resolve("./cache-handler.mjs"),
   logging: {
     fetches: {
       fullUrl: true,
