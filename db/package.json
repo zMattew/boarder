@@ -6,7 +6,7 @@
   "author": "",
   "type": "module",
   "scripts": {
-    "build": "npx prisma generate && tsc && cp ./generated/libquery_engine-debian-openssl-3.0.x.so.node ./build/generated/libquery_engine-debian-openssl-3.0.x.so.node ",
+    "build": "npx prisma generate && tsc",
     "deploy": "npx prisma migrate deploy",
     "dev": "tsc --watch"
   },
@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.10.0",
+    "@prisma/adapter-pg": "^6.14.0",
     "@prisma/client": "^6.14.0",
     "@repo/tsconfig": "^0.0.0",
     "dotenv": "^17.2.1"
