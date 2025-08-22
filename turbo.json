@@ -15,7 +15,11 @@
       ],
       "outputLogs": "full",
       "env": [
-        "DATABASE_URL"
+        "DATABASE_URL",
+        "AUTH_SECRET",
+        "AUTH_*_ID",
+        "AUTH_*_SECRET",
+        "SMTP_*"
       ]
     },
     "api#build": {
@@ -31,7 +35,11 @@
       ],
       "outputLogs": "full",
       "env": [
-        "DATABASE_URL"
+        "DATABASE_URL",
+        "AUTH_SECRET",
+        "AUTH_*_ID",
+        "AUTH_*_SECRET",
+        "SMTP_*"
       ]
     },
     "core#build": {
@@ -53,7 +61,10 @@
         "./build/**"
       ],
       "env": [
-        "AUTH_SECRET"
+        "AUTH_SECRET",
+        "AUTH_*_ID",
+        "AUTH_*_SECRET",
+        "SMTP_*"
       ]
     },
     "@repo/db#build": {
@@ -99,7 +110,10 @@
     },
     "@repo/auth#dev": {
       "env": [
-        "AUTH_SECRET"
+        "AUTH_SECRET",
+        "AUTH_*_ID",
+        "AUTH_*_SECRET",
+        "SMTP_*"
       ],
       "outputs": [
         "./build/**"
