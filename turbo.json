@@ -67,6 +67,7 @@
       ]
     },
     "@repo/db#deploy": {
+      "dependsOn": ["@repo/db#build"],
       "outputLogs": "full",
       "env": [
         "DATABASE_URL"
