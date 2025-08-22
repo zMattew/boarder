@@ -32,7 +32,7 @@ export async function getUserProject() {
                 include: {
                     components: {
                         select: {
-                            id: true, name: true, meta: true, viewId: true, sourceName: true,
+                            id: true, name: true, meta: true, viewId: true,
                             source: { select: { id: true, name: true } },
                             description: true, query: true, keys: true
                         }

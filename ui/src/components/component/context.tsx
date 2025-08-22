@@ -31,7 +31,6 @@ const componentContext = createContext<
         name: "null",
         query: "null",
         source: { id: "null",name:"null" },
-        sourceName: "null",
         viewId: "null",
         meta: {},
     },
