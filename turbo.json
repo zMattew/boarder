@@ -30,7 +30,6 @@
       "env": ["DATABASE_URL"]
     },
     "@repo/db#deploy": {
-      "dependsOn": ["^@repo/db#build","@repo/auth#build"],
       "outputLogs": "full",
       "env": ["DATABASE_URL"]
     },
