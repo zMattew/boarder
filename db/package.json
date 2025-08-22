@@ -6,7 +6,7 @@
   "author": "",
   "type": "module",
   "scripts": {
-    "build": "npx prisma generate && tsc",
+    "build": "npx prisma generate && tsc && cp ./generated/libquery_engine-debian-openssl-3.0.x.so.node ./build/generated/libquery_engine-debian-openssl-3.0.x.so.node ",
     "deploy": "npx prisma migrate deploy",
     "dev": "tsc --watch"
   },
