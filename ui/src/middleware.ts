@@ -1,6 +1,4 @@
 import { auth as middleware } from "@repo/auth/edge"
-import { antiBot } from "./lib/limiter"
-import { userAgent } from "next/server"
 
 export default middleware(async (req) => {
   const pathname = req.nextUrl.pathname
