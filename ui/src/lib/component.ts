@@ -3,10 +3,9 @@
 import { promptComponent, reviewComponent } from "@repo/core/agent"
 import client from "@repo/db/client"
 import { getMemberRole } from "./role"
+import { actionLimiter } from "./limiter"
 
 export async function addComponent(name: string, sourceId: string, query: string, threadId: string, viewId: string, requiredKeys: string[] = [], description?: string) {
-    const userRole = await getMemberRole()
-    if (userRole == "viewer") throw "You can't do this action"
     return await client.component.create({
         data: {
             name,
@@ -25,8 +24,10 @@ export async function addComponent(name: string, sourceId: string, query: string
 }
 
 export async function removeComponent(projectId: string, componentId: string) {
-    const userRole = await getMemberRole()
-    if (userRole == "viewer") throw "You can't do this action"
+    const { userId,role } = await getMemberRole()
+    if (role == "viewer") throw "You can't do this action"
+    const { success } = await actionLimiter.limit(userId)
+    if (!success) throw "Too many request"
     return await client.component.delete({
         where: {
             id: componentId,
@@ -36,7 +37,7 @@ export async function removeComponent(projectId: string, componentId: string) {
 }
 
 
-export async function updateComponent(id: string, name: string,description:string,query:string,keys:string[] = []) {
+export async function updateComponent(id: string, name: string, description: string, query: string, keys: string[] = []) {
     return await client.component.update({
         where: { id },
         data: {
@@ -48,8 +49,10 @@ export async function updateComponent(id: string, name: string,description:strin
     })
 }
 export async function prompt(formData: FormData) {
-    const userRole = await getMemberRole();
-    if (userRole == "viewer") throw "You can't do this action";
+    const { userId,role } = await getMemberRole();
+    if (role == "viewer") throw "You can't do this action";
+    const { success } = await actionLimiter.limit(userId)
+    if (!success) throw "Too many request"
     const source = formData.get("source") as string;
     const view = formData.get("view") as string;
     const provider = formData.get("provider") as string;
@@ -70,8 +73,10 @@ export async function prompt(formData: FormData) {
 }
 
 export async function review(formData: FormData) {
-    const userRole = await getMemberRole();
-    if (userRole == "viewer") throw "You can't do this action";
+    const { userId,role } = await getMemberRole();
+    if (role == "viewer") throw "You can't do this action";
+    const { success } = await actionLimiter.limit(userId)
+    if (!success) throw "Too many request"
     const componentId = formData.get("component") as string;
     const provider = formData.get("provider") as string;
     const model = formData.get("model") as string;

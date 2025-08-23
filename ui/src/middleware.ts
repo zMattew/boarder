@@ -1,11 +1,15 @@
 import { auth as middleware } from "@repo/auth/edge"
+import { antiBot } from "./lib/limiter"
+import { userAgent } from "next/server"
 
-export default middleware((req) => {
-  if (req.nextUrl.pathname.startsWith("/home") && !req.auth) {
+export default middleware(async (req) => {
+  const pathname = req.nextUrl.pathname
+  if (pathname.startsWith("/home") && !req.auth) {
     return Response.redirect(req.nextUrl.origin + "/login")
   }
-  if (req.nextUrl.pathname.startsWith("/login") && req.auth)
-    return Response.redirect(req.nextUrl.origin + "/home")
+  if (pathname.startsWith("/login") && req.auth) {
+    if (req.auth) return Response.redirect(req.nextUrl.origin + "/home")
+  }
 })
 
 export const config = {
