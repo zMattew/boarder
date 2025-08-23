@@ -14,25 +14,29 @@ export async function getLLM(id: string) {
 export async function getComponent(id: string) {
     return await client.component.findUnique({
         where: { id },
-        include:{
-            source:{select:{id:true}}
+        include: {
+            source: { select: { id: true } }
         }
     })
 }
-export async function getMemberRoleFromCookie(projectId: string, userId: string) {
-    const project = await client.project.findFirst({
-        where: {
-            id: projectId,
-            OR: [
-                { team: { some: { userId: userId } } },
-                { ownerId: userId },
-            ],
-        },
-        include: {
-            team: true
-        }
-    });
-    if (!project || (project.team.length < 1 && project.ownerId != userId)) throw "Unauthorized";
-    return project.ownerId == userId ? "admin" : project.team[0].role;
+export async function getMemberRoleFromCookie(projectId?: string, userId?: string) {
+    try {
+        const project = await client.project.findFirst({
+            where: {
+                id: projectId,
+                OR: [
+                    { team: { some: { userId: userId } } },
+                    { ownerId: userId },
+                ],
+            },
+            include: {
+                team: true
+            }
+        });
+        if (!project || (project.team.length < 1 && project.ownerId != userId)) throw "Unauthorized";
+        return project.ownerId == userId ? "admin" : project.team[0].role;
+    } catch (error) {
+        throw "Unauthorized"
+    }
 }
 
