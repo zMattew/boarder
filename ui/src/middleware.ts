@@ -23,7 +23,7 @@ export default middleware(async (req) => {
         }
         if (role == undefined) return Response.redirect(req.nextUrl.origin + "/home")
       }
-    } catch (error) {
+    } catch {
       return Response.redirect(req.nextUrl.origin + "/home")
     }
   }
