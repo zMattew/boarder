@@ -14,7 +14,7 @@ export default middleware(async (req) => {
       }
       if (pathname.startsWith("/home/new-component")) {
         const role = await getMemberRoleFromCookie(projectId, userId)
-        if (role == "admin") return Response.redirect(req.nextUrl.origin + "/home")
+        if (role == "viewer") return Response.redirect(req.nextUrl.origin + "/home")
       }
       if (pathname.startsWith("/home/views/")) {
         const role = await getMemberRoleFromCookie(projectId, userId)
