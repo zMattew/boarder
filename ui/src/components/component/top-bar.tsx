@@ -72,7 +72,7 @@ export function ComponentTopBar(
                 <HoverCardContent className="text-xs flex flex-col">
                     <div>
                         <Database className="inline h-2" />Source:
-                        {component.sourceName}
+                        {component.source.name}
                     </div>
                     <div>
                         <Pencil className="inline h-2" /> Description:
@@ -157,7 +157,7 @@ export function ComponentTopBar(
                                                 <SheetDescription>
                                                     Type: {component.name}<br/>
                                                     Description: {component.description}<br/>
-                                                    Source: {component.sourceName}
+                                                    Source: {component.source.name}
                                                 </SheetDescription>
                                                 <ReviewComponentForm />
                                             </SheetHeader>

@@ -1,14 +1,16 @@
-import { auth as middleware } from "./lib/auth"
+import { auth as middleware } from "@repo/auth/edge"
 
-export default middleware((req) => {
-  if (req.nextUrl.pathname.startsWith("/home") && !req.auth) {
+export default middleware(async (req) => {
+  const pathname = req.nextUrl.pathname
+  if (pathname.startsWith("/home") && !req.auth) {
     return Response.redirect(req.nextUrl.origin + "/login")
   }
-  if (req.nextUrl.pathname.startsWith("/login") && req.auth)
-    return Response.redirect(req.nextUrl.origin + "/home")
+  if (pathname.startsWith("/login") && req.auth) {
+    if (req.auth) return Response.redirect(req.nextUrl.origin + "/home")
+  }
 })
 
 export const config = {
   matcher: ["/((?!api|data|_next/static|_next/image|favicon.ico).*)", "/home/:path", "/login"],
-  runtime: 'nodejs',
+  runtime: "nodejs"
 }

@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { ReactNode } from "react";
 
 export default async function Layout({ children }: { children: ReactNode }) {
-    const role = await getMemberRole();
+    const { role } = await getMemberRole();
     if (role == "viewer") redirect("/home");
     return (
         <>

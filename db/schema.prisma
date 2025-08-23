@@ -4,13 +4,14 @@ datasource db {
 }
 
 generator client {
-    provider = "prisma-client-js"
-    output = "./build"
+    provider = "prisma-client"
+    previewFeatures = ["queryCompiler", "driverAdapters"]
+    output   = "./generated"
 }
 
 model Source {
     id            String      @id @default(cuid())
-    name          String      @unique()
+    name          String
     connectionUrl String      @unique()
     components    Component[]
     projectId     String
@@ -19,8 +20,8 @@ model Source {
 
 model Component {
     id          String   @id @default(cuid())
-    sourceName  String
-    source      Source   @relation(fields: [sourceName], references: [name], onDelete: Cascade)
+    sourceId    String
+    source      Source   @relation(fields: [sourceId], references: [id], onDelete: Cascade)
     name        String
     description String?
     query       String

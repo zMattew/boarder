@@ -3,60 +3,127 @@
   "ui": "tui",
   "tasks": {
     "ui#build": {
-      "dependsOn": ["^build", "@repo/db#build","@repo/auth#build","@repo/core#build"],
-      "outputs": ["./.next/**", "./.next/cache/**"],
+      "dependsOn": [
+        "^build",
+        "@repo/db#build",
+        "@repo/auth#build",
+        "@repo/core#build"
+      ],
+      "outputs": [
+        "./.next/**",
+        "./.next/cache/**"
+      ],
       "outputLogs": "full",
-      "env": ["DATABASE_URL"]
+      "env": [
+        "DATABASE_URL",
+        "AUTH_SECRET",
+        "AUTH_*_ID",
+        "AUTH_*_SECRET",
+        "SMTP_*"
+      ]
     },
     "api#build": {
-      "dependsOn": ["^build","@repo/db#build","@repo/auth#build","@repo/core#build","@repo/tsconfig#build"],
-      "outputs": ["./build/**"],
+      "dependsOn": [
+        "^build",
+        "@repo/db#build",
+        "@repo/auth#build",
+        "@repo/core#build",
+        "@repo/tsconfig#build"
+      ],
+      "outputs": [
+        "./build/**"
+      ],
       "outputLogs": "full",
-      "env": ["DATABASE_URL"]
+      "env": [
+        "DATABASE_URL",
+        "AUTH_SECRET",
+        "AUTH_*_ID",
+        "AUTH_*_SECRET",
+        "SMTP_*"
+      ]
     },
     "core#build": {
-      "dependsOn": ["^build","@repo/db#build","@repo/tsconfig#build"],
-      "outputs": ["./build/**"],
+      "dependsOn": [
+        "^build",
+        "@repo/db#build",
+        "@repo/tsconfig#build"
+      ],
+      "outputs": [
+        "./build/**"
+      ],
       "outputLogs": "full"
     },
-    "@repo/auth#build":{
-      "dependsOn": ["@repo/db#build"],
-      "outputs": ["./build/**"],
-      "env" :["AUTH_SECRET"]
+    "@repo/auth#build": {
+      "dependsOn": [
+        "@repo/db#build"
+      ],
+      "outputs": [
+        "./build/**"
+      ],
+      "env": [
+        "AUTH_SECRET",
+        "AUTH_*_ID",
+        "AUTH_*_SECRET",
+        "SMTP_*"
+      ]
     },
     "@repo/db#build": {
-      "dependsOn": ["^build"],
-      "outputs": ["./build/**"],
+      "outputs": [
+        "./build/**",
+        "./generated/**"
+      ],
       "outputLogs": "full",
-      "env": ["DATABASE_URL"]
+      "env": [
+        "DATABASE_URL"
+      ]
     },
     "@repo/db#deploy": {
-      "dependsOn": ["^@repo/db#build","@repo/auth#build"],
+      "dependsOn": ["@repo/db#build"],
       "outputLogs": "full",
-      "env": ["DATABASE_URL"]
+      "env": [
+        "DATABASE_URL"
+      ]
     },
     "@repo/core#build": {
-      "dependsOn": ["@repo/db#build"],
-      "outputs": ["./build/**"],
+      "dependsOn": [
+        "@repo/db#build"
+      ],
+      "outputs": [
+        "./build/**"
+      ],
       "outputLogs": "full"
     },
-    "build": {
-      "dependsOn": ["^build"]
-    },
+    "build": {},
     "check-types": {
-      "dependsOn": ["^check-types"]
+      "dependsOn": [
+        "^check-types"
+      ]
     },
-    "@repo/tsconfig#build":{ },
-    "@repo/db#dev":{
-      "outputs": ["./build/**"],
-      "env": ["DATABASE_URL"]
+    "@repo/tsconfig#build": {},
+    "@repo/db#dev": {
+      "outputs": [
+        "./build/**"
+      ],
+      "env": [
+        "DATABASE_URL"
+      ]
     },
-    "@repo/auth#dev":{
-      "env": ["AUTH_SECRET"],
-      "outputs": ["./build/**"]
+    "@repo/auth#dev": {
+      "env": [
+        "AUTH_SECRET",
+        "AUTH_*_ID",
+        "AUTH_*_SECRET",
+        "SMTP_*"
+      ],
+      "outputs": [
+        "./build/**"
+      ]
     },
     "dev": {
-      "env": ["DATABASE_URL","AUTH_SECRET"],
+      "env": [
+        "DATABASE_URL",
+        "AUTH_SECRET"
+      ],
       "persistent": true,
       "cache": false
     }

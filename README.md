@@ -22,10 +22,11 @@ Before proceed you need to install [Docker](https://www.docker.com/), [git](http
    AUTH_{PROVIDER}_ID
    AUTH_{PROVIDER}_SECRET
    ```
-   Use this command for PV_KEY and AUTH_SECRET
+   Use this command for (ui,api)PV_KEY, (ui,api)AUTH_SECRET, (rest-redis)SRH_TOKEN
    ```bash
-   openssl rand -out aes_key.bin 32
+   openssl rand -hex 32
    ```
+   It advised to change the default password in the various service if they are gonna be exposed to internet.
 4. Generate a self signed certificate for SSL:
    ```bash
    bash ./nginx/generateSSL.sh 
@@ -57,14 +58,11 @@ Current version is in beta and need some work to extends features, improve perfo
 ## Next Features 
 - More databases support (current postgres, mysql)
 - Option to https sources
-- Review component from previous prompt
 - Infinite scroll query
 - Exposed api
 - View embeeding
 - Exposed api
-- Component review
 
 ## Known issue
-- The api workspace deploy the database schema and has not any other function implemented.
-- The cache layer it's used only from core/agent package to chat history. Not used by UI.
-- Need to setup instant disk write and a TTL in memory for component history
+- The api is not implemented but required to sync the db schema. In the future should have the functionality exposed.
+- The ui has a cache handler but there is no fine-graded caching implemented.

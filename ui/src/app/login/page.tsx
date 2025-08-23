@@ -1,17 +1,19 @@
 import { redirect } from "next/navigation";
 import { signIn } from "@/lib/auth";
-import {  oAuthProviderMap } from "@repo/auth/providers";
+import { oAuthProviderMap } from "@repo/auth/providers";
 import { AuthError } from "next-auth";
 import { Button } from "@/components/shadcn/button";
 import { GalleryVerticalEnd } from "lucide-react";
 import { LoginForm } from "@/components/form/login";
+import { headers } from "next/headers";
+import { antiBot } from "@/lib/limiter";
 
 export default async function SignInPage({ params }: {
     params: Promise<{
         searchParams: { callbackUrl: string | undefined };
     }>;
 }) {
-    
+
     const { searchParams } = await params;
     return (
         <>
@@ -44,10 +46,17 @@ export default async function SignInPage({ params }: {
                                 action={async () => {
                                     "use server";
                                     try {
+                                    const head = await headers()
+                                    const ip = head.get('x-forwarded-for')?.split(',')[0].trim()
+                                        || head.get('cf-connecting-ip')
+                                        || head.get('x-vercel-forwarded-for')
+                                        || "null";
+                                    const { limit } = await antiBot.limit(ip)
+                                    if (limit) throw "Too many request"
                                         await signIn(provider.id, {
                                             redirectTo:
                                                 searchParams?.callbackUrl ??
-                                                    process.env.NEXT_PUBLIC_URL+"/home",
+                                                process.env.NEXT_PUBLIC_URL + "/home",
                                         });
                                     } catch (error) {
                                         if (error instanceof AuthError) {

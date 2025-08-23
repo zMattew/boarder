@@ -6,7 +6,7 @@
   "author": "",
   "type": "module",
   "scripts": {
-    "build": "npx prisma generate && tsc && cp -r ./migrations ./build/migrations ",
+    "build": "npx prisma generate && tsc",
     "deploy": "npx prisma migrate deploy",
     "dev": "tsc --watch"
   },
@@ -25,16 +25,6 @@
       "default": "./src/adapter.ts",
       "node": "./build/src/adapter.js",
       "types": "./build/src/adapter.d.ts"
-    },
-    "./esm.handler": {
-      "default": "./src/esm.handler.ts",
-      "node": "./build/src/esm.handler.js",
-      "types": "./build/src/esm.handler.d.ts"
-    },
-    "./esm": {
-      "default": "./src/esm.ts",
-      "node": "./build/src/esm.js",
-      "types": "./build/src/esm.d.ts"
     }
   },
   "devDependencies": {
@@ -43,6 +33,7 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.10.0",
+    "@prisma/adapter-pg": "^6.14.0",
     "@prisma/client": "^6.14.0",
     "@repo/tsconfig": "^0.0.0",
     "dotenv": "^17.2.1"

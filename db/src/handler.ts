@@ -14,6 +14,9 @@ export async function getLLM(id: string) {
 export async function getComponent(id: string) {
     return await client.component.findUnique({
         where: { id },
+        include:{
+            source:{select:{id:true}}
+        }
     })
 }
 export async function getMemberRoleFromCookie(projectId: string, userId: string) {

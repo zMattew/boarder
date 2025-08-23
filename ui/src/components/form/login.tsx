@@ -4,6 +4,8 @@ import { Label } from "../shadcn/label";
 import { Input } from "../shadcn/input";
 import { Button } from "../shadcn/button";
 import { redirect } from "next/navigation";
+import { antiBot } from "@/lib/limiter";
+import { headers } from "next/headers";
 
 const SIGNIN_ERROR_URL = "/login";
 
@@ -11,10 +13,17 @@ const SIGNIN_ERROR_URL = "/login";
 export function LoginForm() {
     return <form
         action={async (formData) => {
-            "use server"
-            const pass = formData.get("password");
-            const authType = pass ? "credentials" : "nodemailer";
+            "use server";
             try {
+                const head = await headers()
+                const ip = head.get('x-forwarded-for')?.split(',')[0].trim()
+                    || head.get('cf-connecting-ip')
+                    || head.get('x-vercel-forwarded-for')
+                    || "null";
+                const { limit } = await antiBot.limit(ip)
+                if (limit) throw "Too many request"
+                const pass = formData.get("password");
+                const authType = pass ? "credentials" : "nodemailer";
                 await signIn(authType, formData);
             } catch (error) {
                 if (error instanceof AuthError) {

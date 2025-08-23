@@ -3,10 +3,13 @@
 import { encrypt } from "@repo/core/crypto"
 import client from "@repo/db/client"
 import { getMemberRole } from "./role"
+import { actionLimiter } from "./limiter"
 
-export async function addSource(name: string, connectionUrl: string,projectId:string) {
-    const role = await getMemberRole()
-    if(role != "admin") throw "You can't do this action"
+export async function addSource(name: string, connectionUrl: string, projectId: string) {
+    const { userId, role } = await getMemberRole()
+    if (role != "admin") throw "You can't do this action"
+    const { success } = await actionLimiter.limit(userId)
+    if (!success) throw "Too many request"
     connectionUrl = await encrypt(connectionUrl)
     return await client.source.create({
         data: {
@@ -18,18 +21,22 @@ export async function addSource(name: string, connectionUrl: string,projectId:st
 }
 
 export async function removeSource(projectId: string, sourceId: string) {
-    const role = await getMemberRole()
-    if(role != "admin") throw "You can't do this action"
+    const { userId, role } = await getMemberRole()
+    if (role != "admin") throw "You can't do this action"
+    const { success } = await actionLimiter.limit(userId)
+    if (!success) throw "Too many request"
     return await client.source.delete({ where: { projectId, id: sourceId } })
 }
 
 export async function editSource(projectId: string, sourceId: string, name?: string, connectionUrl?: string) {
-    const role = await getMemberRole()
-    if(role != "admin") throw "You can't do this action"
-    const data: {name?:string,connectionUrl?:string} = {}
-    if(name)
+    const { userId,role } = await getMemberRole()
+    if (role != "admin") throw "You can't do this action"
+    const { success } = await actionLimiter.limit(userId)
+    if (!success) throw "Too many request"
+    const data: { name?: string, connectionUrl?: string } = {}
+    if (name)
         data.name = name
-    if(connectionUrl)
+    if (connectionUrl)
         data.connectionUrl = await encrypt(connectionUrl)
     return await client.source.update({
         where: {
