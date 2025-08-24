@@ -65,4 +65,5 @@ Current version is in beta and need some work to extends features, improve perfo
 
 ## Known issue
 - The api is not implemented but required to sync the db schema. In the future should have the functionality exposed.
-- The ui has a cache handler but there is no fine-graded caching implemented.
+- The ui has a cache handler but there isn't fine-graded caching implemented.
+- The login flow erroring need better user ux/ui
