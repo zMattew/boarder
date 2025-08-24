@@ -1,4 +1,4 @@
-name: ai-board-dev
+name: boarder-dev
 services:
   db:
     image: postgres:latest
