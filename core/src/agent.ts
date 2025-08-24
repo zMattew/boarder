@@ -38,7 +38,7 @@ const COMPONENT_SYSTEM_PROMT = `You are an assistant that generate the component
         - The component name must be choose from the component list. It must be or "chart" or "table" . 
         - If user ask 'create a table' should be interpeted as he wants to use a table component. 
         - If the choosen component has field 'requiredKeysDescription' you must add to the final output a field 'keys' where for each 'requiredKeysDescription' entry you must use a column name inside the query output type based on the 'requiredKeysDescription' string that describe what column should be used. If 'requiredKeysDescription' you can omit the keys field in the final output.
-        - If the chosen component is a chart, the query should be ordered by the x axis in Descent mode if the chosen key for the x field is a Date type. Don't follow this instruction if the user explictly ask for another order.
+        - If the chosen component is a chart, the query should be ordered by the x axis in ascent mode if the chosen key for the x field is a Date type. Don't follow this instruction if the user explictly ask for another order.
     To create a component you must use this tool step by step:
         1) get_components_list: to retrive components list to choose from
         2) get_database_schema: to retrive the current database schema as pg_dump for generate a query based on user prompt
