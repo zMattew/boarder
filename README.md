@@ -46,14 +46,18 @@ This is a turbo mono repo, if you want to modify make changes you need to instal
 2. Populate .env.local file with the required env in the ui and api workspace
 3. Deploy a local postgres database and push the schema.
    ```bash
-   npx prisma migrate deploy
+   docker compose -f docker-compose.development.yaml up
    ```
-4. Run dev
+4. Sync database schema 
+   ```bash
+   cd db && npx prisma migrate deploy
+   ```
+5. Run dev
    ```bash
    turbo run dev
    ```
-## Beta
-Current version is in beta and need some work to extends features, improve performance and fix (unknow) bug.
+## Alpha
+Current version is in alpha and need some work to extends features, improve performance and ui/ux.
 
 ## Next Features 
 - More databases support (current postgres, mysql)
@@ -62,8 +66,11 @@ Current version is in beta and need some work to extends features, improve perfo
 - Exposed api
 - View embeeding
 - Exposed api
+- Schema explorer
 
 ## Known issue
 - The api is not implemented but required to sync the db schema. In the future should have the functionality exposed.
 - The ui has a cache handler but there isn't fine-graded caching implemented.
 - The login flow erroring need better user ux/ui
+- Can't login with third party or email if was already registered with other provider
+- Current provider supported are Google and Github
