@@ -21,7 +21,7 @@ export function LoginForm() {
                     || head.get('x-vercel-forwarded-for')
                     || "null";
                 const { success } = await antiBot.limit(ip)
-                if (success) throw "Too many request"
+                if (!success) throw "Too many request"
                 const pass = formData.get("password");
                 const authType = pass ? "credentials" : "nodemailer";
                 await signIn(authType, formData);
