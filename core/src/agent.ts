@@ -74,7 +74,6 @@ export async function promptComponent(llmId: string, model: string, prompt: stri
     const agent = await initAgent(llmId, model)
     const memory = new RedisChatMessageHistory({
         sessionId: threadId,
-        sessionTTL: 500,
         config: { url: process.env.REDIS_URL }
     })
 
@@ -103,7 +102,6 @@ export async function reviewComponent(llmId: string, model: string, prompt: stri
     }
     const memory = new RedisChatMessageHistory({
         sessionId: component?.threadId ?? "",
-        sessionTTL: 500,
         config: { url: process.env.REDIS_URL }
     })
     const history = await memory.getMessages()
