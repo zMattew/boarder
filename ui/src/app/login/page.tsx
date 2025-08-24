@@ -51,8 +51,8 @@ export default async function SignInPage({ params }: {
                                         || head.get('cf-connecting-ip')
                                         || head.get('x-vercel-forwarded-for')
                                         || "null";
-                                    const { limit } = await antiBot.limit(ip)
-                                    if (limit) throw "Too many request"
+                                    const { success } = await antiBot.limit(ip)
+                                    if (success) throw "Too many request"
                                         await signIn(provider.id, {
                                             redirectTo:
                                                 searchParams?.callbackUrl ??
