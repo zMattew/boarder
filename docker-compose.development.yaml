@@ -22,21 +22,8 @@ services:
       - "6379:6379"
     networks:
       - redis
-  rest-redis:
-    image: hiett/serverless-redis-http
-    ports:
-      - "8079:80"
-    environment:
-      SRH_MODE: env
-      SRH_TOKEN: default
-      SRH_CONNECTION_STRING: 'redis://default:password@redis:6379'
-    networks:
-      - redis
-      - rest-redis
 networks:
   db:
     name: db
   redis:
     name: redis
-  rest-redis:
-    name: rest-redis
