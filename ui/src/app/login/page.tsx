@@ -40,7 +40,7 @@ export default async function SignInPage({ params }: {
                                 Or
                             </span>
                         </div>
-                        {Object.values(oAuthProviderMap).map((provider) => (
+                        {Object.values(oAuthProviderMap()).map((provider) => (
                             <form
                                 key={provider.id}
                                 action={async () => {

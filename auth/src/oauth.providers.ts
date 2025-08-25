@@ -25,7 +25,7 @@ export function getOAuthProvidersFromEnv() {
 }
 
 
-export const oAuthProviderMap = getOAuthProvidersFromEnv()
+export const oAuthProviderMap =()=> getOAuthProvidersFromEnv()
     .map((provider) => {
         if (typeof provider === "function") {
             const providerData = provider()
