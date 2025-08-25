@@ -19,9 +19,7 @@
         "AUTH_SECRET",
         "AUTH_*_ID",
         "AUTH_*_SECRET",
-        "SMTP_*",
-        "KV_REST_API_URL",
-        "KV_REST_API_TOKEN"
+        "SMTP_*"
       ]
     },
     "api#build": {
