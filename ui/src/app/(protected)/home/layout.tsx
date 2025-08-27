@@ -5,7 +5,6 @@ import { ProjectProvider } from "@/hooks/project-context";
 import { ViewProvider } from "@/hooks/view-context";
 import { QueryProvider } from "@/components/utils/query-layout";
 import { SessionProvider } from "next-auth/react";
-import { Toaster } from "sonner";
 
 export default function Layout({
     children,

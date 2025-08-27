@@ -16,7 +16,6 @@ import {
     HoverCardContent,
     HoverCardTrigger,
 } from "@/components/shadcn/hover-card";
-import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
 import {
     Database,
     EllipsisVertical,
