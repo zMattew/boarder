@@ -22,7 +22,6 @@ export default function Layout({
                                 <main className="w-full ">
                                     <Navbar />
                                     {children}
-                                    <Toaster />
                                 </main>
                             </SidebarProvider>
                         </ViewProvider>

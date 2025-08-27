@@ -1,4 +1,4 @@
-import NextAuth from "next-auth"
+import NextAuth, { AuthError as Error } from "next-auth"
 import authConfig from "./auth.config.ts"
 import type { Provider } from "next-auth/providers"
 import { PrismaAdapter } from "@repo/db/adapter"
@@ -43,6 +43,7 @@ providers.push(
             return user
         }
     }))
+export const AuthError = Error
 export const nextAuth = NextAuth({
     ...authConfig,
     adapter: PrismaAdapter(client as unknown as PrismaClient),

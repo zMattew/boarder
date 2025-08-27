@@ -1,38 +1,20 @@
-import { signIn } from "@/lib/auth";
-import { AuthError } from "next-auth";
+"use client"
 import { Label } from "../shadcn/label";
 import { Input } from "../shadcn/input";
 import { Button } from "../shadcn/button";
-import { redirect } from "next/navigation";
-import { antiBot } from "@/lib/limiter";
-import { headers } from "next/headers";
-
-const SIGNIN_ERROR_URL = "/login";
+import { login, thirdPartyLogin } from "@/lib/login";
+import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
+import { useEffect } from "react";
 
 
 export function LoginForm() {
+    const { push } = useRouter()
     return <form
         action={async (formData) => {
-            "use server";
-            try {
-                const head = await headers()
-                const ip = head.get('x-forwarded-for')?.split(',')[0].trim()
-                    || head.get('cf-connecting-ip')
-                    || head.get('x-vercel-forwarded-for')
-                    || "null";
-                const { success } = await antiBot.limit(ip)
-                if (!success) throw "Too many request"
-                const pass = formData.get("password");
-                const authType = pass ? "credentials" : "nodemailer";
-                await signIn(authType, formData);
-            } catch (error) {
-                if (error instanceof AuthError) {
-                    return redirect(
-                        `${SIGNIN_ERROR_URL}?error=${error.type}`,
-                    );
-                }
-                throw error
-            }
+            const res = await login(formData);
+            if (res == "success") push("/home")
+            else toast.error(`${res}`)
         }}
     >
         <div className="flex flex-col gap-6">
@@ -57,3 +39,41 @@ export function LoginForm() {
         </div>
     </form>
 }
+export function ThirdPartyLoginFrom({ id, name }: { id: string; name: string; }) {
+    const searchParams = useSearchParams()
+    useEffect(() => {
+        const error = searchParams.get("error");
+        if (!error) return;
+        toast.error(AUTH_ERROR_MESSAGES[error as keyof typeof AUTH_ERROR_MESSAGES]);
+    });
+    return <form
+        key={id}
+        action={async () => {
+            try {
+                await thirdPartyLogin(id);
+            } catch (error) {
+                throw error
+            }
+        }}
+    >
+        <Button
+            variant="outline"
+            type="submit"
+            className="w-full"
+        >
+            Continue with {name}
+        </Button>
+    </form>;
+}
+
+export const AUTH_ERROR_MESSAGES = {
+    OAuthSignin: "Error signing in with OAuth provider.",
+    OAuthCallback: "Error during OAuth callback.",
+    OAuthCreateAccount: "Could not create account from OAuth profile.",
+    EmailCreateAccount: "Could not create account with email.",
+    EmailSignin: "Error sending sign-in email.",
+    CredentialsSignin: "Invalid credentials.",
+    SessionRequired: "Please sign in to access that page.",
+    OAuthAccountNotLinked: "This account is linked with a different provider.",
+    Callback: "Authentication callback error.",
+};

@@ -1,20 +1,9 @@
-import { redirect } from "next/navigation";
-import { signIn } from "@/lib/auth";
 import { oAuthProviderMap } from "@repo/auth/providers";
-import { AuthError } from "next-auth";
-import { Button } from "@/components/shadcn/button";
 import { GalleryVerticalEnd } from "lucide-react";
-import { LoginForm } from "@/components/form/login";
-import { headers } from "next/headers";
-import { antiBot } from "@/lib/limiter";
+import { LoginForm, ThirdPartyLoginFrom } from "@/components/form/login";
 
-export default async function SignInPage({ params }: {
-    params: Promise<{
-        searchParams: { callbackUrl: string | undefined };
-    }>;
-}) {
+export default async function SignInPage() {
 
-    const { searchParams } = await params;
     return (
         <>
             <div className="bg-background flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
@@ -41,41 +30,7 @@ export default async function SignInPage({ params }: {
                             </span>
                         </div>
                         {Object.values(oAuthProviderMap()).map((provider) => (
-                            <form
-                                key={provider.id}
-                                action={async () => {
-                                    "use server";
-                                    try {
-                                    const head = await headers()
-                                    const ip = head.get('x-forwarded-for')?.split(',')[0].trim()
-                                        || head.get('cf-connecting-ip')
-                                        || head.get('x-vercel-forwarded-for')
-                                        || "null";
-                                    const { success } = await antiBot.limit(ip)
-                                    if (!success) throw "Too many request"
-                                        await signIn(provider.id, {
-                                            redirectTo:
-                                                searchParams?.callbackUrl ??
-                                                process.env.NEXT_PUBLIC_URL + "/home",
-                                        });
-                                    } catch (error) {
-                                        if (error instanceof AuthError) {
-                                            return redirect(
-                                                `/error?error=${error.type}`,
-                                            );
-                                        }
-                                        throw error;
-                                    }
-                                }}
-                            >
-                                <Button
-                                    variant="outline"
-                                    type="submit"
-                                    className="w-full"
-                                >
-                                    Continue with {provider.name}
-                                </Button>
-                            </form>
+                            <ThirdPartyLoginFrom key={provider.id} id={provider.id} name={provider.name} />
                         ))}
                     </div>
                     <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
@@ -88,3 +43,4 @@ export default async function SignInPage({ params }: {
         </>
     );
 }
+
