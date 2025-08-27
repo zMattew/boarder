@@ -8,6 +8,7 @@ import { Component } from "./component";
 import { useComponent } from "./context";
 import { ErrorBoundary } from "react-error-boundary";
 import { FetcherProvider } from "./fetch-context";
+import { ComponentTopBar } from "./top-bar";
 export function ResizableComponent({ setResizing }: {
     setResizing: (value: boolean) => void;
 }) {
@@ -77,9 +78,9 @@ export function ResizableComponent({ setResizing }: {
             >
                 <ErrorBoundary
                     fallbackRender={() => (
-                        <div className="grid place-items-center w-full h-full">
-                            Error loading data
-                        </div>
+                            <div className="grid place-items-center w-full h-full">
+                                Error loading data
+                            </div>
                     )}
                 >
                     <Suspense
@@ -88,6 +89,7 @@ export function ResizableComponent({ setResizing }: {
                         }
                     >
                         <FetcherProvider id={component.id} >
+                            <ComponentTopBar />
                             <Component />
                         </FetcherProvider>
                     </Suspense>
