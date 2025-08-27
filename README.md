@@ -70,7 +70,7 @@ Current version is in alpha and need some work to extends features, improve perf
 
 ## Known issue
 - The api is not implemented but required to sync the db schema. In the future should have the functionality exposed.
-- The ui has a cache handler but there isn't fine-graded caching implemented.
-- The login flow erroring need better user ux/ui
+- The prompt and review of component doesn't show any progress.
+- The ui has a cache handler but there isn't fine-graded.
 - Can't login with third party or email if was already registered with other provider
 - Current provider supported are Google and Github
