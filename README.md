@@ -58,6 +58,7 @@ This is a turbo mono repo, if you want to modify make changes you need to instal
    ```
 ## Alpha
 Current version is in alpha and need some work to extends features, improve performance and ui/ux.
+Any feedback will be considered feel free to create an issue to explain.
 
 ## Next Features 
 - More databases support (current postgres, mysql)
