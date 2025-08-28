@@ -54,8 +54,8 @@ export function NewComponentForm(
                         placeholder="Select a provider"
                         onSelect={(llmId) => {
                             setModel(undefined);
-                            const llm = currentProject?.llms?.find((llm) => llm.id == llmId)!
-                            setProvider({
+                            const llm = currentProject?.llms?.find((llm) => llm.id == llmId)
+                            if (llm) setProvider({
                                 name: llm.provider as Providers,
                                 id: llmId,
                             });

@@ -1,7 +1,6 @@
 import { auth } from "@/lib/auth";
 import { NextRequest } from "next/server";
 import client from "@repo/db/client";
-import { revalidateTag } from "next/cache";
 import { dataFetchLimiter } from "@/lib/limiter";
 
 export async function POST(req: NextRequest) {
@@ -17,7 +16,7 @@ export async function POST(req: NextRequest) {
         switch (llm.provider) {
             case "ollama":
                 const res = await fetch(llm.url + "/api/tags")
-                if (!res.ok) return []
+                if (!res.ok) return Response.json([])
                 const data = await res.json() as { models: ({ name: string } & Record<string, unknown>)[] }
                 return Response.json(data.models.map((d) => (d.name)))
             default: return Response.json([])

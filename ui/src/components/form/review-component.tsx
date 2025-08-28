@@ -4,7 +4,6 @@ import { Combobox } from "../combobox";
 import { useComponent } from "../component/context";
 import { useState } from "react";
 import { useProject } from "@/hooks/project-context";
-import { availableLLMs } from "@repo/core/llms";
 import { Textarea } from "../shadcn/textarea";
 import { toast } from "sonner";
 import { review } from "@/lib/component";
@@ -62,8 +61,8 @@ export function ReviewComponentForm() {
             form="llmId"
             onSelect={(llmId) => {
                 setModel(undefined);
-                const llm = currentProject?.llms?.find((llm) => llm.id == llmId)!
-                setProvider({
+                const llm = currentProject?.llms?.find((llm) => llm.id == llmId)
+                if (llm) setProvider({
                     name: llm.provider as Providers,
                     id: llmId,
                 });
