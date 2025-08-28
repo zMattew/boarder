@@ -1,6 +1,7 @@
 import { oAuthProviderMap } from "@repo/auth/providers";
-import { GalleryVerticalEnd } from "lucide-react";
+import { GalleryVerticalEnd, Loader } from "lucide-react";
 import { LoginForm, ThirdPartyLoginFrom } from "@/components/form/login";
+import { Suspense } from "react";
 
 export default function SignInPage() {
     return (
@@ -28,9 +29,11 @@ export default function SignInPage() {
                                 Or
                             </span>
                         </div>
-                        {Object.values(oAuthProviderMap()).map((provider) => (
-                            <ThirdPartyLoginFrom key={provider.id} id={provider.id} name={provider.name} />
-                        ))}
+                        <Suspense fallback={<Loader className="animate-spin m-auto h-full" />}>
+                            {Object.values(oAuthProviderMap()).map((provider) => (
+                                <ThirdPartyLoginFrom key={provider.id} id={provider.id} name={provider.name} />
+                            ))}
+                        </Suspense>
                     </div>
                     <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
                         By clicking continue, you agree to our{" "}
