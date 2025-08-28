@@ -76,24 +76,28 @@ export function ResizableComponent({ setResizing }: {
                 }}
                 className="rounded-md border   touch-none"
             >
-                <ErrorBoundary
-                    fallbackRender={() => (
-                            <div className="grid place-items-center w-full h-full">
-                                Error loading data
-                            </div>
-                    )}
+                <Suspense
+                    fallback={
+                        <Loader className="animate-spin m-auto h-full" />
+                    }
                 >
-                    <Suspense
-                        fallback={
-                            <Loader className="animate-spin m-auto h-full" />
-                        }
+                    <ErrorBoundary
+                        fallbackRender={() => (
+                            <>
+                                <ComponentTopBar />
+                                <div className="grid place-items-center w-full h-full">
+                                    Error loading data
+                                </div>
+                            </>
+                        )}
+
                     >
                         <FetcherProvider id={component.id} >
                             <ComponentTopBar />
                             <Component />
                         </FetcherProvider>
-                    </Suspense>
-                </ErrorBoundary>
+                    </ErrorBoundary>
+                </Suspense>
             </Resizable>
         </div>
     );
