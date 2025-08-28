@@ -6,7 +6,6 @@ import { Textarea } from "../shadcn/textarea";
 import { Button } from "../shadcn/button";
 import { prompt } from '@/lib/component';
 import { toast } from "sonner";
-import { availableLLMs } from "../../../../core/src/llms";
 import { useProject } from "../../hooks/project-context";
 import {
     Card,
@@ -17,11 +16,12 @@ import {
 } from "../shadcn/card";
 import { useView } from "../../hooks/view-context";
 import { redirect } from "next/navigation";
+import { ModelPicker } from "./model-picker";
 export function NewComponentForm(
 ) {
-    const {currentProject,refreshProjects} = useProject()
-    if(currentProject?.role == "viewer" ) redirect("/home")
-    const {currentView} = useView()
+    const { currentProject, refreshProjects } = useProject()
+    if (currentProject?.role == "viewer") redirect("/home")
+    const { currentView } = useView()
     const [source, setSource] = useState<string>();
     const [provider, setProvider] = useState<{ name: Providers; id: string }>();
     const [model, setModel] = useState<string>();
@@ -38,43 +38,32 @@ export function NewComponentForm(
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-4">
-                        <Combobox
-                            options={currentProject?.sources?.map((source) => ({
-                                label: source.name,
-                                value: source.id,
-                            }))}
-                            placeholder="Select a source"
-                            onSelect={setSource}
-                        />
-                        <Combobox
-                            options={currentProject?.llms?.map((llm) => ({
-                                label: `${llm.label} ${llm.provider}`,
-                                value: llm.id,
-                            }))}
-                            placeholder="Select a provider"
-                            onSelect={(llmId) => {
-                                setModel(undefined);
-                                setProvider({
-                                    name: currentProject?.llms?.find((llm) => llm.id == llmId)!
-                                        .provider as Providers,
-                                    id: llmId,
-                                });
-                            }}
-                        />
-                        {provider && (
-                            <Combobox
-                                options={availableLLMs[provider.name].model.map(
-                                    (
-                                        p,
-                                    ) => ({
-                                        label: p,
-                                        value: p,
-                                    })
-                                )}
-                                placeholder="Select a model"
-                                onSelect={setModel}
-                            />
-                        )}
+                    <Combobox
+                        options={currentProject?.sources?.map((source) => ({
+                            label: source.name,
+                            value: source.id,
+                        }))}
+                        placeholder="Select a source"
+                        onSelect={setSource}
+                    />
+                    <Combobox
+                        options={currentProject?.llms?.map((llm) => ({
+                            label: `${llm.label} ${llm.provider}`,
+                            value: llm.id,
+                        }))}
+                        placeholder="Select a provider"
+                        onSelect={(llmId) => {
+                            setModel(undefined);
+                            const llm = currentProject?.llms?.find((llm) => llm.id == llmId)!
+                            setProvider({
+                                name: llm.provider as Providers,
+                                id: llmId,
+                            });
+                        }}
+                    />
+                    {provider && (
+                        <ModelPicker provider={provider} setModel={setModel} />
+                    )}
                     <Textarea
                         onChange={(e) => setPrompt(e.target.value)}
                         name="prompt"
@@ -127,3 +116,5 @@ export function NewComponentForm(
         </>
     );
 }
+
+

@@ -10,11 +10,12 @@ import { toast } from "sonner";
 import { review } from "@/lib/component";
 import { Button } from "../shadcn/button";
 import { useFetcher } from "../component/fetch-context";
+import { ModelPicker } from "./model-picker";
 
 export function ReviewComponentForm() {
     const { currentProject } = useProject()
     const { component } = useComponent();
-    const {refetch} = useFetcher()
+    const { refetch } = useFetcher()
     const [provider, setProvider] = useState<{ name: Providers; id: string; }>();
     const [model, setModel] = useState<string>();
     const [userPrompt, setPrompt] = useState<string>();
@@ -40,7 +41,7 @@ export function ReviewComponentForm() {
             formData.append("prompt", userPrompt as string);
 
             const reviewedComponent = await review(formData);
-            if(reviewedComponent) refetch()
+            if (reviewedComponent) refetch()
             toast.success(
                 `Component updated`,
             );
@@ -61,24 +62,14 @@ export function ReviewComponentForm() {
             form="llmId"
             onSelect={(llmId) => {
                 setModel(undefined);
+                const llm = currentProject?.llms?.find((llm) => llm.id == llmId)!
                 setProvider({
-                    name: currentProject?.llms?.find((llm) => llm.id == llmId)!
-                        .provider as Providers,
+                    name: llm.provider as Providers,
                     id: llmId,
                 });
             }} />
         {provider &&
-            <Combobox
-                options={availableLLMs[provider.name].model.map(
-                    (
-                        p
-                    ) => ({
-                        label: p,
-                        value: p,
-                    })
-                )}
-                placeholder="Select a model"
-                onSelect={setModel} />
+            <ModelPicker provider={provider} setModel={setModel} />
         }
         <Textarea
             onChange={(e) => setPrompt(e.target.value)}
@@ -89,7 +80,7 @@ export function ReviewComponentForm() {
         <Button
             type="submit"
             disabled={isLoading}>
-                Edit
+            Edit
         </Button>
     </form>;
 }
