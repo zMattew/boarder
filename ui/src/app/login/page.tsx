@@ -2,8 +2,7 @@ import { oAuthProviderMap } from "@repo/auth/providers";
 import { GalleryVerticalEnd } from "lucide-react";
 import { LoginForm, ThirdPartyLoginFrom } from "@/components/form/login";
 
-export default async function SignInPage() {
-
+export default function SignInPage() {
     return (
         <>
             <div className="bg-background flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
