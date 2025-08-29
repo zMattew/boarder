@@ -15,11 +15,12 @@ import {
     CardTitle,
 } from "../shadcn/card";
 import { useView } from "../../hooks/view-context";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { ModelPicker } from "./model-picker";
 export function NewComponentForm(
 ) {
     const { currentProject, refreshProjects } = useProject()
+    const {push} = useRouter()
     if (currentProject?.role == "viewer") redirect("/home")
     const { currentView } = useView()
     const [source, setSource] = useState<string>();
@@ -100,6 +101,7 @@ export function NewComponentForm(
                                     `Component created \nId: ${component.id}`,
                                 );
                                 refreshProjects()
+                                push(`/home/views/${currentView.id}`)
                             } catch (error) {
                                 toast.error(
                                     `Failed to create component: ${error}`,
