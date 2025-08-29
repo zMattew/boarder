@@ -3,6 +3,7 @@ import client from "@repo/db/client";
 import { auth } from "@/lib/auth";
 import { TeamRole } from "@repo/db/client";
 import { cookies } from "next/headers";
+import { actionLimiter } from "./limiter";
 
 
 export async function setProjectCookie(projectId: string) {
@@ -70,4 +71,22 @@ export async function deleteProject(projectId: string) {
     } catch (error) {
         throw "Only the owner can delete the project"
     }
+}
+
+export async function newProject(formData: FormData) {
+    const session = await auth()
+    if (!session?.user) throw new Error("Auth failed")
+    const name = formData.get('name') as string
+    const { success } = await actionLimiter.limit(session.user?.id ?? "unauth")
+    if (!success) throw "Too many request"
+    return await client.project.create({
+        data: {
+            name: name,
+            owner: {
+                connect: {
+                    id: session.user?.id
+                }
+            }
+        }
+    })
 }

@@ -32,17 +32,6 @@ services:
       - "6379:6379"
     networks:
       - redis
-  rest-redis:
-    image: hiett/serverless-redis-http
-    ports:
-      - "8079:80"
-    environment:
-      SRH_MODE: env
-      SRH_TOKEN: ''
-      SRH_CONNECTION_STRING: 'redis://default:password@redis:6379'
-    networks:
-      - redis
-      - rest-redis
   ui:
     build:
       context: ./
@@ -75,7 +64,6 @@ services:
       - ui
       - db
       - redis
-      - rest-redis
       - ollama # if you plan to use a docker deployed ollama ensure to connect to the same network
   api:
     build:
@@ -104,8 +92,6 @@ networks:
     name: ui
   redis:
     name: redis
-  rest-redis:
-    name: rest-redis
   db:
     name: db
   ollama:

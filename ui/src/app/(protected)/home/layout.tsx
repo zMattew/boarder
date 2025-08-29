@@ -5,7 +5,6 @@ import { ProjectProvider } from "@/hooks/project-context";
 import { ViewProvider } from "@/hooks/view-context";
 import { QueryProvider } from "@/components/utils/query-layout";
 import { SessionProvider } from "next-auth/react";
-import { Toaster } from "sonner";
 
 export default function Layout({
     children,
@@ -13,7 +12,7 @@ export default function Layout({
     children: React.ReactNode;
 }>) {
     return (
-        <SessionProvider>
+        <SessionProvider refetchOnWindowFocus={false} refetchWhenOffline={false} >
             <QueryProvider>
                 <ProjectProvider>
                         <ViewProvider>
@@ -22,7 +21,6 @@ export default function Layout({
                                 <main className="w-full ">
                                     <Navbar />
                                     {children}
-                                    <Toaster />
                                 </main>
                             </SidebarProvider>
                         </ViewProvider>

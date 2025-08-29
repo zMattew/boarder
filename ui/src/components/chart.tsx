@@ -18,6 +18,7 @@ import { useComponent } from "./component/context";
 import { useFetcher } from "./component/fetch-context";
 import { Button } from "./shadcn/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { Combobox } from "./combobox";
 
 export default function Chart() {
     const { component } = useComponent()
@@ -45,7 +46,7 @@ export default function Chart() {
         <>
             <ChartContainer
                 config={config}
-                className="w-full h-full  pr-12 pl-1  mt-2 "
+                className="w-full h-full  pr-12  mt-2 "
             >
                 <ComposedChart
                     data={data.rows}
@@ -74,24 +75,37 @@ export default function Chart() {
                     <ChartType dataKey={component.keys[1]} fill={"red"} radius={4} />
                 </ComposedChart>
             </ChartContainer>
-            <div className="absolute bottom-0 w-full flex items-center justify-between gap-2 px-1  ">
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setPagination({ skip: pagination.skip + pagination.limit, limit: pagination.limit })}
-                    disabled={data.rows.length == 0}
-                    
-                >
-                    <ArrowLeft size={8}  />
-                </Button>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setPagination({ skip: pagination.skip - pagination.limit, limit: pagination.limit })}
-                    disabled={pagination.skip == 0}
-                >
-                    <ArrowRight />
-                </Button>
+            <div className="sticky bottom-0 z-[1] bg-background">
+                <div className="flex flex-row my-1">
+                    <Combobox
+                        options={[
+                            { label: "50", value: "50" },
+                            { label: "100", value: "100" },
+                            { label: "200", value: "200" }
+                        ]}
+                        placeholder="50"
+                        onSelect={(e) => setPagination({ skip: 0, limit: parseInt(e ? e : e = "50") })}
+                    />
+
+                    <div className="w-full flex items-center justify-end gap-2 ">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setPagination({ skip: pagination.skip - pagination.limit, limit: pagination.limit })}
+                            disabled={pagination.skip == 0}
+                        >
+                            <ArrowLeft size={8} />
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setPagination({ skip: pagination.skip + pagination.limit, limit: pagination.limit })}
+                            disabled={data.rows.length == 0}
+                        >
+                            <ArrowRight size={8} />
+                        </Button>
+                    </div>
+                </div>
             </div>
         </>
     );

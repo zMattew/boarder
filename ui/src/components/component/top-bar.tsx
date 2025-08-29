@@ -16,7 +16,6 @@ import {
     HoverCardContent,
     HoverCardTrigger,
 } from "@/components/shadcn/hover-card";
-import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
 import {
     Database,
     EllipsisVertical,
@@ -41,15 +40,10 @@ import { removeComponent } from "@/lib/component";
 import { toast } from "sonner";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "../shadcn/sheet";
 import { ReviewComponentForm } from "../form/review-component";
+import { useFetcher } from "./fetch-context";
 
-export function ComponentTopBar(
-    { refreshData, refreshing }: {
-        refreshData: (
-            options?: RefetchOptions,
-        ) => Promise<QueryObserverResult<unknown, Error>>;
-        refreshing: boolean;
-    },
-) {
+export function ComponentTopBar() {
+    const { isFetching, refetch } = useFetcher()
     const { setStyle, component, locked, setLocked, restore } = useComponent();
     const { listeners } = useDraggable({
         id: component.id,
@@ -93,11 +87,11 @@ export function ComponentTopBar(
             </div>
             <div className="flex flex-row gap-0.5">
                 <RefreshCcw
-                    className={`h-3 hover:cursor-pointer ${refreshing ? "animate-spin" : ""
+                    className={`h-3 hover:cursor-pointer ${isFetching ? "animate-spin" : ""
                         }`}
                     onClick={async () => {
                         await revalidateData(component.id);
-                        refreshData({ cancelRefetch: false });
+                        refetch({ cancelRefetch: false });
                     }}
                 />
                 <DropdownMenu>
@@ -155,8 +149,8 @@ export function ComponentTopBar(
                                                     Current component
                                                 </SheetTitle>
                                                 <SheetDescription>
-                                                    Type: {component.name}<br/>
-                                                    Description: {component.description}<br/>
+                                                    Type: {component.name}<br />
+                                                    Description: {component.description}<br />
                                                     Source: {component.source.name}
                                                 </SheetDescription>
                                                 <ReviewComponentForm />

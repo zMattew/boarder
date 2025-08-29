@@ -58,6 +58,7 @@ This is a turbo mono repo, if you want to modify make changes you need to instal
    ```
 ## Alpha
 Current version is in alpha and need some work to extends features, improve performance and ui/ux.
+Any feedback will be considered feel free to create an issue to explain.
 
 ## Next Features 
 - More databases support (current postgres, mysql)
@@ -65,12 +66,12 @@ Current version is in alpha and need some work to extends features, improve perf
 - Infinite scroll query
 - Exposed api
 - View embeeding
-- Exposed api
 - Schema explorer
 
 ## Known issue
 - The api is not implemented but required to sync the db schema. In the future should have the functionality exposed.
-- The ui has a cache handler but there isn't fine-graded caching implemented.
-- The login flow erroring need better user ux/ui
+- The prompt and review of component doesn't show any progress.
+- Potential error of tool calls from agents doesn't throw error and can create a errored component.   
+- The ui has a cache handler for ui but there isn't fine-graded.
+- Components top bar can't refetch if component is errored and must be performed a full page reload.
 - Can't login with third party or email if was already registered with other provider
-- Current provider supported are Google and Github
