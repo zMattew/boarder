@@ -31,4 +31,5 @@ export async function deleteUser() {
     const user = await client.user.findUnique({ where: { id: session?.user?.id } })
     if (!user) throw "Unauthorized"
     await client.user.delete({ where: { id: session.user.id } })
+    await signOut()
 }

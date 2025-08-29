@@ -22,7 +22,7 @@ const projectContext = createContext<
 
 export function ProjectProvider({ children }: { children: ReactNode }) {
     const client = useQueryClient();
-    const { data: projects, refetch } = useQuery({
+    const { data: projects } = useQuery({
         queryKey: [`projects`],
         queryFn: getUserProject,
         refetchOnMount: false,
