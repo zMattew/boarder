@@ -66,7 +66,6 @@ Any feedback will be considered feel free to create an issue to explain.
 - Infinite scroll query
 - Exposed api
 - View embeeding
-- Exposed api
 - Schema explorer
 
 ## Known issue
@@ -75,4 +74,3 @@ Any feedback will be considered feel free to create an issue to explain.
 - The ui has a cache handler but there isn't fine-graded.
 - Components top bar can't refetch if component is errored and must be performed a full page reload.
 - Can't login with third party or email if was already registered with other provider
-- Current provider supported are Google and Github

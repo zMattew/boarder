@@ -1,10 +1,25 @@
 import type { BuiltInProviders, Provider } from "next-auth/providers";
+import Apple from "next-auth/providers/apple";
+import Auth0 from "next-auth/providers/auth0";
+import Facebook from "next-auth/providers/facebook";
 import GitHub from "next-auth/providers/github";
+import GitLab from "next-auth/providers/gitlab";
 import Google from "next-auth/providers/google";
+import LinkedIn from "next-auth/providers/linkedin";
+import Twitter from "next-auth/providers/twitter";
+const availableProviders: {
+    [key in keyof BuiltInProviders]?: Provider;
+} = {
+    "google": Google,
+    "github": GitHub,
+    "facebook": Facebook,
+    "twitter": Twitter,
+    "linkedin": LinkedIn,
+    "auth0": Auth0,
+    "apple": Apple,
+    "gitlab": GitLab,
+};
 export function getOAuthProvidersFromEnv() {
-    const availableProviders: {
-        [key in keyof BuiltInProviders]?: Provider;
-    } = { "google": Google, "github": GitHub };
     const envProviders = Object.keys(process.env).filter((providerName) => providerName.startsWith("AUTH"));
     const thirdPartyProvider = Object.groupBy(envProviders, (e) => {
         const start = e.split("_")[1].toLowerCase();
@@ -25,7 +40,7 @@ export function getOAuthProvidersFromEnv() {
 }
 
 
-export const oAuthProviderMap =()=> getOAuthProvidersFromEnv()
+export const oAuthProviderMap = () => getOAuthProvidersFromEnv()
     .map((provider) => {
         if (typeof provider === "function") {
             const providerData = provider()
