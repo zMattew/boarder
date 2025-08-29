@@ -91,7 +91,7 @@ export default function Chart() {
                         <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => setPagination({ skip: pagination.skip - pagination.limit, limit: pagination.limit })}
+                            onClick={() => setPagination({ skip: pagination.skip + pagination.limit, limit: pagination.limit })}
                             disabled={pagination.skip == 0}
                         >
                             <ArrowLeft size={8} />
@@ -99,7 +99,7 @@ export default function Chart() {
                         <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => setPagination({ skip: pagination.skip + pagination.limit, limit: pagination.limit })}
+                            onClick={() => setPagination({ skip: pagination.skip - pagination.limit, limit: pagination.limit })}
                             disabled={data.rows.length == 0}
                         >
                             <ArrowRight size={8} />
