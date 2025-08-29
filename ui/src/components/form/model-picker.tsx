@@ -8,6 +8,7 @@ export function ModelPicker({ provider, setModel }: { provider: { name: Provider
     const { data: models } = useQuery({
         initialData: typeof availableLLMs[provider.name].model != "function" ? availableLLMs[provider.name].model as string[] : [],
         queryKey: ["llm", provider.id],
+        refetchOnWindowFocus:false,
         queryFn: async () => {
             const models = availableLLMs[provider.name].model;
             if (typeof models == "function") return await models(provider.id)
