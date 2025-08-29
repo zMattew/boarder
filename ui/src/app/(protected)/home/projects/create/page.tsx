@@ -9,14 +9,12 @@ import {
 } from "@/components/shadcn/card";
 import { Input } from "@/components/shadcn/input";
 import { Label } from "@/components/shadcn/label";
-import { useSession } from "next-auth/react";
 import { toast } from "sonner";
-import { newProject } from "./newProject";
 import { useState } from "react";
 import { useProject } from "@/hooks/project-context";
+import { newProject } from "@/lib/project";
 
 export default function Page() {
-    const {data:session} = useSession();
     const [loading, setLoading] = useState<boolean>(false);
     const {refreshProjects} =useProject()
     return (
@@ -33,11 +31,6 @@ export default function Page() {
                         action={async (formData: FormData) => {
                             setLoading(true);
                             try {
-                                if (!session) throw "No login";
-                                formData.append(
-                                    "userId",
-                                    session.user?.id as string,
-                                );
 
                                 const response = await newProject(formData);
                                 toast.success(
