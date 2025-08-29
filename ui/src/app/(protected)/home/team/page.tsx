@@ -69,7 +69,7 @@ export default function Page() {
                                                                 member.id,
                                                                 "admin",
                                                             );
-                                                            refreshProjects();
+                                                            await refreshProjects();
                                                             toast.success(
                                                                 `Role changed to admin for ${member.user.email}`,
                                                             );
@@ -91,8 +91,7 @@ export default function Page() {
                                                                 member.id,
                                                                 "editor",
                                                             );
-                                                            refreshProjects();
-                                                            refreshProjects();
+                                                            await refreshProjects();
                                                             toast.success(
                                                                 `Role changed to editor for ${member.user.email}`,
                                                             );
@@ -114,8 +113,7 @@ export default function Page() {
                                                                 member.id,
                                                                 "viewer",
                                                             );
-                                                            refreshProjects();
-                                                            refreshProjects();
+                                                            await refreshProjects();
                                                             toast.success(
                                                                 `Role changed to viewer for ${member.user.email}`,
                                                             );
@@ -139,7 +137,7 @@ export default function Page() {
                                                     currentProject.id,
                                                     member.id,
                                                 );
-                                                refreshProjects();
+                                                await refreshProjects();
                                                 toast.success(
                                                     `${member.user.email} removed from the team`,
                                                 );

@@ -100,7 +100,7 @@ export function NewComponentForm(
                                 toast.success(
                                     `Component created \nId: ${component.id}`,
                                 );
-                                refreshProjects()
+                                await refreshProjects()
                                 push(`/home/views/${currentView.id}`)
                             } catch (error) {
                                 toast.error(

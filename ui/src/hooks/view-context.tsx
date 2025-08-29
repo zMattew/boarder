@@ -21,9 +21,9 @@ const viewContext = createContext<
             >[number]["view"][number],
         ) => void;
         views: Awaited<ReturnType<typeof getUserProject>>[number]["view"];
-        refreshViews: () => void;
+        refreshViews: () => Promise<void>;
     }
->({ views: [], setView: () => {}, refreshViews: () => {} });
+>({ views: [], setView: () => {}, refreshViews: async() => {} });
 
 export function ViewProvider({ children }: { children: ReactNode }) {
     const { currentProject, refreshProjects: refreshProject } = useProject();

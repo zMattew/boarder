@@ -35,11 +35,11 @@ export function NewViewForm() {
                             if (!currentProject) throw "Select a project";
                             formData.append("projectId", currentProject.id);
                             await createView(formData);
-                            refreshProjects();
+                            await refreshProjects();
                             toast.success("View created");
                         } catch (error) {
                             toast.error(`${error}`);
-                        } finally{
+                        } finally {
                             setLoading(false)
                         }
                     }}

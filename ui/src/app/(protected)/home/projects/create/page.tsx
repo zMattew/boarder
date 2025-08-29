@@ -16,7 +16,7 @@ import { newProject } from "@/lib/project";
 
 export default function Page() {
     const [loading, setLoading] = useState<boolean>(false);
-    const {refreshProjects} =useProject()
+    const { refreshProjects } = useProject()
     return (
         <div className="h-full w-full grid place-content-center ">
             <Card className="w-full max-w-sm">
@@ -31,12 +31,11 @@ export default function Page() {
                         action={async (formData: FormData) => {
                             setLoading(true);
                             try {
-
                                 const response = await newProject(formData);
                                 toast.success(
                                     `Project ${response.name} created`,
                                 );
-                                refreshProjects()
+                                await refreshProjects()
                             } catch (msg) {
                                 toast.error(`${msg}`);
                             } finally {

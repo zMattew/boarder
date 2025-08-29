@@ -99,7 +99,7 @@ export function NewLLMForm() {
                                 else formData.append("api", api);
                             }
                             const response = await createLLM(formData);
-                            refreshProjects()
+                            await refreshProjects()
                             toast.success(
                                 `Provider added \nId: ${response.id}`,
                             );

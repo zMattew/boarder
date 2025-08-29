@@ -2,11 +2,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import {
     BadgeCheck,
-    Bell,
     ChevronsUpDown,
-    CreditCard,
     LogOut,
-    Sparkles,
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import {
@@ -95,24 +92,11 @@ export function SidebarUser() {
                                     </DropdownMenuLabel>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuGroup>
-                                        <DropdownMenuItem>
-                                            <Sparkles />
-                                            Upgrade to Pro
-                                        </DropdownMenuItem>
-                                    </DropdownMenuGroup>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuGroup>
-                                        <DropdownMenuItem>
-                                            <BadgeCheck />
-                                            Account
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem>
-                                            <CreditCard />
-                                            Billing
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem>
-                                            <Bell />
-                                            Notifications
+                                        <DropdownMenuItem asChild>
+                                            <Link href={"/home/account"}>
+                                                <BadgeCheck />
+                                                Account
+                                            </Link>
                                         </DropdownMenuItem>
                                     </DropdownMenuGroup>
                                     <DropdownMenuSeparator />

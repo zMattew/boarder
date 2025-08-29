@@ -56,7 +56,7 @@ function EditSourceForm(
                         sourceName,
                         url,
                     );
-                    refreshProjects();
+                    await refreshProjects();
                     toast.success("Source edited")
                 } catch (error) {
                     toast.error(`${error}`);
@@ -190,7 +190,7 @@ export default function Page() {
                                                                         .id,
                                                                     source.id,
                                                                 );
-                                                                refreshProjects();
+                                                                await refreshProjects();
                                                                 toast.success("Source removed")
                                                             } catch (error) {
                                                                 toast.error(`${error}`)

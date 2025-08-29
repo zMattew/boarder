@@ -33,7 +33,7 @@ export function AddMemberForm() {
                                 currentProject.id,
                             );
                             await addMember(formData);
-                            refreshProjects();
+                            await refreshProjects();
                             toast.success("Member added");
                         } catch (error) {
                             toast.error(`${error}`);

@@ -16,5 +16,5 @@ export async function createView(formData: FormData) {
     if (!projectId) {
         throw new Error("Project is required");
     }
-    await addView(name, projectId);
+    return await addView(name, projectId);
 }

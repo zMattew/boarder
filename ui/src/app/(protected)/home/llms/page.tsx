@@ -46,7 +46,7 @@ export default function Page() {
                                                     currentProject.id,
                                                     llm.id,
                                                 );
-                                                refreshProjects();
+                                                await refreshProjects();
                                                 toast.success("LLM removed")
                                             } catch (error) {
                                                 toast.error(`${error}`)
