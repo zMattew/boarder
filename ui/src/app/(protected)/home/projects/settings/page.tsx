@@ -85,7 +85,7 @@ export default function Page() {
                                                 await deleteProject(
                                                     currentProject?.id,
                                                 );
-                                                refreshProjects();
+                                                await refreshProjects();
                                                 toast.success("Source removed");
                                             } catch (error) {
                                                 toast.error(`${error}`);

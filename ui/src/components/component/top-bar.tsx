@@ -190,7 +190,7 @@ export function ComponentTopBar() {
                                                     onClick={async () => {
                                                         try {
                                                             await removeComponent(currentProject.id, component.id)
-                                                            refreshProjects()
+                                                            await refreshProjects()
                                                             toast.success("Component removed")
                                                         } catch (error) {
                                                             toast.error(`${error}`)

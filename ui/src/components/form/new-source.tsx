@@ -35,7 +35,7 @@ export function NewSourceForm() {
                             if(!currentProject.id) throw "Select a project"
                             formData.append("projectId", currentProject.id);
                             await createSource(formData);
-                            refreshProjects()
+                            await refreshProjects()
                             toast.success("Source created")
                         } catch (error) {
                             toast.error(`${error}`)

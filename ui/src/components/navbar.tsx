@@ -176,7 +176,7 @@ export function Navbar() {
                                                             currentProject?.id,
                                                             currentView.id,
                                                         );
-                                                        refreshProjects();
+                                                        await refreshProjects();
                                                         toast.success("View deleted")
                                                         setView()
                                                         router.push("/home")

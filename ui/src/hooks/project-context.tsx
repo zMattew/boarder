@@ -16,13 +16,13 @@ const projectContext = createContext<
             project: Awaited<ReturnType<typeof getUserProject>>[number],
         ) => void;
         projects?: Awaited<ReturnType<typeof getUserProject>>;
-        refreshProjects: () => void;
+        refreshProjects: () => Promise<void>;
     }
->({ projects: [], setProject: () => {}, refreshProjects: () => {} });
+>({ projects: [], setProject: () => {}, refreshProjects: async () => {} });
 
 export function ProjectProvider({ children }: { children: ReactNode }) {
     const client = useQueryClient();
-    const { data: projects } = useQuery({
+    const { data: projects, refetch } = useQuery({
         queryKey: [`projects`],
         queryFn: getUserProject,
         refetchOnMount: false,
@@ -31,8 +31,8 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     const [currentProject, setProject] = useState<
         Awaited<ReturnType<typeof getUserProject>>[number]
     >();
-    const refreshProject = () => {
-        client.invalidateQueries({
+    const refreshProject = async () => {
+        await client.invalidateQueries({
             queryKey: [`projects`],
         });
     };
