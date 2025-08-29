@@ -12,7 +12,7 @@ export default function Layout({
     children: React.ReactNode;
 }>) {
     return (
-        <SessionProvider>
+        <SessionProvider refetchOnWindowFocus={false} refetchWhenOffline={false} >
             <QueryProvider>
                 <ProjectProvider>
                         <ViewProvider>
