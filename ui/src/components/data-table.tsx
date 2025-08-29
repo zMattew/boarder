@@ -14,7 +14,6 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableFooter,
   TableRow,
 } from "@/components/shadcn/table";
 import { useFetcher } from "./component/fetch-context";
