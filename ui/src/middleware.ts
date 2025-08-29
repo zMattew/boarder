@@ -3,6 +3,9 @@ import { getMemberRoleFromCookie } from "@repo/db"
 
 export default middleware(async (req) => {
   const pathname = req.nextUrl.pathname
+  if (pathname == "/") {
+    return Response.redirect(req.nextUrl.origin + "/home", 308)
+  }
   if (pathname.startsWith("/home")) {
     if (!req.auth) return Response.redirect(req.nextUrl.origin + "/login")
     const projectId = req.cookies.get('selected-project')?.value
@@ -33,6 +36,6 @@ export default middleware(async (req) => {
 })
 
 export const config = {
-  matcher: ["/((?!api|data|_next/static|_next/image|favicon.ico).*)", "/home/:path", "/login"],
+  matcher: ["/((?!api|data|_next/static|_next/image|favicon.ico).*)", "/home/:path", "/login", "/"],
   runtime: "nodejs"
 }
