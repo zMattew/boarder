@@ -1,7 +1,7 @@
 "use server"
 
 import client from "@repo/db/client"
-import { auth } from "./auth"
+import { auth, signOut } from "./auth"
 import { decrypt, encrypt } from "@repo/core/crypto"
 import { actionLimiter } from "./limiter"
 
@@ -23,4 +23,12 @@ export async function setPassword(password: string, confirm: string, currPasswor
         const newPassword = await encrypt(password)
         await client.user.update({ where: { id: session.user.id }, data: { password: newPassword } })
     }
+}
+
+export async function deleteUser() {
+    const session = await auth()
+    if (!session?.user?.id) throw "Unauthorized"
+    const user = await client.user.findUnique({ where: { id: session?.user?.id } })
+    if (!user) throw "Unauthorized"
+    await client.user.delete({ where: { id: session.user.id } })
 }

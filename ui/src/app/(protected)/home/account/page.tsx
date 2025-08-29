@@ -1,10 +1,13 @@
+import { DeleteUserButton } from "@/components/form/delete-user";
 import { ChangePasswordForm } from "@/components/form/set-password";
 import { Button } from "@/components/shadcn/button";
 import { Card, CardContent, CardTitle } from "@/components/shadcn/card";
 import {
     Dialog,
+    DialogClose,
     DialogContent,
     DialogDescription,
+    DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
@@ -20,7 +23,7 @@ export default async function Page() {
             <CardTitle>
                 Account {user?.name}
             </CardTitle>
-            <CardContent>
+            <CardContent className="flex flex-col gap-2">
                 <Dialog>
                     <DialogTrigger asChild>
                         <Button>
@@ -39,7 +42,36 @@ export default async function Page() {
                         <ChangePasswordForm currentPass={!!user?.password} />
                     </DialogContent>
                 </Dialog>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button>
+                            Delete account
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>
+                                Are you absolutely sure?
+                            </DialogTitle>
+                            <DialogDescription className="flex flex-col">
+                                Your account will be removed permanetly with the owning project, view, component
+                            </DialogDescription>
+                            <DialogFooter>
+                                <DialogClose asChild>
+                                    <Button
+                                        type="button"
+                                        variant="secondary"
+                                    >
+                                        Close
+                                    </Button>
+                                </DialogClose>
+                                <DeleteUserButton />
+                            </DialogFooter>
+                        </DialogHeader>
+                    </DialogContent>
+                </Dialog>
             </CardContent>
         </Card>
     );
 }
+
