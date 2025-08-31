@@ -4,7 +4,7 @@ import type { Providers } from "@repo/db/client";
 import { useEffect, useState } from "react";
 import { Textarea } from "../shadcn/textarea";
 import { Button } from "../shadcn/button";
-import { addComponent, prompt } from '@/lib/component';
+import { addComponent } from '@/lib/component';
 import { toast } from "sonner";
 import { useProject } from "../../hooks/project-context";
 import {

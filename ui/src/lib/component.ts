@@ -1,6 +1,5 @@
 "use server"
 
-import { promptComponent, reviewComponent } from "@repo/core/agent"
 import client from "@repo/db/client"
 import { getMemberRole } from "./role"
 import { actionLimiter } from "./limiter"
@@ -47,48 +46,4 @@ export async function updateComponent(id: string, name: string, query: string, d
             keys
         }
     })
-}
-export async function prompt(formData: FormData) {
-    const { userId, role } = await getMemberRole();
-    if (role == "viewer") throw "You can't do this action";
-    const { success } = await actionLimiter.limit(userId)
-    if (!success) throw "Too many request"
-    const source = formData.get("source") as string;
-    const view = formData.get("view") as string;
-    const provider = formData.get("provider") as string;
-    const model = formData.get("model") as string;
-    const prompt = formData.get("prompt") as string;
-
-    const { component, threadId } = await promptComponent(provider, model, prompt, source);
-
-    return await addComponent(
-        component.name,
-        source,
-        component.query,
-        threadId,
-        view,
-        component.keys,
-        component.description
-    );
-}
-
-export async function review(formData: FormData) {
-    const { userId, role } = await getMemberRole();
-    if (role == "viewer") throw "You can't do this action";
-    const { success } = await actionLimiter.limit(userId)
-    if (!success) throw "Too many request"
-    const componentId = formData.get("component") as string;
-    const provider = formData.get("provider") as string;
-    const model = formData.get("model") as string;
-    const prompt = formData.get("prompt") as string;
-
-    const component = await reviewComponent(provider, model, prompt, componentId);
-
-    return await updateComponent(
-        componentId,
-        component.name,
-        component.description,
-        component.query,
-        component.keys
-    );
 }

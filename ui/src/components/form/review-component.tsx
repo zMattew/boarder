@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useProject } from "@/hooks/project-context";
 import { Textarea } from "../shadcn/textarea";
 import { toast } from "sonner";
-import { review, updateComponent } from "@/lib/component";
+import { updateComponent } from "@/lib/component";
 import { Button } from "../shadcn/button";
 import { useFetcher } from "../component/fetch-context";
 import { ModelPicker } from "./model-picker";
