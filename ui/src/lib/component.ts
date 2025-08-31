@@ -24,7 +24,7 @@ export async function addComponent(name: string, sourceId: string, query: string
 }
 
 export async function removeComponent(projectId: string, componentId: string) {
-    const { userId,role } = await getMemberRole()
+    const { userId, role } = await getMemberRole()
     if (role == "viewer") throw "You can't do this action"
     const { success } = await actionLimiter.limit(userId)
     if (!success) throw "Too many request"
@@ -37,19 +37,19 @@ export async function removeComponent(projectId: string, componentId: string) {
 }
 
 
-export async function updateComponent(id: string, name: string, description: string, query: string, keys: string[] = []) {
+export async function updateComponent(id: string, name: string, query: string, description: string, keys: string[] = []) {
     return await client.component.update({
         where: { id },
         data: {
             name,
-            description,
             query,
+            description,
             keys
         }
     })
 }
 export async function prompt(formData: FormData) {
-    const { userId,role } = await getMemberRole();
+    const { userId, role } = await getMemberRole();
     if (role == "viewer") throw "You can't do this action";
     const { success } = await actionLimiter.limit(userId)
     if (!success) throw "Too many request"
@@ -73,7 +73,7 @@ export async function prompt(formData: FormData) {
 }
 
 export async function review(formData: FormData) {
-    const { userId,role } = await getMemberRole();
+    const { userId, role } = await getMemberRole();
     if (role == "viewer") throw "You can't do this action";
     const { success } = await actionLimiter.limit(userId)
     if (!success) throw "Too many request"
