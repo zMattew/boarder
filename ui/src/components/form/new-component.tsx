@@ -15,7 +15,6 @@ import {
     CardTitle,
 } from "../shadcn/card";
 import { useView } from "../../hooks/view-context";
-import { redirect } from "next/navigation";
 import { ModelPicker } from "./model-picker";
 import { ComponentRespones } from "@repo/core/agent";
 import { Loader2 } from "lucide-react";
@@ -23,7 +22,6 @@ import { useRouter } from "next/navigation";
 export function NewComponentForm(
 ) {
     const { currentProject, refreshProjects } = useProject()
-    if (currentProject?.role == "viewer") redirect("/home")
     const { push } = useRouter()
     const { currentView } = useView()
     const [source, setSource] = useState<string>();
