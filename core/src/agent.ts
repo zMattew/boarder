@@ -55,7 +55,7 @@ const responseFormat = z.object({
 })
 export type ComponentRespones = z.infer<typeof responseFormat>
 
-async function initAgent(providerId: string, model: string) {
+async function initAgent(providerId: string, model: string):Promise<ReturnType<typeof createReactAgent>> {
     const provider = await getLLM(providerId)
     if (!provider) throw new Error("No llm provider found")
 
@@ -73,7 +73,7 @@ async function initAgent(providerId: string, model: string) {
 }
 
 
-export async function promptComponent(llmId: string, model: string, prompt: string, sourceId: string) {
+export async function promptComponent(llmId: string, model: string, prompt: string, sourceId: string):Promise<{threadId:string,stream:Awaited<ReturnType<Awaited<ReturnType<typeof initAgent>>["stream"]>>}> {
     const threadId = Buffer.from(crypto.getRandomValues(new Uint8Array(16))).toString("hex");
 
     const agent = await initAgent(llmId, model)
@@ -85,7 +85,7 @@ export async function promptComponent(llmId: string, model: string, prompt: stri
 }
 
 
-export async function reviewComponent(llmId: string, model: string, prompt: string, componentId: string) {
+export async function reviewComponent(llmId: string, model: string, prompt: string, componentId: string):Promise<{stream:Awaited<ReturnType<Awaited<ReturnType<typeof initAgent>>["stream"]>>}> {
     const component = await getComponent(componentId)
     if (!component) throw "Component not Found"
     const agent = await initAgent(llmId, model)
@@ -97,6 +97,6 @@ export async function reviewComponent(llmId: string, model: string, prompt: stri
     }
 
     const response = await agent.stream({ messages: [{ role: "ai", content: `${COMPONENT_REVIEW_PROMT}\nCurrent component:${JSON.stringify(currentComponent)}` }, { role: "user", content: prompt }] }, { configurable: { sourceId: component.source.id, thread_id: component.threadId } })
-    return { stream: response, threadId:component.threadId }
+    return { stream: response }
 
 }
