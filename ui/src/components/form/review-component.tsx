@@ -39,59 +39,13 @@ export function ReviewComponentForm() {
         if (state.component)
             setComponent(state as { threadId: string, component: ComponentRespones })
     }, [state])
-    return <><form action={async () => {
-        setLoading(true);
-        setComponent(undefined)
-        const formData = new FormData();
-        try {
-            if (!component.id) throw "No source selected";
-            formData.append("component", component.id as string);
-
-            if (!provider) throw "No llm provider selected";
-            formData.append(
-                "provider",
-                provider.id as string,
-            );
-
-            if (!model) throw "No llm model selected";
-            formData.append("model", model as string);
-
-            if (!userPrompt) throw "No prompt found";
-            formData.append("prompt", userPrompt as string);
-
-            setMessage("Sending request")
-            const res = await fetch(`/prompt/review`, { method: "POST", body: formData })
-            if (!res.ok || !res.body) throw new Error()
-            const reader = res.body.getReader()
-            const decoder = new TextDecoder()
-            setMessage("Request accepted")
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) {
-                    setMessage(undefined)
-                    return;
-                } else {
-                    const update = decoder.decode(value)
-                    const updateObj = JSON.parse(update)
-                    console.log(updateObj)
-                    setState(updateObj)
-                }
-            }
-        } catch (error) {
-            toast.error(
-                `Failed to create component: ${error}`,
-            );
-        } finally {
-            setLoading(false);
-        }
-    }} className="flex flex-col gap-4">
+    return <><form className="flex flex-col gap-4">
         <Combobox
             options={currentProject?.llms?.map((llm) => ({
                 label: `${llm.label} ${llm.provider}`,
                 value: llm.id,
             }))}
             placeholder="Select a provider"
-            form="llmId"
             onSelect={(llmId) => {
                 setModel(undefined);
                 const llm = currentProject?.llms?.find((llm) => llm.id == llmId)
@@ -106,7 +60,6 @@ export function ReviewComponentForm() {
         <div className="flex flex-col gap-1 justify-start">
             <Textarea
                 onChange={(e) => setPrompt(e.target.value)}
-                name="prompt"
                 placeholder="prompt"
                 required
             />
@@ -114,7 +67,54 @@ export function ReviewComponentForm() {
         </div>
         <Button
             type="submit"
-            disabled={isLoading}>
+            disabled={isLoading}
+            onClick={async () => {
+                setLoading(true);
+                setComponent(undefined)
+                const formData = new FormData();
+                try {
+                    if (!component.id) throw "No source selected";
+                    formData.append("component", component.id as string);
+
+                    if (!provider) throw "No llm provider selected";
+                    formData.append(
+                        "provider",
+                        provider.id as string,
+                    );
+
+                    if (!model) throw "No llm model selected";
+                    formData.append("model", model as string);
+
+                    if (!userPrompt) throw "No prompt found";
+                    formData.append("prompt", userPrompt as string);
+
+                    setMessage("Sending request")
+                    const res = await fetch(`/prompt/review`, { method: "POST", body: formData })
+                    if (!res.ok || !res.body) throw new Error()
+                    const reader = res.body.getReader()
+                    const decoder = new TextDecoder()
+                    setMessage("Request accepted")
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) {
+                            setMessage(undefined)
+                            return;
+                        } else {
+                            const update = decoder.decode(value)
+                            const updateObj = JSON.parse(update)
+                            console.log(updateObj)
+                            setState(updateObj)
+                        }
+                    }
+                } catch (error) {
+                    toast.error(
+                        `Failed to create component: ${error}`,
+                    );
+                } finally {
+                    setLoading(false);
+                }
+            }}
+        >
             Edit
         </Button>
     </form>
