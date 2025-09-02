@@ -4,9 +4,9 @@ datasource db {
 }
 
 generator client {
-    provider = "prisma-client"
+    provider        = "prisma-client"
     previewFeatures = ["queryCompiler", "driverAdapters"]
-    output   = "./generated"
+    output          = "./generated"
 }
 
 model Source {
@@ -15,7 +15,7 @@ model Source {
     connectionUrl String      @unique()
     components    Component[]
     projectId     String
-    project       Project     @relation(fields: [projectId], references: [id],onDelete: Cascade)
+    project       Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
 model Component {
@@ -30,6 +30,7 @@ model Component {
     viewId      String?
     view        View?    @relation(fields: [viewId], references: [id], onDelete: Cascade)
     threadId    String?
+    history     Json[]   @default([])
 }
 
 model View {
@@ -38,7 +39,7 @@ model View {
     components Component[]
     meta       Json?
     projectId  String
-    project    Project     @relation(fields: [projectId], references: [id],onDelete: Cascade)
+    project    Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
 model Llm {
@@ -48,7 +49,7 @@ model Llm {
     url       String?
     apiKey    String?
     projectId String
-    project   Project   @relation(fields: [projectId], references: [id],onDelete: Cascade)
+    project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
 enum Providers {
@@ -96,7 +97,7 @@ model Project {
     id      String       @id @default(cuid())
     name    String
     ownerId String
-    owner   User         @relation(fields: [ownerId], references: [id],onDelete: Cascade)
+    owner   User         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
     team    TeamMember[]
     llms    Llm[]
     sources Source[]
@@ -106,7 +107,7 @@ model Project {
 model TeamMember {
     id        String   @id @default(cuid())
     projectId String
-    project   Project  @relation(fields: [projectId], references: [id],onDelete: Cascade)
+    project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
     role      TeamRole
     userId    String
     user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
