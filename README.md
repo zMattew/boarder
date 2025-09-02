@@ -70,8 +70,6 @@ Any feedback will be considered feel free to create an issue to explain.
 
 ## Known issue
 - The api is not implemented but required to sync the db schema. In the future should have the functionality exposed.
-- The prompt and review of component doesn't show any progress.
-- Potential error of tool calls from agents doesn't throw error and can create a errored component.   
-- The ui has a cache handler for ui but there isn't fine-graded.
+- The ui has a cache handler but there isn't fine-graded controle yet.
 - Components top bar can't refetch if component is errored and must be performed a full page reload.
 - Can't login with third party or email if was already registered with other provider
