@@ -97,6 +97,7 @@ export function NewComponentForm(
                         disabled={isLoading}
                         onClick={async () => {
                             setLoading(true);
+                            setComponent(undefined)
                             const formData = new FormData();
                             try {
                                 if (!source) throw "No source selected";

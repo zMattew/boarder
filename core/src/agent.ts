@@ -1,18 +1,19 @@
 
-import { tool } from "@langchain/core/tools"
+import { tool } from "@langchain/core/tools";
 import { dbIntrospection, testSQLQuery } from "./db.ts"
 import { z } from "zod"
 import Components from "./components.ts"
 import { initChatModel } from "langchain/chat_models/universal";
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
-import { MemorySaver } from "@langchain/langgraph-checkpoint"
 import type { RunnableConfig } from "@langchain/core/runnables"
-
-import { SystemMessage, } from "@langchain/core/messages"
+import { Redis } from "ioredis"
+import { SystemMessage, ToolMessage, } from "@langchain/core/messages"
 import { getLLM, getComponent } from "@repo/db"
 import { decrypt } from "./crypto.ts"
 import { availableLLMs } from './llms.ts';
 import type { Providers } from "@repo/db/client"
+import { MemorySaver, UpdateType } from "@langchain/langgraph";
+import { IterableReadableStream } from "@langchain/core/utils/stream";
 export { ToolMessage } from "@langchain/core/messages"
 
 const getSchema = tool(async (input: Record<string, any>, config: RunnableConfig) => {
@@ -55,7 +56,7 @@ const responseFormat = z.object({
 })
 export type ComponentRespones = z.infer<typeof responseFormat>
 
-async function initAgent(providerId: string, model: string):Promise<ReturnType<typeof createReactAgent>> {
+async function initAgent(providerId: string, model: string): Promise<ReturnType<typeof createReactAgent>> {
     const provider = await getLLM(providerId)
     if (!provider) throw new Error("No llm provider found")
 
@@ -73,19 +74,24 @@ async function initAgent(providerId: string, model: string):Promise<ReturnType<t
 }
 
 
-export async function promptComponent(llmId: string, model: string, prompt: string, sourceId: string):Promise<{threadId:string,stream:Awaited<ReturnType<Awaited<ReturnType<typeof initAgent>>["stream"]>>}> {
+export async function promptComponent(llmId: string, model: string, prompt: string, sourceId: string) {
     const threadId = Buffer.from(crypto.getRandomValues(new Uint8Array(16))).toString("hex");
 
     const agent = await initAgent(llmId, model)
 
     const messages = [new SystemMessage(COMPONENT_SYSTEM_PROMT), { role: "user", content: prompt }]
-    const response = await agent.stream({ messages }, { configurable: { sourceId, thread_id: threadId } })
-
-    return { stream: response, threadId }
+    const response = await agent.stream({ messages }, { configurable: { sourceId, thread_id: threadId }, },)
+    const history: (Buffer | number)[] = [0, Buffer.from(JSON.stringify(messages[1]))]
+    let index = 1
+    return {
+        stream: new ReadableStream({
+            pull: async (controller) => await handleUpdate(controller, response, threadId, sourceId, history, index)
+        }), threadId
+    }
 }
 
 
-export async function reviewComponent(llmId: string, model: string, prompt: string, componentId: string):Promise<{stream:Awaited<ReturnType<Awaited<ReturnType<typeof initAgent>>["stream"]>>}> {
+export async function reviewComponent(llmId: string, model: string, prompt: string, componentId: string) {
     const component = await getComponent(componentId)
     if (!component) throw "Component not Found"
     const agent = await initAgent(llmId, model)
@@ -95,8 +101,56 @@ export async function reviewComponent(llmId: string, model: string, prompt: stri
         query: component.query,
         keys: component.keys
     }
+    if (!component.threadId) throw "No history found"
+    const messages = [ ...component.history, { role: "ai", content: `${COMPONENT_REVIEW_PROMT}\nCurrent component:${JSON.stringify(currentComponent)}` }, { role: "user", content: prompt }]
+    const response = await agent.stream({ messages:[new SystemMessage(COMPONENT_SYSTEM_PROMT),...messages] }, { configurable: { sourceId: component.source.id, thread_id: component.threadId } })
+    const newHistory: (Buffer | number)[] = messages.map((m,i)=>([i,Buffer.from(JSON.stringify(m))])).flat()
+    return {
+        stream: new ReadableStream({
+            pull: async (controller) => await handleUpdate(controller, response, component.threadId!, component.sourceId, newHistory, component.history.length + 1)
+        })
+    }
 
-    const response = await agent.stream({ messages: [{ role: "ai", content: `${COMPONENT_REVIEW_PROMT}\nCurrent component:${JSON.stringify(currentComponent)}` }, { role: "user", content: prompt }] }, { configurable: { sourceId: component.source.id, thread_id: component.threadId } })
-    return { stream: response }
+}
 
+async function handleUpdate(controller: ReadableStreamDefaultController<any>, response: IterableReadableStream<Record<any, UpdateType<any>>>, threadId: string, sourceId: string, history: (Buffer | number)[], index: number) {
+    try {
+        const { value, done } = await response.next()
+
+        if (done) {
+            controller.close()
+            const client = new Redis(process.env.REDIS_URL as string)
+            await client.multi()
+                .zadd(`llm:${threadId}`, ...history)
+                .expire(`llm:${threadId}`, 900)
+                .exec()
+        } else {
+            let message
+            if (value?.agent?.messages) {
+                if (value.agent.messages instanceof Array) {
+                    const agentMessage = value.agent.messages[0]
+                    message = agentMessage
+                }
+            }
+            if (value?.tools?.messages) {
+                if (value.tools.messages instanceof Array) {
+                    const toolMessage = value.tools.messages[0] as ToolMessage
+                    controller.enqueue(JSON.stringify({ tool: toolMessage.name, status: toolMessage.status }))
+                    message = toolMessage
+                }
+            }
+            if (value?.generate_structured_response) {
+                const component = (value?.generate_structured_response as { structuredResponse: ComponentRespones }).structuredResponse
+                controller.enqueue(JSON.stringify({ component, threadId, sourceId }))
+            }
+            if (message) {
+                index += 1
+                history.push(index, Buffer.from(JSON.stringify(message)))
+            }
+
+        }
+    } catch (error) {
+        controller.enqueue(JSON.stringify({ error: `${error}` }))
+        controller.close()
+    }
 }

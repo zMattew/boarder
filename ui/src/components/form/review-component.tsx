@@ -22,7 +22,7 @@ export function ReviewComponentForm() {
     const [userPrompt, setPrompt] = useState<string>();
     const [isLoading, setLoading] = useState<boolean>(false);
     const [state, setState] = useState<Record<string, unknown>>({})
-    const [generatedComponent, setComponent] = useState<{ threadId: string, sourceId: string, component: ComponentRespones }>()
+    const [generatedComponent, setComponent] = useState<{ threadId: string, component: ComponentRespones }>()
     const [message, setMessage] = useState<string>()
     useEffect(() => {
         switch (state.tool) {
@@ -37,7 +37,7 @@ export function ReviewComponentForm() {
                 break
         }
         if (state.component)
-            setComponent(state as { threadId: string, sourceId: string, component: ComponentRespones })
+            setComponent(state as { threadId: string, component: ComponentRespones })
     }, [state])
     return <><form action={async () => {
         setLoading(true);
@@ -110,7 +110,7 @@ export function ReviewComponentForm() {
                 placeholder="prompt"
                 required
             />
-            <span className={`${isLoading && !generatedComponent  ? '' : 'opacity-0'} flex flex-row gap-1 items-center text-xs text-muted-foreground`}><Loader2 className="animate-spin" size={10} />{message}</span>
+            <span className={`${isLoading && !generatedComponent ? '' : 'opacity-0'} flex flex-row gap-1 items-center text-xs text-muted-foreground`}><Loader2 className="animate-spin" size={10} />{message}</span>
         </div>
         <Button
             type="submit"
@@ -128,9 +128,9 @@ export function ReviewComponentForm() {
                         onClick={async () => {
                             setLoading(true)
                             try {
-                                if (!generatedComponent?.component.name || !generatedComponent?.component?.query || !generatedComponent?.sourceId || !generatedComponent.threadId) throw "Detected a partial component, not saved"
-                                const res = await updateComponent(component.id, generatedComponent.component.name, generatedComponent.component.query, generatedComponent.component.description, generatedComponent.component.keys)
-                                if (!res) throw "Component updated"
+                                if (!generatedComponent?.component.name || !generatedComponent?.component?.query || !generatedComponent.threadId) throw "Detected a partial component, not saved"
+                                const res = await updateComponent(component.id, generatedComponent.component.name, generatedComponent.component.query, generatedComponent.component.description, generatedComponent.threadId, generatedComponent.component.keys)
+                                if (!res) throw "Component not updated"
                                 await refetch()
                             } catch (error) {
                                 toast.error(`${error}`)

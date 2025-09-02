@@ -18,34 +18,9 @@ export async function POST(req: NextRequest) {
     const projectId = req.cookies.get("selected-project")?.value
     const project = await client.project.findUnique({ where: { id: projectId, OR: [{ team: { some: { userId: session.user.id } } }, { ownerId: session.user.id }], llms: { some: { id: llmId } },view:{some:{components:{some:{id:component}}}} } })
     if (!project) throw "Unauthorized"
-    return new Response(new ReadableStream({
-        async pull(controller) {
-            try {
-                const { value, done } = await response.stream.next()
-
-                if (done) {
-                    controller.close()
-                } else {
-                    if (value?.tools?.messages) {
-                        if (value.tools.messages instanceof Array) {
-                            const toolMessage = value.tools.messages[0] as ToolMessage
-                            controller.enqueue(JSON.stringify({ tool: toolMessage.name, status: toolMessage.status }))
-                        }
-                    }
-                    if (value?.generate_structured_response) {
-                        const component = (value?.generate_structured_response as { structuredResponse: ComponentRespones }).structuredResponse
-                        controller.enqueue(JSON.stringify({ component, threadId: response.threadId, sourceId: component }))
-                    }
-
-                }
-            } catch (error) {
-                controller.enqueue(JSON.stringify({ error: `${error}` }))
-                controller.close()
-            }
-        }
-    }), {
+    return new Response(response.stream, {
         headers: {
             'Content-Type': 'text/event-stream; charset=utf-8',
-        },
+        }
     })
 }
