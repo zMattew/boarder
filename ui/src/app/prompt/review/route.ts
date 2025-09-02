@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { actionLimiter } from "@/lib/limiter";
-import { ToolMessage, ComponentRespones, reviewComponent } from "@repo/core/agent";
+import { reviewComponent } from "@repo/core/agent";
 import client from "@repo/db/client";
 import { NextRequest } from "next/server";
 
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     const prompt = data.get("prompt") as string
     const response = await reviewComponent(llmId, model, prompt, component)
     const projectId = req.cookies.get("selected-project")?.value
-    const project = await client.project.findUnique({ where: { id: projectId, OR: [{ team: { some: { userId: session.user.id } } }, { ownerId: session.user.id }], llms: { some: { id: llmId } },view:{some:{components:{some:{id:component}}}} } })
+    const project = await client.project.findUnique({ where: { id: projectId, OR: [{ team: { some: { userId: session.user.id } } }, { ownerId: session.user.id }], llms: { some: { id: llmId } }, view: { some: { components: { some: { id: component } } } } } })
     if (!project) throw "Unauthorized"
     return new Response(response.stream, {
         headers: {

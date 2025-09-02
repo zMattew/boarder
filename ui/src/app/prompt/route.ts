@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { actionLimiter } from "@/lib/limiter";
-import { promptComponent, ToolMessage, ComponentRespones } from "@repo/core/agent";
+import { promptComponent } from "@repo/core/agent";
 import client from "@repo/db/client";
 import { NextRequest } from "next/server";
 
@@ -15,8 +15,8 @@ export async function POST(req: NextRequest) {
     const model = data.get("model") as string
     const prompt = data.get("prompt") as string
     const projectId = req.cookies.get("selected-project")?.value
-    const project = await client.project.findUnique({where:{id:projectId,OR:[{team:{some:{userId:session.user.id}}},{ownerId:session.user.id}],llms:{some:{id:llmId}},sources:{some:{id:source}}}})
-    if(!project) throw "Unauthorized"
+    const project = await client.project.findUnique({ where: { id: projectId, OR: [{ team: { some: { userId: session.user.id } } }, { ownerId: session.user.id }], llms: { some: { id: llmId } }, sources: { some: { id: source } } } })
+    if (!project) throw "Unauthorized"
     const response = await promptComponent(llmId, model, prompt, source)
     return new Response(response.stream, {
         headers: {
