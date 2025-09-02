@@ -7,7 +7,7 @@ import { actionLimiter } from "./limiter";
 
 
 export async function setProjectCookie(projectId: string) {
-    (await cookies()).set(`selected-project`, projectId)
+    (await cookies()).set(`selected-project`, projectId,{sameSite:'lax',})
 }
 
 export async function getUserProject() {

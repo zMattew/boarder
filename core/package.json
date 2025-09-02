@@ -53,16 +53,15 @@
     "@types/pg": "^8.15.4"
   },
   "dependencies": {
-    "@langchain/core": "^0.3.70",
+    "@langchain/core": "^0.3.72",
     "@langchain/google-genai": "^0.2.16",
-    "@langchain/langgraph": "^0.4.4",
+    "@langchain/langgraph": "^0.4.9",
     "@langchain/ollama": "^0.2.3",
     "@langchain/redis": "^0.1.1",
     "@repo/db": "^1.0.0",
     "ioredis": "^5.7.0",
-    "langchain": "^0.3.30",
+    "langchain": "^0.3.31",
     "mysql2": "^3.14.3",
-    "ollama": "^0.5.16",
     "pg": "^8.16.3",
     "zod": "^4.0.15"
   }

@@ -214,7 +214,7 @@ export async function testSQLQuery(sourceId: string, query: string) {
             case 'mysql':
                 const [msResult, msType] = await client.query(query)
                 if (msType)
-                    return {
+                    throw {
                         success: true,
                         data: msResult,
                         type: msType
@@ -223,7 +223,7 @@ export async function testSQLQuery(sourceId: string, query: string) {
         }
     } catch (error) {
         console.error("Error testing query:", error);
-        return {
+        throw {
             success: false,
             error: error,
         };
