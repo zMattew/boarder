@@ -86,7 +86,6 @@ export function NewComponentForm(
                     <div className="flex flex-col gap-1 justify-start">
                         <Textarea
                             onChange={(e) => setPrompt(e.target.value)}
-                            name="prompt"
                             placeholder="prompt"
                             required
                         />
