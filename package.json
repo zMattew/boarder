@@ -20,7 +20,6 @@
     "auth"
   ],
   "author": "",
-  "license": "AGPL-3.0-only",
   "description": "",
   "devDependencies": {
     "turbo": "^2.5.5"
