@@ -64,7 +64,7 @@ services:
       - ui
       - db
       - redis
-      - ollama # if you plan to use a docker deployed ollama ensure to connect to the same network
+#      - ollama # if you plan to use a docker deployed ollama ensure to connect to the same network
   api:
     build:
       context: ./
@@ -83,7 +83,7 @@ services:
     networks:
       - db
       - redis
-      - ollama
+#      - ollama
 volumes:
   data:
     name: data
@@ -94,5 +94,5 @@ networks:
     name: redis
   db:
     name: db
-  ollama:
-    external: true # connect the external ollama network 
+#  ollama: # replace with ollama network
+#    external: true # connect the external ollama network 

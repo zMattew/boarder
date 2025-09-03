@@ -7,14 +7,15 @@ import { initChatModel } from "langchain/chat_models/universal";
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import type { RunnableConfig } from "@langchain/core/runnables"
 import { Redis } from "ioredis"
-import { SystemMessage, ToolMessage, } from "@langchain/core/messages"
+import { SystemMessage, type ToolMessage } from "@langchain/core/messages"
 import { getLLM, getComponent } from "@repo/db"
 import { decrypt } from "./crypto.ts"
 import { availableLLMs } from './llms.ts';
 import type { Providers } from "@repo/db/client"
-import { MemorySaver, UpdateType } from "@langchain/langgraph";
+import { MemorySaver, type UpdateType } from "@langchain/langgraph";
 import { IterableReadableStream } from "@langchain/core/utils/stream";
-export { ToolMessage } from "@langchain/core/messages"
+export type { ToolMessage } from "@langchain/core/messages"
+export type ComponentRespones = z.infer<typeof responseFormat>
 
 const getSchema = tool(async (input: Record<string, any>, config: RunnableConfig) => {
     const sourceId = config.configurable?.sourceId
@@ -54,7 +55,6 @@ const responseFormat = z.object({
     query: z.string().describe("Query to retrive the data from the database. Without the ending closure ';'"),
     keys: z.array(z.string().describe("Required key requested by choosen component.It must be a key found inside the query output fields.").describe("Required keys requested by choosen component having the same length. They must be keys found inside the query output fields.")).default([]).optional()
 })
-export type ComponentRespones = z.infer<typeof responseFormat>
 
 async function initAgent(providerId: string, model: string): Promise<ReturnType<typeof createReactAgent>> {
     const provider = await getLLM(providerId)
