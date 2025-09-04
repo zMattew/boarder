@@ -36,13 +36,3 @@ export async function decrypt(ciphertext: string) {
     const decryptedBuffer = await crypto.subtle.decrypt({ name: "AES-GCM", iv: Buffer.from(iv, 'hex') }, encodedKey, Buffer.from(data, 'hex'))
     return Buffer.from(decryptedBuffer).toString('utf-8')
 }
-
-
-export async function generatePVKey() {
-    if (process.env.PV_KEY) throw Error("Private key already generated")
-    const key = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256, }, true, ["encrypt", "decrypt"]);
-    const extractedKey = await crypto.subtle.exportKey("raw", key);
-    const encoded = Buffer.from(extractedKey).toString("hex")
-    await fs.appendFile("../.env", `\nPV_KEY='${encoded}'`)
-    return extractedKey
-}
