@@ -92,7 +92,7 @@ export default function Chart() {
                             variant="outline"
                             size="sm"
                             onClick={() => setPagination({ skip: pagination.skip + pagination.limit, limit: pagination.limit })}
-                            disabled={pagination.skip == 0}
+                            disabled={data.rows.length == 0}
                         >
                             <ArrowLeft size={8} />
                         </Button>
@@ -100,10 +100,11 @@ export default function Chart() {
                             variant="outline"
                             size="sm"
                             onClick={() => setPagination({ skip: pagination.skip - pagination.limit, limit: pagination.limit })}
-                            disabled={data.rows.length == 0}
+                            disabled={pagination.skip == 0}
                         >
                             <ArrowRight size={8} />
                         </Button>
+                        
                     </div>
                 </div>
             </div>
