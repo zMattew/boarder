@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth";
+import { newComponentO } from "@/lib/form";
 import { actionLimiter } from "@/lib/limiter";
 import { promptComponent } from "@repo/core/agent";
 import client from "@repo/db/client";
@@ -9,15 +10,13 @@ export async function POST(req: NextRequest) {
     if (!session?.user) throw "Unauthorized"
     const { success } = await actionLimiter.limit(session.user.id ?? "")
     if (!success) throw "Too many request"
-    const data = await req.formData()
-    const source = data.get("source") as string
-    const llmId = data.get("provider") as string //ollama local
-    const model = data.get("model") as string
-    const prompt = data.get("prompt") as string
+    const form = await req.formData()
+    const parse = newComponentO.safeParse(Object.fromEntries(form.entries()))
+    if (parse.error) throw parse.error
     const projectId = req.cookies.get("selected-project")?.value
-    const project = await client.project.findUnique({ where: { id: projectId, OR: [{ team: { some: { userId: session.user.id } } }, { ownerId: session.user.id }], llms: { some: { id: llmId } }, sources: { some: { id: source } } } })
+    const project = await client.project.findUnique({ where: { id: projectId, OR: [{ team: { some: { userId: session.user.id } } }, { ownerId: session.user.id }], llms: { some: { id: parse.data.provider } }, sources: { some: { id: parse.data.source } } } })
     if (!project) throw "Unauthorized"
-    const response = await promptComponent(llmId, model, prompt, source)
+    const response = await promptComponent(parse.data.provider, parse.data.model, parse.data.prompt, parse.data.source)
     return new Response(response.stream, {
         headers: {
             'Content-Type': 'text/event-stream; charset=utf-8',
