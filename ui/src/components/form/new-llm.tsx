@@ -1,7 +1,7 @@
 "use client";
 
 import type { Providers } from "@repo/db/client";
-import { availableLLMs } from "../../../../core/src/llms";
+import { availableLLMs } from "@repo/core/llms";
 import { useState } from "react";
 import { Combobox } from "../combobox";
 import { Input } from "../shadcn/input";
@@ -25,7 +25,7 @@ export function NewLLMForm() {
     const [isLoading, setLoading] = useState<boolean>(false);
     const [url, setUrl] = useState<string>();
     const [api, setApi] = useState<string>();
-    const { currentProject, refreshProjects } = useProject();
+    const { refreshProjects } = useProject();
     return (
         <Card className="w-full max-w-sm">
             <CardHeader>
@@ -97,7 +97,7 @@ export function NewLLMForm() {
                                 if (!api) throw "Api key require for this provider";
                                 formData.append("api", api);
                             }
-                            const response = await addLLM(parse.data.label,parse.data.provider,parse.data.url,parse.data.api);
+                            const response = await addLLM(parse.data.label, parse.data.provider, parse.data.url, parse.data.api);
                             await refreshProjects()
                             toast.success(
                                 `Provider added \nId: ${response.id}`,
