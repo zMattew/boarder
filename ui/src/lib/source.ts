@@ -7,8 +7,8 @@ import { actionLimiter } from "./limiter"
 
 export async function addSource(name: string, connectionUrl: string) {
     const { userId, role, selectedProject } = await getMemberRole()
-    if (!selectedProject) throw "Select a project"
     if (role != "admin") throw "You can't do this action"
+    if (!selectedProject) throw "Select a project"
     const { success } = await actionLimiter.limit(userId)
     if (!success) throw "Too many request"
     connectionUrl = await encrypt(connectionUrl)
@@ -23,8 +23,8 @@ export async function addSource(name: string, connectionUrl: string) {
 
 export async function removeSource(sourceId: string) {
     const { userId, role, selectedProject } = await getMemberRole()
-    if (!selectedProject) throw "Select a project"
     if (role != "admin") throw "You can't do this action"
+    if (!selectedProject) throw "Select a project"
     const { success } = await actionLimiter.limit(userId)
     if (!success) throw "Too many request"
     return await client.source.delete({ where: { projectId: selectedProject, id: sourceId } })
@@ -32,8 +32,8 @@ export async function removeSource(sourceId: string) {
 
 export async function editSource(sourceId: string, name?: string, connectionUrl?: string) {
     const { userId, role, selectedProject } = await getMemberRole()
-    if (!selectedProject) throw "Select a project"
     if (role != "admin") throw "You can't do this action"
+    if (!selectedProject) throw "Select a project"
     const { success } = await actionLimiter.limit(userId)
     if (!success) throw "Too many request"
     const data: { name?: string, connectionUrl?: string } = {}

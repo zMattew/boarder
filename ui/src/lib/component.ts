@@ -32,6 +32,7 @@ export async function addComponent(name: string, sourceId: string, query: string
 export async function removeComponent(componentId: string) {
     const { userId, role, selectedProject } = await getMemberRole()
     if (role == "viewer") throw "You can't do this action"
+    if(!selectedProject) throw "Select a project"
     const { success } = await actionLimiter.limit(userId)
     if (!success) throw "Too many request"
     return await client.component.delete({

@@ -6,8 +6,8 @@ import { actionLimiter } from "./limiter";
 
 export async function addView(name: string) {
     const { userId, role, selectedProject } = await getMemberRole()
-    if (!selectedProject) throw "Select a project"
     if (role == "viewer") throw "You can't do this action"
+    if (!selectedProject) throw "Select a project"
     const { success } = await actionLimiter.limit(userId)
     if (!success) throw "Too many request"
     return await client.view.create({
@@ -20,8 +20,8 @@ export async function addView(name: string) {
 
 export async function deleteView(viewId: string) {
     const { userId, role, selectedProject } = await getMemberRole()
-    if (!selectedProject) throw "Select a project"
     if (role != "admin") throw "You can't do this action"
+    if (!selectedProject) throw "Select a project"
     const { success } = await actionLimiter.limit(userId)
     if (!success) throw "Too many request"
     return await client.view.delete({ where: { id: viewId, projectId: selectedProject } })

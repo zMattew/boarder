@@ -6,8 +6,8 @@ import { actionLimiter } from "./limiter";
 
 export async function changeMemberRole(memberId: string, role: TeamRole) {
     const { userId, role: userRole, selectedProject } = await getMemberRole()
-    if (!selectedProject) throw "Select a project"
     if (userRole != "admin") throw "You can't do this action"
+    if (!selectedProject) throw "Select a project"
     const { success } = await actionLimiter.limit(userId)
     if (!success) throw "Too many request"
     return await client.teamMember.update({ where: { projectId: selectedProject, id: memberId }, data: { role } })
@@ -15,8 +15,8 @@ export async function changeMemberRole(memberId: string, role: TeamRole) {
 
 export async function removeMemberRole(memberId: string) {
     const { userId, role: userRole, selectedProject } = await getMemberRole()
-    if (!selectedProject) throw "Select a project"
     if (userRole != "admin") throw "You can't do this action"
+    if (!selectedProject) throw "Select a project"
     const { success } = await actionLimiter.limit(userId)
     if (!success) throw "Too many request"
     return await client.teamMember.delete({
@@ -26,8 +26,8 @@ export async function removeMemberRole(memberId: string) {
 
 export async function addMember(email: string, role: TeamRole) {
     const { userId, role: userRole, selectedProject } = await getMemberRole()
-    if (!selectedProject) throw "Select a project"
     if (userRole == "admin") throw "You can't do this action"
+    if (!selectedProject) throw "Select a project"
     const { success } = await actionLimiter.limit(userId)
     if (!success) throw "Too many request"
     const user = await client.user.findUnique({ where: { email } })
