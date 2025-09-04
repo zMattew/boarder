@@ -12,6 +12,7 @@ import { useFetcher } from "../component/fetch-context";
 import { ModelPicker } from "./model-picker";
 import { ComponentRespones } from "@repo/core/agent";
 import { Loader2 } from "lucide-react";
+import { reviewComponentO } from "@/lib/form";
 
 export function ReviewComponentForm() {
     const { currentProject } = useProject()
@@ -73,21 +74,12 @@ export function ReviewComponentForm() {
                 setComponent(undefined)
                 const formData = new FormData();
                 try {
-                    if (!component.id) throw "No source selected";
-                    formData.append("component", component.id as string);
-
-                    if (!provider) throw "No llm provider selected";
-                    formData.append(
-                        "provider",
-                        provider.id as string,
-                    );
-
-                    if (!model) throw "No llm model selected";
-                    formData.append("model", model as string);
-
-                    if (!userPrompt) throw "No prompt found";
-                    formData.append("prompt", userPrompt as string);
-
+                    if (component.id) formData.append("source", component.id);
+                    if (provider) formData.append("provider", provider?.id );
+                    if (model) formData.append("model", model );
+                    if (userPrompt) formData.append("prompt", userPrompt );
+                    const parse = reviewComponentO.safeParse(Object.fromEntries(formData.entries()))
+                    if (parse.error) throw parse.error.issues[0].message
                     setMessage("Sending request")
                     const res = await fetch(`/prompt/review`, { method: "POST", body: formData })
                     if (!res.ok || !res.body) throw new Error()
