@@ -1,4 +1,4 @@
-import type { Providers } from "@repo/db/client";
+import { Providers,TeamRole } from "@repo/db/client";
 import z from "zod";
 
 export const newComponentO = z.object({
@@ -36,4 +36,9 @@ export const newViewO = z.object({
 
 export const newProjectO = z.object({
     name:z.string(),
+})
+
+export const addMemberO = z.object({
+    email:z.email(),
+    role: z.string<TeamRole>()
 })
