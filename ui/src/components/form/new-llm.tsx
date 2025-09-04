@@ -1,13 +1,12 @@
 "use client";
 
 import type { Providers } from "@repo/db/client";
-import { availableLLMs } from "../../../../core/src/llms";
+import { availableLLMs } from "@repo/core/llms";
 import { useState } from "react";
 import { Combobox } from "../combobox";
 import { Input } from "../shadcn/input";
 import { Button } from "../shadcn/button";
 import { toast } from "sonner";
-import { createLLM } from "./newLLM";
 import { useProject } from "../../hooks/project-context";
 import {
     Card,
@@ -17,14 +16,16 @@ import {
     CardTitle,
 } from "../shadcn/card";
 import { Label } from "../shadcn/label";
+import { newLLMO } from "@/lib/form";
+import { addLLM } from "@/lib/llm";
 
 export function NewLLMForm() {
-    const [lable, setLabel] = useState<string>("");
+    const [label, setLabel] = useState<string>("");
     const [provider, setProvider] = useState<Providers>();
     const [isLoading, setLoading] = useState<boolean>(false);
     const [url, setUrl] = useState<string>();
     const [api, setApi] = useState<string>();
-    const { currentProject,refreshProjects } = useProject();
+    const { refreshProjects } = useProject();
     return (
         <Card className="w-full max-w-sm">
             <CardHeader>
@@ -74,38 +75,36 @@ export function NewLLMForm() {
                         setLoading(true);
                         const formData = new FormData();
                         try {
-                            if (!currentProject) throw "Select a project";
-                            formData.append("projectId", currentProject.id);
-                            if (!lable) throw "No lable defined";
-                            formData.append("label", lable);
-                            if (!provider) throw "No provider selected";
-                            formData.append("provider", provider);
+                            if (label) formData.append("label", label);
+                            if (provider) formData.append("provider", provider);
+                            const parse = newLLMO.safeParse(Object.fromEntries(formData.entries()))
+                            if (parse.error) throw parse.error.issues[0].message
+
                             if (
-                                availableLLMs[provider].require?.find((v) =>
+                                availableLLMs[parse.data.provider].require?.find((v) =>
                                     v == "url"
                                 )
                             ) {
-                                if (!url) {
-                                    throw "url required for this provider";
-                                } else formData.append("url", url);
+                                if (!url) throw "Url required for this provider";
+                                formData.append("url", url);
                             }
 
                             if (
-                                availableLLMs[provider].require?.find((v) =>
+                                availableLLMs[parse.data.provider].require?.find((v) =>
                                     v == "api"
                                 )
                             ) {
-                                if (!api) throw "api key require";
-                                else formData.append("api", api);
+                                if (!api) throw "Api key require for this provider";
+                                formData.append("api", api);
                             }
-                            const response = await createLLM(formData);
+                            const response = await addLLM(parse.data.label, parse.data.provider, parse.data.url, parse.data.api);
                             await refreshProjects()
                             toast.success(
                                 `Provider added \nId: ${response.id}`,
                             );
                         } catch (error) {
                             toast.error(
-                                `Failed to create component: ${error}`,
+                                `${error}`,
                             );
                         } finally {
                             setLoading(false);

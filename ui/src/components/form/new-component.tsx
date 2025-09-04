@@ -19,6 +19,7 @@ import { ModelPicker } from "./model-picker";
 import { ComponentRespones } from "@repo/core/agent";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { newComponentO, saveNewComponentO } from "@/lib/form";
 export function NewComponentForm(
 ) {
     const { currentProject, refreshProjects } = useProject()
@@ -99,21 +100,12 @@ export function NewComponentForm(
                             setComponent(undefined)
                             const formData = new FormData();
                             try {
-                                if (!source) throw "No source selected";
-                                formData.append("source", source as string);
-
-                                if (!provider) throw "No llm provider selected";
-                                formData.append(
-                                    "provider",
-                                    provider.id as string,
-                                );
-
-                                if (!model) throw "No llm model selected";
-                                formData.append("model", model as string);
-
-                                if (!userPrompt) throw "No prompt found";
-                                formData.append("prompt", userPrompt as string);
-
+                                if (source) formData.append("source", source as string);
+                                if (provider) formData.append("provider", provider?.id as string,);
+                                if (model) formData.append("model", model as string);
+                                if (userPrompt) formData.append("prompt", userPrompt as string);
+                                const parse = newComponentO.safeParse(Object.fromEntries(formData.entries()))
+                                if (parse.error) throw parse.error.issues[0].message
                                 setMessage("Sending request")
                                 const res = await fetch(`/prompt`, { method: "POST", body: formData })
                                 if (!res.ok || !res.body) throw new Error()
@@ -133,9 +125,7 @@ export function NewComponentForm(
                                     }
                                 }
                             } catch (error) {
-                                toast.error(
-                                    `Failed to create component: ${error}`,
-                                );
+                                toast.error(`${error}`);
                             } finally {
                                 setLoading(false);
                                 if (state.error) toast.error('An error occured generating component')
@@ -150,22 +140,30 @@ export function NewComponentForm(
                             Type : {generatedComponent?.component.name}<br />
                             Description: {generatedComponent?.component.description}<br />
                             <Button
-                            disabled={isLoading}
-                            onClick={async () => {
-                                setLoading(true)
-                                try {
-                                    if (!generatedComponent?.component.name || !generatedComponent?.component?.query || !generatedComponent?.sourceId || !generatedComponent.threadId) throw "Detected a partial component, not saved"
-                                    if (!currentView?.id) throw "Select a view"
-                                    const res = await addComponent(generatedComponent.component.name, generatedComponent.sourceId, generatedComponent.component.query, generatedComponent.threadId, currentView.id, generatedComponent.component.keys, generatedComponent.component.description)
-                                    if (!res) throw "Component not created"
-                                    await refreshProjects()
-                                    push(`/home/views/${currentView.id}`)
-                                } catch (error) {
-                                    toast.error(`${error}`)
-                                } finally {
-                                    setLoading(false)
-                                }
-                            }}>
+                                disabled={isLoading}
+                                onClick={async () => {
+                                    setLoading(true)
+                                    try {
+                                        const parse = saveNewComponentO.safeParse({
+                                            name: generatedComponent.component.name,
+                                            source: generatedComponent.sourceId,
+                                            query: generatedComponent.component.query,
+                                            thread: generatedComponent.threadId,
+                                            keys: generatedComponent.component.keys,
+                                            description: generatedComponent.component.description,
+                                            view: currentView?.id
+                                        })
+                                        if (parse.error) throw parse.error.issues[0].message
+                                        const res = await addComponent(parse.data.name, parse.data.source, parse.data.query, parse.data.thread, parse.data.view, parse.data.keys, parse.data.description)
+                                        if (!res) throw "Component not created"
+                                        await refreshProjects()
+                                        push(`/home/views/${parse.data.view}`)
+                                    } catch (error) {
+                                        toast.error(`${error}`)
+                                    } finally {
+                                        setLoading(false)
+                                    }
+                                }}>
                                 Save
                             </Button>
                         </>

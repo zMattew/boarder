@@ -5,9 +5,10 @@ import client from "@repo/db/client"
 import { getMemberRole } from "./role"
 import { actionLimiter } from "./limiter"
 
-export async function addSource(name: string, connectionUrl: string, projectId: string) {
-    const { userId, role } = await getMemberRole()
+export async function addSource(name: string, connectionUrl: string) {
+    const { userId, role, selectedProject } = await getMemberRole()
     if (role != "admin") throw "You can't do this action"
+    if (!selectedProject) throw "Select a project"
     const { success } = await actionLimiter.limit(userId)
     if (!success) throw "Too many request"
     connectionUrl = await encrypt(connectionUrl)
@@ -15,22 +16,24 @@ export async function addSource(name: string, connectionUrl: string, projectId: 
         data: {
             name,
             connectionUrl,
-            projectId
+            projectId: selectedProject
         }
     })
 }
 
-export async function removeSource(projectId: string, sourceId: string) {
-    const { userId, role } = await getMemberRole()
+export async function removeSource(sourceId: string) {
+    const { userId, role, selectedProject } = await getMemberRole()
     if (role != "admin") throw "You can't do this action"
+    if (!selectedProject) throw "Select a project"
     const { success } = await actionLimiter.limit(userId)
     if (!success) throw "Too many request"
-    return await client.source.delete({ where: { projectId, id: sourceId } })
+    return await client.source.delete({ where: { projectId: selectedProject, id: sourceId } })
 }
 
-export async function editSource(projectId: string, sourceId: string, name?: string, connectionUrl?: string) {
-    const { userId,role } = await getMemberRole()
+export async function editSource(sourceId: string, name?: string, connectionUrl?: string) {
+    const { userId, role, selectedProject } = await getMemberRole()
     if (role != "admin") throw "You can't do this action"
+    if (!selectedProject) throw "Select a project"
     const { success } = await actionLimiter.limit(userId)
     if (!success) throw "Too many request"
     const data: { name?: string, connectionUrl?: string } = {}
@@ -41,7 +44,7 @@ export async function editSource(projectId: string, sourceId: string, name?: str
     return await client.source.update({
         where: {
             id: sourceId,
-            projectId
+            projectId: selectedProject
         },
         data
     })

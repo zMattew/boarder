@@ -48,7 +48,6 @@ services:
         NEXT_PUBLIC_URL: "https://localhost"
         DATABASE_URL: "postgresql://postgres:password@db:5432/postgres"
         REDIS_URL: "redis://default:password@redis:6379"
-        PV_KEY: ""
         AUTH_SECRET: ""
        # AUTH_[provider]_ID: "" optional for 0auth login
        # AUTH_[provider]_SECRET: ""
@@ -78,7 +77,6 @@ services:
         AUTH_TRUST_HOST: true
         DATABASE_URL: "postgresql://postgres:password@db:5432/postgres"
         REDIS_URL: "redis://default:password@redis:6379"
-        PV_KEY: ""
         AUTH_SECRET: ""
     networks:
       - db

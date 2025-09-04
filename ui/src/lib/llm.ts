@@ -5,9 +5,10 @@ import type { Providers } from "@repo/db/client";
 import { getMemberRole } from "./role";
 import { actionLimiter } from "./limiter";
 
-export async function addLLM(label: string, provider: Providers, projectId: string, url?: string, api?: string) {
-    const { userId, role } = await getMemberRole()
+export async function addLLM(label: string, provider: Providers, url?: string, api?: string) {
+    const { userId, role, selectedProject } = await getMemberRole()
     if (role != "admin") throw "You can't do this action"
+    if (!selectedProject) throw "Select a project"
     const { success } = await actionLimiter.limit(userId)
     if (!success) throw "Too many request"
     const apiKey = api ? await encrypt(api) : undefined
@@ -17,7 +18,7 @@ export async function addLLM(label: string, provider: Providers, projectId: stri
             url,
             apiKey,
             label,
-            projectId,
+            projectId: selectedProject,
         }
     })
 }

@@ -74,7 +74,7 @@ export function Navbar() {
                                                     setView(view);
                                                     if (
                                                         path !=
-                                                            "/home/new-component"
+                                                        "/home/new-component"
                                                     ) {
                                                         router.push(
                                                             `/home/views/${view.id}`,
@@ -84,9 +84,9 @@ export function Navbar() {
                                             >
                                                 {view.name}
                                                 {view.id ===
-                                                        currentView?.id && (
-                                                    <Check className="ml-auto" />
-                                                )}
+                                                    currentView?.id && (
+                                                        <Check className="ml-auto" />
+                                                    )}
                                             </DropdownMenuItem>
                                         ))
                                         : (
@@ -173,7 +173,6 @@ export function Navbar() {
                                                 onClick={async () => {
                                                     try {
                                                         await deleteView(
-                                                            currentProject?.id,
                                                             currentView.id,
                                                         );
                                                         await refreshProjects();

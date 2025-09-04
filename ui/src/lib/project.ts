@@ -73,10 +73,9 @@ export async function deleteProject(projectId: string) {
     }
 }
 
-export async function newProject(formData: FormData) {
+export async function newProject(name:string) {
     const session = await auth()
     if (!session?.user) throw "Auth failed"
-    const name = formData.get('name') as string
     const { success } = await actionLimiter.limit(session.user?.id ?? "unauth")
     if (!success) throw "Too many request"
     return await client.project.create({

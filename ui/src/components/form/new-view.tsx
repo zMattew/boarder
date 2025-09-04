@@ -12,8 +12,9 @@ import {
 import { Input } from "../shadcn/input";
 import { Label } from "../shadcn/label";
 import { useProject } from "../../hooks/project-context";
-import { createView } from "./newView";
 import { useState } from "react";
+import { newViewO } from "@/lib/form";
+import { addView } from "@/lib/view";
 
 export function NewViewForm() {
     const { currentProject, refreshProjects } = useProject();
@@ -34,7 +35,9 @@ export function NewViewForm() {
                             setLoading(true)
                             if (!currentProject) throw "Select a project";
                             formData.append("projectId", currentProject.id);
-                            await createView(formData);
+                            const parse = newViewO.safeParse(Object.fromEntries(formData.entries()))
+                            if(parse.error) throw parse.error.issues[0].message
+                            await addView(parse.data.name)
                             await refreshProjects();
                             toast.success("View created");
                         } catch (error) {

@@ -64,8 +64,6 @@ export default function Page() {
                                                     onClick={async () => {
                                                         try {
                                                             await changeMemberRole(
-                                                                currentProject
-                                                                    .id,
                                                                 member.id,
                                                                 "admin",
                                                             );
@@ -86,8 +84,6 @@ export default function Page() {
                                                     onClick={async () => {
                                                         try {
                                                             await changeMemberRole(
-                                                                currentProject
-                                                                    .id,
                                                                 member.id,
                                                                 "editor",
                                                             );
@@ -108,8 +104,6 @@ export default function Page() {
                                                     onClick={async () => {
                                                         try {
                                                             await changeMemberRole(
-                                                                currentProject
-                                                                    .id,
                                                                 member.id,
                                                                 "viewer",
                                                             );
@@ -134,7 +128,6 @@ export default function Page() {
                                         onClick={async () => {
                                             try {
                                                 await removeMemberRole(
-                                                    currentProject.id,
                                                     member.id,
                                                 );
                                                 await refreshProjects();

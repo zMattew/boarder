@@ -8,7 +8,7 @@ export async function addComponent(name: string, sourceId: string, query: string
     const redis = new Redis(process.env.REDIS_URL as string)
     const index = await redis.zcount(`llm:${threadId}`, '-inf', '+inf')
     const history = (await redis.zrange(`llm:${threadId}`, 0, index)).map((v) => JSON.parse(v))
-    if(!history) throw "Query exipred, please prompt again"
+    if (!history) throw "Query exipred, please prompt again"
     const component = await client.component.create({
         data: {
             name,
@@ -29,25 +29,26 @@ export async function addComponent(name: string, sourceId: string, query: string
     return component
 }
 
-export async function removeComponent(projectId: string, componentId: string) {
-    const { userId, role } = await getMemberRole()
+export async function removeComponent(componentId: string) {
+    const { userId, role, selectedProject } = await getMemberRole()
     if (role == "viewer") throw "You can't do this action"
+    if(!selectedProject) throw "Select a project"
     const { success } = await actionLimiter.limit(userId)
     if (!success) throw "Too many request"
     return await client.component.delete({
         where: {
             id: componentId,
-            view: { project: { id: projectId } }
+            view: { project: { id: selectedProject } }
         }
     })
 }
 
 
-export async function updateComponent(id: string, name: string, query: string, description: string,threadId:string, keys: string[] = []) {
+export async function updateComponent(id: string, name: string, query: string, description: string, threadId: string, keys: string[] = []) {
     const redis = new Redis(process.env.REDIS_URL as string)
     const index = await redis.zcount(`llm:${threadId}`, '-inf', '+inf')
     const history = (await redis.zrange(`llm:${threadId}`, 0, index)).map((v) => JSON.parse(v))
-    if(!history) throw "Query exipred, please prompt again"
+    if (!history) throw "Query exipred, please prompt again"
     const component = await client.component.update({
         where: { id },
         data: {

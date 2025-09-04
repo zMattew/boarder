@@ -22,7 +22,7 @@ Before proceed you need to install [Docker](https://www.docker.com/), [git](http
    AUTH_{PROVIDER}_ID
    AUTH_{PROVIDER}_SECRET
    ```
-   Use this command for (ui,api)PV_KEY, (ui,api)AUTH_SECRET
+   Use this command for (ui,api) AUTH_SECRET env variable
    ```bash
    openssl rand -hex 32
    ```
@@ -44,7 +44,7 @@ This is a turbo mono repo, if you want to modify make changes you need to instal
    npm install
    ```
 2. Populate .env.local file with the required env in the ui and api workspace
-3. Deploy a local postgres database and push the schema.
+3. Deploy a local postgres database and redis.
    ```bash
    docker compose -f docker-compose.development.yaml up
    ```
@@ -70,6 +70,6 @@ Any feedback will be considered feel free to create an issue to explain.
 
 ## Known issue
 - The api is not implemented but required to sync the db schema. In the future should have the functionality exposed.
-- The ui has a cache handler but there isn't fine-graded controle yet.
+- The ui has a cache handler but there isn't fine-graded control yet.
 - Components top bar can't refetch if component is errored and must be performed a full page reload.
 - Can't login with third party or email if was already registered with other provider

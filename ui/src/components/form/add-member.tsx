@@ -5,9 +5,10 @@ import { Combobox } from "../combobox";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../shadcn/card";
 import { Input } from "../shadcn/input";
 import { useProject } from "../../hooks/project-context";
-import { addMember } from "./addMember";
 import { Button } from "../shadcn/button";
 import { Label } from "../shadcn/label";
+import { addMemberO } from "@/lib/form";
+import { addMember } from "@/lib/team";
 
 export function AddMemberForm() {
     const { currentProject, refreshProjects } = useProject();
@@ -28,11 +29,9 @@ export function AddMemberForm() {
                         try {
                             setLoading(true);
                             if (!currentProject) throw "Select a project";
-                            formData.append(
-                                "projectId",
-                                currentProject.id,
-                            );
-                            await addMember(formData);
+                            const parse = addMemberO.safeParse(Object.fromEntries(formData.entries()))
+                            if(parse.error) throw parse.error.issues[0].message
+                            await addMember(parse.data.email,parse.data.role);
                             await refreshProjects();
                             toast.success("Member added");
                         } catch (error) {
