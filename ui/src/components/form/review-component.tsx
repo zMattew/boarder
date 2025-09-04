@@ -12,7 +12,7 @@ import { useFetcher } from "../component/fetch-context";
 import { ModelPicker } from "./model-picker";
 import { ComponentRespones } from "@repo/core/agent";
 import { Loader2 } from "lucide-react";
-import { reviewComponentO } from "@/lib/form";
+import { reviewComponentO, saveReviewedComponentO } from "@/lib/form";
 
 export function ReviewComponentForm() {
     const { currentProject } = useProject()
@@ -75,9 +75,9 @@ export function ReviewComponentForm() {
                 const formData = new FormData();
                 try {
                     if (component.id) formData.append("source", component.id);
-                    if (provider) formData.append("provider", provider?.id );
-                    if (model) formData.append("model", model );
-                    if (userPrompt) formData.append("prompt", userPrompt );
+                    if (provider) formData.append("provider", provider?.id);
+                    if (model) formData.append("model", model);
+                    if (userPrompt) formData.append("prompt", userPrompt);
                     const parse = reviewComponentO.safeParse(Object.fromEntries(formData.entries()))
                     if (parse.error) throw parse.error.issues[0].message
                     setMessage("Sending request")
@@ -120,8 +120,16 @@ export function ReviewComponentForm() {
                         onClick={async () => {
                             setLoading(true)
                             try {
-                                if (!generatedComponent?.component.name || !generatedComponent?.component?.query || !generatedComponent.threadId) throw "Detected a partial component, not saved"
-                                const res = await updateComponent(component.id, generatedComponent.component.name, generatedComponent.component.query, generatedComponent.component.description, generatedComponent.threadId, generatedComponent.component.keys)
+                                const parse = saveReviewedComponentO.safeParse({
+                                    component: component.id,
+                                    name: generatedComponent.component.name,
+                                    query: generatedComponent.component.query,
+                                    thread: generatedComponent.threadId,
+                                    keys: generatedComponent.component.keys,
+                                    description: generatedComponent.component.description,
+                                })
+                                if (parse.error) throw parse.error.issues[0].message
+                                const res = await updateComponent(parse.data.component, parse.data.name, parse.data.query, parse.data.description, parse.data.thread, parse.data.keys)
                                 if (!res) throw "Component not updated"
                                 await refetch()
                             } catch (error) {

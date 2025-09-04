@@ -4,7 +4,7 @@ import client from "@repo/db/client"
 import { getMemberRole } from "./role"
 import { actionLimiter } from "./limiter"
 import { Redis } from "ioredis"
-export async function addComponent(name: string, sourceId: string, query: string, threadId: string, viewId: string, requiredKeys: string[] = [], description?: string) {
+export async function addComponent(name: string, sourceId: string, query: string, threadId: string, viewId: string, requiredKeys: string[] = [], description: string) {
     const redis = new Redis(process.env.REDIS_URL as string)
     const index = await redis.zcount(`llm:${threadId}`, '-inf', '+inf')
     const history = (await redis.zrange(`llm:${threadId}`, 0, index)).map((v) => JSON.parse(v))
