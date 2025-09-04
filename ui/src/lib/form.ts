@@ -29,3 +29,7 @@ export const newSourceO = z.object({
     name:z.string({error:"Write a name to identify your source"}),
     connection:z.url()
 })
+
+export const newViewO = z.object({
+    name:z.string(),
+})
