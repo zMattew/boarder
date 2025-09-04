@@ -41,7 +41,7 @@ import { toast } from "sonner";
 function EditSourceForm(
     { sourceName, sourceId }: { sourceName: string; sourceId: string },
 ) {
-    const { currentProject, refreshProjects } = useProject();
+    const { refreshProjects } = useProject();
     return (
         <form
             action={async (formData: FormData) => {
@@ -49,9 +49,7 @@ function EditSourceForm(
                     const sourceName = formData.get("name") as string;
                     const url = formData.get("connection") as string;
                     if (!sourceName && !url) throw "Nothing changed";
-                    if (!currentProject?.id) throw "Select a project";
                     await editSource(
-                        currentProject.id,
                         sourceId,
                         sourceName,
                         url,
@@ -186,8 +184,6 @@ export default function Page() {
                                                         onClick={async () => {
                                                             try {
                                                                 await removeSource(
-                                                                    currentProject
-                                                                        .id,
                                                                     source.id,
                                                                 );
                                                                 await refreshProjects();
