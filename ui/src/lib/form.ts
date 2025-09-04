@@ -14,7 +14,7 @@ export const saveNewComponentO = z.object({
     query: z.string({ error: "Missing query. Not Saving" }),
     thread: z.string({ error: "Missing prompt thread. Not Saving" }),
     keys: z.array(z.string()).optional().default([]),
-    description: z.string().optional(),
+    description: z.string(),
     view: z.string({ error: "Select a view" })
 })
 
@@ -23,6 +23,15 @@ export const reviewComponentO = z.object({
     provider: z.string({ error: "Select a llm provider" }),
     model: z.string({ error: "Select a llm model" }),
     prompt: z.string({ error: "Write a prompt" })
+})
+
+export const saveReviewedComponentO = z.object({
+    component: z.string(),
+    name: z.string({ error: "Component type missing. Not Saving" }),
+    query: z.string({ error: "Missing query. Not Saving" }),
+    thread: z.string({ error: "Missing prompt thread. Not Saving" }),
+    keys: z.array(z.string()).optional().default([]),
+    description: z.string(),
 })
 
 export const newLLMO = z.object({
