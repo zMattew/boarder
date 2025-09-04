@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { useProject } from "@/hooks/project-context";
 import { newProject } from "@/lib/project";
+import { newProjectO } from "@/lib/form";
 
 export default function Page() {
     const [loading, setLoading] = useState<boolean>(false);
@@ -31,7 +32,9 @@ export default function Page() {
                         action={async (formData: FormData) => {
                             setLoading(true);
                             try {
-                                const response = await newProject(formData);
+                                const parse = newProjectO.safeParse(Object.entries(formData.entries()))
+                                if(parse.error) throw parse.error.issues[0].message
+                                const response = await newProject(parse.data.name);
                                 toast.success(
                                     `Project ${response.name} created`,
                                 );

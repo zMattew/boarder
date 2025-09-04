@@ -33,3 +33,7 @@ export const newSourceO = z.object({
 export const newViewO = z.object({
     name:z.string(),
 })
+
+export const newProjectO = z.object({
+    name:z.string(),
+})
