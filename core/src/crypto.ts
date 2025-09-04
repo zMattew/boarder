@@ -2,7 +2,7 @@ import fs from "fs/promises"
 import "dotenv/config"
 
 export async function encrypt(value: string) {
-    const key = Buffer.from(process.env.PV_KEY as string, "hex");
+    const key = Buffer.from(process.env.AUTH_SECRET as string, "hex");
 
     const encodedKey = await crypto.subtle.importKey(
         "raw",
@@ -25,7 +25,7 @@ export async function encrypt(value: string) {
 
 export async function decrypt(ciphertext: string) {
     const [iv, data] = ciphertext.split(":")
-    const key = Buffer.from(process.env.PV_KEY as string, 'hex');
+    const key = Buffer.from(process.env.AUTH_SECRET as string, 'hex');
     const encodedKey = await crypto.subtle.importKey(
         "raw",
         key,

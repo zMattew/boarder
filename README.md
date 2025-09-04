@@ -22,7 +22,7 @@ Before proceed you need to install [Docker](https://www.docker.com/), [git](http
    AUTH_{PROVIDER}_ID
    AUTH_{PROVIDER}_SECRET
    ```
-   Use this command for (ui,api)PV_KEY, (ui,api)AUTH_SECRET
+   Use this command for (ui,api) AUTH_SECRET env variable
    ```bash
    openssl rand -hex 32
    ```
