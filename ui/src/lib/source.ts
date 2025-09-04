@@ -5,8 +5,9 @@ import client from "@repo/db/client"
 import { getMemberRole } from "./role"
 import { actionLimiter } from "./limiter"
 
-export async function addSource(name: string, connectionUrl: string, projectId: string) {
-    const { userId, role } = await getMemberRole()
+export async function addSource(name: string, connectionUrl: string) {
+    const { userId, role,selectedProject } = await getMemberRole()
+    if(!selectedProject) throw "Select a project"
     if (role != "admin") throw "You can't do this action"
     const { success } = await actionLimiter.limit(userId)
     if (!success) throw "Too many request"
@@ -15,7 +16,7 @@ export async function addSource(name: string, connectionUrl: string, projectId: 
         data: {
             name,
             connectionUrl,
-            projectId
+            projectId:selectedProject
         }
     })
 }

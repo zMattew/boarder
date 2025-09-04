@@ -24,3 +24,8 @@ export const newLLMO = z.object({
     api:z.string().optional(),
     url: z.url().optional()
 })
+
+export const newSourceO = z.object({
+    name:z.string({error:"Write a name to identify your source"}),
+    connection:z.url()
+})

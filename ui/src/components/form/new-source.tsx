@@ -2,7 +2,6 @@
 import { Button } from "@/components/shadcn/button";
 import { Input } from "@/components/shadcn/input";
 import { useProject } from "@/hooks/project-context";
-import { createSource } from "./newSource";
 import {
     Card,
     CardContent,
@@ -13,6 +12,8 @@ import {
 import { Label } from "../shadcn/label";
 import { toast } from "sonner";
 import { useState } from "react";
+import { newSourceO } from "@/lib/form";
+import { addSource } from "@/lib/source";
 
 export function NewSourceForm() {
     const { currentProject ,refreshProjects} = useProject();
@@ -32,9 +33,9 @@ export function NewSourceForm() {
                     action={async (formData: FormData) => {
                         try {
                             setLoading(true)
-                            if(!currentProject.id) throw "Select a project"
-                            formData.append("projectId", currentProject.id);
-                            await createSource(formData);
+                            const parse = newSourceO.safeParse(Object.fromEntries(formData.entries()))
+                            if(parse.error) throw parse.error.issues[0].message
+                            await addSource(parse.data.name,parse.data.connection);
                             await refreshProjects()
                             toast.success("Source created")
                         } catch (error) {
